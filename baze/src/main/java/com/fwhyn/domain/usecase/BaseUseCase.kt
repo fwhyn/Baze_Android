@@ -1,9 +1,11 @@
 package com.fwhyn.domain.usecase
 
 import android.util.Log
+import com.fwhyn.data.helper.Util
 import com.fwhyn.data.helper.getTestTag
-import com.fwhyn.data.model.BazeException
-import com.fwhyn.domain.helper.BazeResult
+import com.fwhyn.data.model.Exzeption
+import com.fwhyn.data.model.Status
+import com.fwhyn.domain.helper.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,20 +13,25 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseUseCase<PARAM, RESULT> {
 
     private val debugTag = BaseUseCase::class.java.getTestTag()
+    protected open var jobId = Util.getUniqueId()
 
-    private var timeOut: Long = 0 // millisecond
+    private var timeOutMillis: Long = 0
 
-    private var resultNotifier: ((BazeResult<RESULT, BazeException>) -> Unit)? = null
+    private var resultNotifier: ((Result<RESULT, Exzeption>) -> Unit)? = null
+
+    private var uiContext: CoroutineContext = Dispatchers.Main
+    private var workerContext: CoroutineContext = Dispatchers.IO
 
     private var job: Job? = null
 
     // ----------------------------------------------------------------
     fun setResultNotifier(
-        resultNotifier: (BazeResult<RESULT, BazeException>) -> Unit,
+        resultNotifier: (Result<RESULT, Exzeption>) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
         this.resultNotifier = resultNotifier
 
@@ -32,7 +39,34 @@ abstract class BaseUseCase<PARAM, RESULT> {
     }
 
     protected fun setTimeOut(time: Long): BaseUseCase<PARAM, RESULT> {
-        timeOut = time
+        timeOutMillis = time
+
+        return this
+    }
+
+    fun cancelPreviousActiveJob(): BaseUseCase<PARAM, RESULT> {
+        if (job?.isActive == true) {
+            Log.d(debugTag, "Cancel Job: $job")
+            job?.cancel()
+
+            jobId = Util.getUniqueId()
+        }
+
+        return this
+    }
+
+    fun getId(): String {
+        return jobId
+    }
+
+    fun setUiContext(context: CoroutineContext): BaseUseCase<PARAM, RESULT> {
+        uiContext = context
+
+        return this
+    }
+
+    fun setWorkerContext(context: CoroutineContext): BaseUseCase<PARAM, RESULT> {
+        workerContext = context
 
         return this
     }
@@ -48,14 +82,14 @@ abstract class BaseUseCase<PARAM, RESULT> {
     ) {
     }
 
-    protected open fun runWithResult(
+    protected fun runWithResult(
         scope: CoroutineScope,
         runAPi: suspend () -> RESULT,
     ) {
         runInternally(scope, runAPi)
     }
 
-    protected open fun run(
+    protected fun run(
         scope: CoroutineScope,
         runAPi: suspend () -> Unit,
     ) {
@@ -67,17 +101,12 @@ abstract class BaseUseCase<PARAM, RESULT> {
         runAPi: suspend () -> T,
         withResult: Boolean = true,
     ) {
-        if (job?.isActive == true) {
-            Log.d(debugTag, "Job Canceled")
-            job?.cancel()
-        }
-
-        job = scope.launch(Dispatchers.IO + SupervisorJob()) {
+        job = scope.launch(workerContext + SupervisorJob()) {
             Log.d(debugTag, "Job Launched")
 
             try {
-                val result = if (timeOut > 0) {
-                    withTimeout(timeOut) {
+                val result = if (timeOutMillis > 0) {
+                    withTimeout(timeOutMillis) {
                         Log.d(debugTag, "RunApi with Timeout Invoked")
                         runAPi()
                     }
@@ -89,37 +118,36 @@ abstract class BaseUseCase<PARAM, RESULT> {
                 if (withResult) {
                     provideResultFromBackground(result as RESULT)
                 }
-            } catch (e: BazeException) {
-                Log.d(debugTag, "BazeException ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
+            } catch (e: Exzeption) {
+                Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
                 notifyResultFromBackground(
-                    BazeResult.Failure(e)
+                    Result.Failure(e)
                 )
             } catch (e: Exception) {
                 Log.d(debugTag, "Exception ${e.message}")
                 notifyResultFromBackground(
-                    BazeResult.Failure(BazeException(throwable = e))
+                    Result.Failure(Exzeption(throwable = e))
                 )
             }
         }
     }
 
     private suspend fun provideResultFromBackground(result: RESULT) {
+        Log.d(debugTag, "Result: $result")
         if (result != null) {
-            Log.d(debugTag, "Result Exist")
             notifyResultFromBackground(
-                BazeResult.Success(result)
+                Result.Success(result)
             )
         } else {
-            Log.d(debugTag, "Result Null")
             notifyResultFromBackground(
-                BazeResult.Failure(BazeException())
+                Result.Failure(Exzeption())
             )
         }
     }
 
-    protected open fun runWithResult(runAPi: () -> RESULT) = runInternally(runAPi)
+    protected fun runWithResult(runAPi: () -> RESULT) = runInternally(runAPi)
 
-    protected open fun run(runAPi: () -> Unit) = runInternally(runAPi, false)
+    protected fun run(runAPi: () -> Unit) = runInternally(runAPi, false)
 
     private fun <T> runInternally(
         runAPi: () -> T,
@@ -131,15 +159,15 @@ abstract class BaseUseCase<PARAM, RESULT> {
             if (withResult) {
                 provideResult(result as RESULT)
             }
-        } catch (e: BazeException) {
-            Log.d(debugTag, "BazeException ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
+        } catch (e: Exzeption) {
+            Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
             notifyResult(
-                BazeResult.Failure(e)
+                Result.Failure(e)
             )
         } catch (e: Exception) {
             Log.d(debugTag, "Exception ${e.message}")
             notifyResult(
-                BazeResult.Failure(BazeException(throwable = e))
+                Result.Failure(Exzeption(throwable = e))
             )
         }
     }
@@ -147,25 +175,25 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private fun provideResult(result: RESULT) {
         if (result != null) {
             notifyResult(
-                BazeResult.Success(result)
+                Result.Success(result)
             )
         } else {
             notifyResult(
-                BazeResult.Failure(BazeException())
+                Result.Failure(Exzeption())
             )
         }
     }
 
     suspend fun notifyResultFromBackground(
-        result: BazeResult<RESULT, BazeException>,
+        result: Result<RESULT, Exzeption>,
     ) {
-        withContext(Dispatchers.Main) {
+        withContext(uiContext) {
             notifyResult(result)
         }
     }
 
     fun notifyResult(
-        result: BazeResult<RESULT, BazeException>,
+        result: Result<RESULT, Exzeption>,
     ) {
         resultNotifier?.let { it(result) }
     }
@@ -173,4 +201,26 @@ abstract class BaseUseCase<PARAM, RESULT> {
     fun cancel() {
         job?.cancel()
     }
+
+    suspend fun join() {
+        job?.join()
+    }
+}
+
+suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResultInBackground(
+    param: PARAM,
+    scope: CoroutineScope,
+): RESULT {
+    var result: RESULT? = null
+
+    setResultNotifier {
+        when (it) {
+            is Result.Failure -> throw it.err
+            is Result.Success -> result = it.dat
+        }
+    }
+    executeOnBackground(param, scope)
+    join()
+
+    return result ?: throw Exzeption(status = Status.NotFound)
 }

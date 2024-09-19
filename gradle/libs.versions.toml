@@ -1,22 +1,37 @@
+# ----------------------------------------------------------------------------------------------------------------------
 [versions]
+
+# Plugin
 agp = "8.4.2"
 kotlin = "1.9.0"
-coreKtx = "1.13.1"
+
+# Main Dependency
+androidxAppcompat = "1.7.0"
+androidxCoreKtx = "1.13.1"
+
+# Test Dependency
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-appcompat = "1.7.0"
-material = "1.12.0"
+androidxJunit = "1.2.1"
+androidxEspressoCore = "3.6.1"
 
+# ----------------------------------------------------------------------------------------------------------------------
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+# Main Dependency
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+com-google-android-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
+com-google-code-gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
+
+# Test Dependency
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
+
+# ----------------------------------------------------------------------------------------------------------------------
 [plugins]
+
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
+# ----------------------------------------------------------------------------------------------------------------------
+[bundles]

@@ -11,18 +11,23 @@ open class Event<T>(data: T) {
         private set
 
     val dataOrNull: T?
-        get() = if (invoked) {
-            Log.d(debugTag, "Event Data Null")
-            null
-        } else {
-            Log.d(debugTag, "Event Data Exist")
-            invoked = true
-            data
+        get() {
+            val result = if (invoked) {
+                null
+            } else {
+                invoked = true
+                data
+            }
+
+            Log.d(debugTag, "Event Data: $result")
+
+            return result
         }
 
     var data: T
         get() {
-            Log.d(debugTag, "Event Data Invoked")
+            Log.d(debugTag, "Event Data: $field")
+
             return field
         }
         private set
