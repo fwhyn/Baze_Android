@@ -5,7 +5,7 @@ import com.fwhyn.data.helper.Util
 import com.fwhyn.data.helper.getTestTag
 import com.fwhyn.data.model.Exzeption
 import com.fwhyn.data.model.Status
-import com.fwhyn.domain.helper.Result
+import com.fwhyn.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,7 +22,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     private var timeOutMillis: Long = 0
 
-    private var resultNotifier: ((Result<RESULT, Exzeption>) -> Unit)? = null
+    private var resultNotifier: ((Rezult<RESULT, Exzeption>) -> Unit)? = null
 
     private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.IO
@@ -31,7 +31,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     // ----------------------------------------------------------------
     fun setResultNotifier(
-        resultNotifier: (Result<RESULT, Exzeption>) -> Unit,
+        resultNotifier: (Rezult<RESULT, Exzeption>) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
         this.resultNotifier = resultNotifier
 
@@ -121,26 +121,26 @@ abstract class BaseUseCase<PARAM, RESULT> {
             } catch (e: Exzeption) {
                 Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
                 notifyResultFromBackground(
-                    Result.Failure(e)
+                    Rezult.Failure(e)
                 )
             } catch (e: Exception) {
                 Log.d(debugTag, "Exception ${e.message}")
                 notifyResultFromBackground(
-                    Result.Failure(Exzeption(throwable = e))
+                    Rezult.Failure(Exzeption(throwable = e))
                 )
             }
         }
     }
 
     private suspend fun provideResultFromBackground(result: RESULT) {
-        Log.d(debugTag, "Result: $result")
+        Log.d(debugTag, "Rezult: $result")
         if (result != null) {
             notifyResultFromBackground(
-                Result.Success(result)
+                Rezult.Success(result)
             )
         } else {
             notifyResultFromBackground(
-                Result.Failure(Exzeption())
+                Rezult.Failure(Exzeption())
             )
         }
     }
@@ -162,12 +162,12 @@ abstract class BaseUseCase<PARAM, RESULT> {
         } catch (e: Exzeption) {
             Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
             notifyResult(
-                Result.Failure(e)
+                Rezult.Failure(e)
             )
         } catch (e: Exception) {
             Log.d(debugTag, "Exception ${e.message}")
             notifyResult(
-                Result.Failure(Exzeption(throwable = e))
+                Rezult.Failure(Exzeption(throwable = e))
             )
         }
     }
@@ -175,17 +175,17 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private fun provideResult(result: RESULT) {
         if (result != null) {
             notifyResult(
-                Result.Success(result)
+                Rezult.Success(result)
             )
         } else {
             notifyResult(
-                Result.Failure(Exzeption())
+                Rezult.Failure(Exzeption())
             )
         }
     }
 
     suspend fun notifyResultFromBackground(
-        result: Result<RESULT, Exzeption>,
+        result: Rezult<RESULT, Exzeption>,
     ) {
         withContext(uiContext) {
             notifyResult(result)
@@ -193,7 +193,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
     }
 
     fun notifyResult(
-        result: Result<RESULT, Exzeption>,
+        result: Rezult<RESULT, Exzeption>,
     ) {
         resultNotifier?.let { it(result) }
     }
@@ -215,8 +215,8 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResultInBackground(
 
     setResultNotifier {
         when (it) {
-            is Result.Failure -> throw it.err
-            is Result.Success -> result = it.dat
+            is Rezult.Failure -> throw it.err
+            is Rezult.Success -> result = it.dat
         }
     }
     executeOnBackground(param, scope)

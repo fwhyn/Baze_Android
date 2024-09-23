@@ -40,6 +40,9 @@ dependencies {
 
     // Test Dependency
     testImplementation(libs.junit)
+    testImplementation(libs.bundles.org.mockito.test)
+    testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

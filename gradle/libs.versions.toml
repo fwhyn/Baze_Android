@@ -4,25 +4,28 @@
 agp = "8.4.2"
 kotlin = "1.9.0"
 
-# Main Dependency
+# Main Dependency --------------------------------
 androidxCoreKtx = "1.13.1"
 
-# Test Dependency
+# Test Dependency --------------------------------
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 androidxEspressoCore = "3.6.1"
 
 # ----------------------------------------------------------------------------------------------------------------------
 [libraries]
-# Main Dependency
+# Main Dependency --------------------------------
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
 com-google-android-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
 com-google-code-gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
-# Test Dependency
+# Test Dependency --------------------------------
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
+org-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "3.2.0" }
+org-mockito-inline = { group = "org.mockito", name = "mockito-inline", version = "5.2.0" }
+org-jetbrains-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.8.1" }
 
 # ----------------------------------------------------------------------------------------------------------------------
 [plugins]
@@ -31,3 +34,10 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 
 # ----------------------------------------------------------------------------------------------------------------------
 [bundles]
+# Main Bundles --------------------------------
+
+# Test Bundles --------------------------------
+org-mockito-test = [
+    "org-mockito-kotlin",
+    "org-mockito-inline"
+]

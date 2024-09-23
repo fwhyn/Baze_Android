@@ -14,7 +14,7 @@ object Util {
         return uuid.filterNot { it == '-' }
     }
 
-    fun getUniqueName(): String {
+    fun getDateTime(): String {
         // Get the current date and time
         val currentDateTime = Calendar.getInstance().time
 
