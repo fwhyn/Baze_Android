@@ -1,10 +1,13 @@
 package com.fwhyn.domain.usecase
 
 import MainDispatcherRule
+import android.util.Log
 import com.fwhyn.data.helper.Util
+import com.fwhyn.data.helper.getTestTag
 import com.fwhyn.data.model.Exzeption
 import com.fwhyn.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -19,6 +22,8 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 class BaseUseCaseTest {
+
+    val testTag = BaseUseCaseTest::class.java.getTestTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -52,9 +57,8 @@ class BaseUseCaseTest {
     fun outputShouldCorrespondsTheInput() = runTest {
         val scope = this
 
-        val testUseCase = TestUseCase()
+        val testInputEqualsOutput = TestInputEqualsOutput()
         val callback = { result: Rezult<String, Exception> ->
-
 
             when (result) {
                 is Rezult.Failure -> {
@@ -69,7 +73,7 @@ class BaseUseCaseTest {
                 }
             }
         }
-        testUseCase
+        testInputEqualsOutput
             .setResultNotifier(callback)
             .setWorkerContext(coroutineContext)
             .executeOnBackground(input, scope)
@@ -77,39 +81,75 @@ class BaseUseCaseTest {
 
     @Test
     fun resultAndExecutionInvocation() = runTest {
-        val testUseCase = mock<TestUseCase>()
+        val testInputEqualsOutput = mock<TestInputEqualsOutput>()
         val scope = this
         val input = "Yana"
 
         val callback = CallbackInvocation()
 
-        testUseCase.setResultNotifier(callback)
-        verify(testUseCase, times(1)).setResultNotifier(eq(callback))
+        testInputEqualsOutput.setResultNotifier(callback)
+        verify(testInputEqualsOutput, times(1)).setResultNotifier(eq(callback))
 
-        testUseCase.executeOnBackground(input, scope)
-        verify(testUseCase, times(1)).executeOnBackground(eq(input), eq(scope))
+        testInputEqualsOutput.executeOnBackground(input, scope)
+        verify(testInputEqualsOutput, times(1)).executeOnBackground(eq(input), eq(scope))
     }
 
     @Test
     fun callbackInvocation() = runTest {
-        val testUseCase = TestUseCase()
+        val testInputEqualsOutput = TestInputEqualsOutput()
         val scope = this
         val input = "Yana"
 
         val callback = CallbackInvocation()
 
-        testUseCase
+        testInputEqualsOutput
             .setResultNotifier(callback)
             .setWorkerContext(coroutineContext)
             .executeOnBackground(input, scope)
     }
 
+    @Test
+    fun timeoutTest() = runTest {
+        val testTimeOut = TestTimeOut()
+        val scope = this
+
+        testTimeOut
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err.throwable
+                        Log.e(testTag, theError.toString())
+                        Assert.assertEquals(true, theError is TimeoutCancellationException)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .executeOnBackground(Unit, scope)
+    }
+
     // ----------------------------------------------------------------
-    class TestUseCase : BaseUseCase<String, String>() {
+    class TestInputEqualsOutput : BaseUseCase<String, String>() {
         override fun executeOnBackground(param: String, scope: CoroutineScope) {
             runWithResult(scope) {
                 delay(1000)
                 "Output: $param"
+            }
+        }
+    }
+
+    class TestTimeOut : BaseUseCase<Unit, Unit>() {
+        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+            setTimeOut(1000)
+            runWithResult(scope) {
+                loading()
+            }
+        }
+
+        suspend fun loading() {
+            while (true) {
+                delay(1)
             }
         }
     }

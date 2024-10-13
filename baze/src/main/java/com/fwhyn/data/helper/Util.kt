@@ -40,6 +40,10 @@ object Util {
         throw Exception("Test must no loading")
     }
 
+    fun throwMustNotSuccess() {
+        throw Exception("Test must not success")
+    }
+
     fun require(isOk: Boolean, exception: Exzeption = Exzeption()) {
         if (!isOk) throw exception
     }
