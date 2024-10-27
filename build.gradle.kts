@@ -4,10 +4,20 @@ rootProject.run {
     extra["mSdk"] = 34
 
     extra["javaVersion"] = JavaVersion.VERSION_1_8
+
+    extra["kotlinCompilerVersion"] = "1.5.1"
 }
+
+val lSdk: Int by rootProject.extra
+val mSdk: Int by rootProject.extra
+
+val javaVersion: JavaVersion by rootProject.extra
+
+val kotlinCompilerVersion: String by rootProject.extra
 
 plugins {
     alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
 }
 
