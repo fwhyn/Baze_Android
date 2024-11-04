@@ -1,4 +1,4 @@
-package com.fwhyn.appsample.ui.theme
+package com.fwhyn.appsample.ui.config
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
