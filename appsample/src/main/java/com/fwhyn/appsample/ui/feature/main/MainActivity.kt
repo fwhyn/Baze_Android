@@ -1,4 +1,4 @@
-package com.fwhyn.appsample
+package com.fwhyn.appsample.ui.feature.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

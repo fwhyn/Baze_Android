@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.dagger.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -68,6 +70,10 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
+    implementation(libs.bundles.dagger.hilt)
+    kapt(libs.bundles.dagger.hilt.compiler)
+    annotationProcessor(libs.bundles.dagger.hilt.compiler)
 
     // ----------------------------------------------------------------
     // Test Dependency
