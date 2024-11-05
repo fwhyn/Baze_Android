@@ -91,6 +91,8 @@ afterEvaluate {
                     password ossrhPassword
                 }
             }
+
+            mavenLocal()
         }
     }
 }
