@@ -10,6 +10,7 @@ import android.net.Uri
 import android.util.Size
 import android.util.SizeF
 import androidx.annotation.DrawableRes
+import androidx.navigation.NavOptionsBuilder
 import com.fwhyn.data.helper.Constant.TAG_BAZE_TEST
 import com.google.gson.GsonBuilder
 import java.io.File
@@ -29,6 +30,13 @@ fun <T> Class<T>.getTestTag(): String {
 
 fun <T> Class<T>.getTag(): String {
     return this.simpleName
+}
+
+// ----------------------------------------------------------------
+fun NavOptionsBuilder.removeFromBackStack(route: String) {
+    popUpTo(route) {
+        inclusive = true
+    }
 }
 
 // ----------------------------------------------------------------
@@ -78,6 +86,10 @@ fun <T> Set<T>.copy(): Set<T> {
 
 fun <T> List<T>.copy(): List<T> {
     return ArrayList(this)
+}
+
+fun <T> List<T>.deepCopy(onCopyElement: (T) -> T): List<T> {
+    return this.map { onCopyElement(it) }
 }
 
 fun <T> List<T>.set(index: Int, data: T): List<T> {
