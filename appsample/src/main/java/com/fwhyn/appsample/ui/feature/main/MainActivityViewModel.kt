@@ -1,11 +1,11 @@
-package com.fwhyn.atmsehat.ui.main
+package com.fwhyn.appsample.ui.feature.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.data.helper.network.NetworkMonitor
-import com.fwhyn.data.model.ManageMemoryAction
-import com.fwhyn.data.model.ManageMemoryParam
-import com.fwhyn.domain.helper.Results
+import com.fwhyn.data.model.memory.ManageMemoryAction
+import com.fwhyn.data.model.memory.ManageMemoryParam
+import com.fwhyn.domain.helper.Rezult
 import com.fwhyn.domain.usecase.BaseUseCase
 import com.fwhyn.ui.main.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +24,11 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun clearPreviousMemory() {
+        mainUiState.showLoading(memoryUseCase.getId())
         memoryUseCase.setResultNotifier {
             when (it) {
-                is Results.Failure -> mainUiState.showNotification("Cleaning Memory Error")
-                is Results.Loading -> mainUiState.showLoading()
-                is Results.Success -> mainUiState.setIdle()
+                is Rezult.Failure -> mainUiState.showNotification("Cleaning Memory Error")
+                is Rezult.Success -> mainUiState.setIdle()
             }
         }.executeOnBackground(listOf(ManageMemoryParam(ManageMemoryAction.CLEAR)), viewModelScope)
     }

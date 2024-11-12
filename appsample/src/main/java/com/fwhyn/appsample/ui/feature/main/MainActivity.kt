@@ -17,8 +17,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fwhyn.appsample.ui.common.BaseActivity
 import com.fwhyn.appsample.ui.config.BazeTheme
-import com.fwhyn.atmsehat.ui.main.MainActivityViewModel
-import com.fwhyn.atmsehat.ui.main.MainScreen
 import com.fwhyn.ui.main.AppState.Companion.rememberAppState
 import com.fwhyn.ui.main.MainUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +28,6 @@ class MainActivity : BaseActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         animateSplashScreen()
         setContent {

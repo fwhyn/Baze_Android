@@ -68,28 +68,18 @@ class MainUiState {
         }
     }
 
+    fun setIdle() {
+        setState("IDLE", State.Idle)
+    }
+
     fun finish() {
-        state = State.OnFinish
+        setState("FINISH", State.Idle)
     }
 
-    private fun manageState() {
-        if (stateManager.isNotEmpty()) {
-            for (i in stateManager.indices) {
-                val it = stateManager[i]
-                Log.d(debugTag, "tag: ${it.first}; state: ${it.second}; index: $i")
-            }
-            state = stateManager[0].second
-        } else {
-            state = State.Idle
-            Log.d(debugTag, "tag: -; state: ${state}; index: -")
-        }
-    }
-
-
-    fun setState(key: String, state: State, forceSet: Boolean = false) {
+    private fun setState(key: String, state: State, forceSet: Boolean = false) {
         Log.d(debugTag, "tag: $key")
 
-        if (state == State.OnFinish) {
+        if (state == State.Idle || state == State.OnFinish) {
             clearState()
         }
 
@@ -115,6 +105,19 @@ class MainUiState {
     private fun clearState() {
         stateManager = stateManager.clear()
         manageState()
+    }
+
+    private fun manageState() {
+        if (stateManager.isNotEmpty()) {
+            for (i in stateManager.indices) {
+                val it = stateManager[i]
+                Log.d(debugTag, "tag: ${it.first}; state: ${it.second}; index: $i")
+            }
+            state = stateManager[0].second
+        } else {
+            state = State.Idle
+            Log.d(debugTag, "tag: -; state: ${state}; index: -")
+        }
     }
 
     // ----------------------------------------------------------------

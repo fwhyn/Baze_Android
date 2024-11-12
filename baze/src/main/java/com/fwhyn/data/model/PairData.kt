@@ -56,8 +56,11 @@ fun <Key, Data> List<PairData<Key, Data>>.get(
     return result
 }
 
-// add data with specified key
-// ignore if the key is already exist
+/**
+ * Add data with specified key.
+ *
+ * Ignore if the key is already exist
+ */
 fun <Key, Data> List<PairData<Key, Data>>.set(
     data: PairData<Key, Data>,
     forceSet: Boolean = false,

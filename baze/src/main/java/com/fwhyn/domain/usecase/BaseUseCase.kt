@@ -15,6 +15,14 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 
+@Retention(value = AnnotationRetention.BINARY)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "Please call super.execute..."
+)
+
+annotation class SuppressWarning
+
 abstract class BaseUseCase<PARAM, RESULT> {
 
     private val debugTag = BaseUseCase::class.java.getTestTag()
@@ -23,6 +31,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private var timeOutMillis: Long = 0
 
     private var resultNotifier: ((Rezult<RESULT, Exzeption>) -> Unit)? = null
+    private var lifeCycleNotifier: ((LifeCycle) -> Unit)? = null
 
     private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.IO
@@ -34,6 +43,14 @@ abstract class BaseUseCase<PARAM, RESULT> {
         resultNotifier: (Rezult<RESULT, Exzeption>) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
         this.resultNotifier = resultNotifier
+
+        return this
+    }
+
+    fun setLifeCycleNotifier(
+        lifeCycleNotifier: (LifeCycle) -> Unit,
+    ): BaseUseCase<PARAM, RESULT> {
+        this.lifeCycleNotifier = lifeCycleNotifier
 
         return this
     }
@@ -101,6 +118,8 @@ abstract class BaseUseCase<PARAM, RESULT> {
         runAPi: suspend () -> T,
         withResult: Boolean = true,
     ) {
+        notifyOnStart()
+
         job = scope.launch(workerContext + SupervisorJob()) {
             Log.d(debugTag, "Job Launched")
 
@@ -153,6 +172,8 @@ abstract class BaseUseCase<PARAM, RESULT> {
         runAPi: () -> T,
         withResult: Boolean = true,
     ) {
+        notifyOnStart()
+
         try {
             Log.d(debugTag, "RunApi Invoked")
             val result = runAPi()
@@ -192,10 +213,15 @@ abstract class BaseUseCase<PARAM, RESULT> {
         }
     }
 
+    private fun notifyOnStart() {
+        lifeCycleNotifier?.let { it(LifeCycle.OnStart) }
+    }
+
     fun notifyResult(
         result: Rezult<RESULT, Exzeption>,
     ) {
         resultNotifier?.let { it(result) }
+        lifeCycleNotifier?.let { it(LifeCycle.OnFinish) }
     }
 
     fun cancel() {
@@ -204,6 +230,11 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     suspend fun join() {
         job?.join()
+    }
+
+    enum class LifeCycle {
+        OnStart,
+        OnFinish,
     }
 }
 
