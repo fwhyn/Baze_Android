@@ -17,64 +17,59 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.fwhyn.atmsehat.ui.config.AppTheme
-import com.fwhyn.atmsehat.ui.config.MyColor
+import com.fwhyn.appsample.ui.config.BazeTheme
 
-class CircularProgressDialog {
-    companion object {
-        @Composable
-        fun Create(
-            progress: Int? = null,
-            onDismiss: () -> Unit = {},
+@Composable
+fun CircularProgressDialog(
+    progress: Int? = null,
+    onDismiss: () -> Unit = {},
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Dialog(
-                onDismissRequest = onDismiss,
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color.White, shape = CircleShape)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .background(Color.White, shape = CircleShape)
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(60.dp),
-                            color = MyColor.BlueAngel,
-                            strokeWidth = 6.dp
-                        )
-                    }
+                CircularProgressIndicator(
+                    modifier = Modifier.size(60.dp),
+                    color = Color.Blue,
+                    strokeWidth = 6.dp
+                )
+            }
 
-                    progress?.let {
-                        Spacer(
-                            modifier = Modifier.height(5.dp)
-                        )
+            progress?.let {
+                Spacer(
+                    modifier = Modifier.height(5.dp)
+                )
 
-                        Text(
-                            text = "$it %",
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                        )
-                    }
-                }
+                Text(
+                    text = "$it %",
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                )
             }
         }
     }
+}
 
-    @Preview
-    @Composable
-    fun CircularProgressDialogPreview0() {
-        AppTheme {
-            Create()
-        }
+@Preview
+@Composable
+fun CircularProgressDialogPreview0() {
+    BazeTheme {
+        CircularProgressDialog()
     }
+}
 
-    @Preview
-    @Composable
-    fun CircularProgressDialogPreview1() {
-        AppTheme {
-            Create(70)
-        }
+@Preview
+@Composable
+fun CircularProgressDialogPreview1() {
+    BazeTheme {
+        CircularProgressDialog(70)
     }
 }
