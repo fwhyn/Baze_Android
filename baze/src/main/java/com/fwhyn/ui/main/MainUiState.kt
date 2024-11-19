@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.fwhyn.data.helper.Util
-import com.fwhyn.data.helper.clear
-import com.fwhyn.data.helper.copy
-import com.fwhyn.data.helper.getTestTag
+import com.fwhyn.data.helper.extension.clear
+import com.fwhyn.data.helper.extension.copy
+import com.fwhyn.data.helper.extension.getTestTag
 import com.fwhyn.data.model.PairData
 import com.fwhyn.data.model.remove
 import com.fwhyn.data.model.set

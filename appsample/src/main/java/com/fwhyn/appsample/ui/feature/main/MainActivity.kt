@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fwhyn.appsample.ui.common.BaseActivity
-import com.fwhyn.appsample.ui.config.BazeTheme
+import com.fwhyn.appsample.ui.config.MyTheme
 import com.fwhyn.ui.main.AppState.Companion.rememberAppState
 import com.fwhyn.ui.main.MainUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,16 +28,17 @@ class MainActivity : BaseActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         animateSplashScreen()
         setContent {
-            BazeTheme {
+            MyTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen.Create(
+                    MainScreen(
                         appState = rememberAppState(
                             windowSizeClass = calculateWindowSizeClass(this),
                             networkMonitor = vm.networkMonitor,

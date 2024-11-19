@@ -1,4 +1,4 @@
-package com.fwhyn.appsample.ui.dialog
+package com.fwhyn.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.fwhyn.appsample.ui.config.BazeTheme
 
 @Composable
 fun CircularProgressDialog(
@@ -61,15 +60,11 @@ fun CircularProgressDialog(
 @Preview
 @Composable
 fun CircularProgressDialogPreview0() {
-    BazeTheme {
-        CircularProgressDialog()
-    }
+    CircularProgressDialog()
 }
 
 @Preview
 @Composable
 fun CircularProgressDialogPreview1() {
-    BazeTheme {
-        CircularProgressDialog(70)
-    }
+    CircularProgressDialog(70)
 }

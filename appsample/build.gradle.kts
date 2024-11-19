@@ -68,6 +68,7 @@ dependencies {
     implementation(project(mapOf("path" to ":baze")))
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.com.google.code.gson)
 
     implementation(libs.bundles.dagger.hilt)
     kapt(libs.bundles.dagger.hilt.compiler)

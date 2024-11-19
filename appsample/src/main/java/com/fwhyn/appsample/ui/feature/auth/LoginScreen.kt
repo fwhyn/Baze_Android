@@ -54,6 +54,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.fwhyn.appsample.ui.config.defaultPadding
+import com.fwhyn.data.helper.extension.removeFromBackStack
 import com.fwhyn.ui.main.AppState
 import com.fwhyn.ui.main.MainUiState
 
@@ -168,7 +170,7 @@ class LoginScreen {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(MyValue.defaultPadding)
+                    .padding(defaultPadding)
                     .verticalScroll(rememberScrollState())
             ) {
                 val commonFieldModifier = Modifier.fillMaxWidth()

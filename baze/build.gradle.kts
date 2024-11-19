@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.com.google.android.material)
     implementation(libs.com.google.code.gson)
+    implementation(libs.bundles.retrofit2)
 
     implementation(libs.bundles.dagger.hilt)
     kapt(libs.bundles.dagger.hilt.compiler)

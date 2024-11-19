@@ -3,7 +3,7 @@ package com.fwhyn.domain.usecase
 import MainDispatcherRule
 import android.util.Log
 import com.fwhyn.data.helper.Util
-import com.fwhyn.data.helper.getTestTag
+import com.fwhyn.data.helper.extension.getTestTag
 import com.fwhyn.data.model.Exzeption
 import com.fwhyn.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope

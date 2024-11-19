@@ -1,18 +1,13 @@
-package com.fwhyn.data.helper
+package com.fwhyn.data.helper.extension
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.graphics.RectF
 import android.net.Uri
 import android.util.Size
 import android.util.SizeF
-import androidx.annotation.DrawableRes
 import androidx.navigation.NavOptionsBuilder
 import com.fwhyn.data.helper.Constant.TAG_BAZE_TEST
-import com.google.gson.GsonBuilder
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.absoluteValue
@@ -36,39 +31,6 @@ fun <T> Class<T>.getTag(): String {
 fun NavOptionsBuilder.removeFromBackStack(route: String) {
     popUpTo(route) {
         inclusive = true
-    }
-}
-
-// ----------------------------------------------------------------
-inline fun <reified T> SharedPreferences.get(key: String): T? {
-    val value = this.getString(key, null)
-
-    return GsonBuilder().create().fromJson(value, T::class.java)
-}
-
-fun <T> SharedPreferences.put(key: String, data: T) {
-    val jsonString = GsonBuilder().create().toJson(data)
-
-    this.edit().putString(key, jsonString).apply()
-}
-
-fun SharedPreferences.delete(key: String) {
-    this.edit().remove(key).apply()
-}
-
-// ----------------------------------------------------------------
-fun Context.getBitmap(@DrawableRes id: Int): Bitmap? {
-    return try {
-        val option = BitmapFactory.Options()
-        option.inPreferredConfig = Bitmap.Config.ARGB_8888
-
-        BitmapFactory.decodeResource(
-            resources,
-            id,
-            option
-        )
-    } catch (e: Exception) {
-        null
     }
 }
 

@@ -1,7 +1,7 @@
 package com.fwhyn.domain.helper
 
 import android.util.Log
-import com.fwhyn.data.helper.getTestTag
+import com.fwhyn.data.helper.extension.getTestTag
 
 open class Event<T>(data: T) {
 

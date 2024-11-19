@@ -2,7 +2,7 @@ package com.fwhyn.domain.usecase
 
 import android.util.Log
 import com.fwhyn.data.helper.Util
-import com.fwhyn.data.helper.getTestTag
+import com.fwhyn.data.helper.extension.getTestTag
 import com.fwhyn.data.model.Exzeption
 import com.fwhyn.data.model.Status
 import com.fwhyn.domain.helper.Rezult
@@ -99,14 +99,14 @@ abstract class BaseUseCase<PARAM, RESULT> {
     ) {
     }
 
-    protected fun runWithResult(
+    protected open fun runWithResult(
         scope: CoroutineScope,
         runAPi: suspend () -> RESULT,
     ) {
         runInternally(scope, runAPi)
     }
 
-    protected fun run(
+    protected open fun run(
         scope: CoroutineScope,
         runAPi: suspend () -> Unit,
     ) {

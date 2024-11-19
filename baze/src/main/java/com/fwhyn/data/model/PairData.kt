@@ -1,7 +1,7 @@
 package com.fwhyn.data.model
 
 import android.util.Log
-import com.fwhyn.data.helper.getTestTag
+import com.fwhyn.data.helper.extension.getTestTag
 import java.io.Serializable
 
 open class PairData<A, B>(
