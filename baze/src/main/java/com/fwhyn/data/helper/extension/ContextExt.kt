@@ -5,9 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 
-fun Context.showToast(string: String, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, string, length).show()
+fun Context.showToast(@StringRes stringId: Int, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, getString(stringId), length).show()
 }
 
 fun Context.getBitmap(@DrawableRes id: Int): Bitmap? {

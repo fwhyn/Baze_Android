@@ -8,6 +8,7 @@ sealed class Status(val code: Int, val msg: String) {
     data object SettingError : Status(418, "Setting Error")
     data object OutOfMemoryError : Status(419, "Out Of Memory Error")
     data object RequestTimeOut : Status(408, "Request Timeout")
+    data object UnknownError : Status(999, "Unknown Error")
     data object InitialState : Status(0, "Initial State")
     data class Instance(val statusCode: Int, var message: String) : Status(statusCode, message)
 }

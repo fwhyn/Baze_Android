@@ -51,12 +51,11 @@ import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.fwhyn.appsample.ui.config.MyTheme
 import com.fwhyn.appsample.ui.config.defaultPadding
-import com.fwhyn.appsample.ui.feature.auth.LoginScreen.Companion.navigateToLoginScreen
+import com.fwhyn.appsample.ui.feature.auth.navigateToLoginScreen
 import com.fwhyn.data.helper.extension.removeFromBackStack
 import com.fwhyn.ui.helper.DevicePreviews
 import com.fwhyn.ui.main.AppState
 import com.fwhyn.ui.main.AppState.Companion.rememberAppState
-import com.fwhyn.ui.main.MainUiState
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 
@@ -64,12 +63,10 @@ const val HOME_ROUTE = "homeRoute"
 
 fun NavGraphBuilder.addHomeScreen(
     appState: AppState,
-    mainUiState: MainUiState,
 ) {
     composable(HOME_ROUTE) {
         HomeScreenRoute(
             appState = appState,
-            mainUiState = mainUiState,
         )
     }
 }
@@ -82,14 +79,12 @@ fun NavController.navigateToHomeScreen(navOptions: NavOptions? = null) {
 private fun HomeScreenRoute(
     modifier: Modifier = Modifier,
     appState: AppState,
-    mainUiState: MainUiState,
     vm: HomeViewModel = hiltViewModel(),
 ) {
     vm.run {
         HomeScreen(
             modifier = modifier,
             appState = appState,
-            mainUiState = mainUiState,
             vmInterface = vm,
             uiData = uiData,
             uiState = uiState,
@@ -101,7 +96,6 @@ private fun HomeScreenRoute(
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     appState: AppState,
-    mainUiState: MainUiState,
     vmInterface: HomeVmInterface,
     uiData: HomeUiData,
     uiState: HomeUiState,
@@ -111,11 +105,7 @@ private fun HomeScreen(
 //        vmInterface::onPhotoSelected
 //    )
 
-    mainUiState.run {
         when (val state = uiState.state) {
-            is HomeUiState.State.OnNotification -> state.invokeOnce { showNotification(state.message) }
-            HomeUiState.State.Idle -> setIdle()
-            HomeUiState.State.Loading -> showLoading()
             is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
 //                appState.navController.navigateToPhotoEditScreen(key = state.key)
             }
@@ -128,9 +118,8 @@ private fun HomeScreen(
                 })
             }
 
-            HomeUiState.State.OnFinish -> finish()
+            HomeUiState.State.Idle -> {} // Do nothing
         }
-    }
 
 
 
@@ -340,7 +329,6 @@ fun HomeScreenPreview() {
     MyTheme {
         HomeScreen(
             appState = rememberAppState(),
-            mainUiState = MainUiState(),
             vmInterface = object : HomeVmInterface() {},
             uiData = HomeUiData(),
             uiState = HomeUiState()

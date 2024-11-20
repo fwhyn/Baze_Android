@@ -1,6 +1,7 @@
 package com.fwhyn.ui.main
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,13 +30,13 @@ class MainUiState {
     var stateManager: List<PairData<String, State>> = listOf()
         private set
 
-    fun showNotification(message: String) {
+    fun showNotification(@StringRes messageId: Int) {
         setState(TAG_NOTIFICATION, State.OnNotification { isFinish ->
             if (isFinish) {
                 removeState(TAG_NOTIFICATION)
             }
 
-            message
+            messageId
         })
     }
 
@@ -123,7 +124,7 @@ class MainUiState {
     // ----------------------------------------------------------------
     sealed class State : SingleEvent<Boolean>(true) {
         data object Idle : State()
-        class OnNotification(val getMessageAndFinish: (Boolean) -> String) : State()
+        class OnNotification(val getMessageAndFinish: (Boolean) -> Int) : State()
         class OnShowDialog<T>(val tag: String, val model: DialogModel, val dat: T) : State()
         class Loading(val progress: Int? = null) : State()
         data object OnFinish : State()

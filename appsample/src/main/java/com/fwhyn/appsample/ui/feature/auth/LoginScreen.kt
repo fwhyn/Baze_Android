@@ -54,346 +54,326 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.fwhyn.appsample.ui.config.MyTheme
 import com.fwhyn.appsample.ui.config.defaultPadding
+import com.fwhyn.appsample.ui.feature.home.navigateToHomeScreen
 import com.fwhyn.data.helper.extension.removeFromBackStack
+import com.fwhyn.ui.helper.DevicePreviews
 import com.fwhyn.ui.main.AppState
-import com.fwhyn.ui.main.MainUiState
+import com.fwhyn.ui.main.AppState.Companion.rememberAppState
 
-class LoginScreen {
-    companion object {
-        const val LOGIN_ROUTE = "LOGIN_ROUTE"
+const val LOGIN_ROUTE = "LOGIN_ROUTE"
 
-        fun NavGraphBuilder.addLoginScreen(
-            appState: AppState,
-            mainUiState: MainUiState,
-        ) {
-            composable(LOGIN_ROUTE) {
-                // we place the our Home composable function here
-                // in a production application home will probably take in some parameters
-                Route(
-                    appState = appState,
-                    mainUiState = mainUiState,
-                )
-            }
+fun NavGraphBuilder.addLoginScreen(
+    appState: AppState,
+) {
+    composable(LOGIN_ROUTE) {
+        // we place the our Home composable function here
+        // in a production application home will probably take in some parameters
+        LoginRoute(
+            appState = appState,
+        )
+    }
+}
+
+fun NavController.navigateToLoginScreen(navOptions: NavOptions? = null) {
+    this.navigate(LOGIN_ROUTE, navOptions)
+}
+
+@Composable
+fun LoginRoute(
+    modifier: Modifier = Modifier,
+    appState: AppState,
+    vm: LoginViewModel = hiltViewModel(),
+) {
+    vm.run {
+        LoginScreen(
+            modifier = modifier,
+            appState = appState,
+            loginVmInterface = vm,
+            loginUiData = loginUiData,
+            loginUiState = loginUiState
+        )
+    }
+}
+
+@Composable
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    appState: AppState,
+    loginVmInterface: LoginVmInterface,
+    loginUiData: LoginUiData,
+    loginUiState: LoginUiState,
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    when (val state = loginUiState.state) {
+        is LoginUiState.State.LoggedIn -> state.invokeOnce {
+            appState.navController.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
         }
 
-        fun NavController.navigateToLoginScreen(navOptions: NavOptions? = null) {
-            this.navigate(LOGIN_ROUTE, navOptions)
-        }
+        is LoginUiState.State.NotLoggedIn -> {} // Do nothing
+    }
 
-        @Composable
-        fun Route(
-            modifier: Modifier = Modifier,
-            appState: AppState,
-            mainUiState: MainUiState,
-            vm: LoginViewModel = hiltViewModel(),
+    loginUiData.run {
+        MainView(
+            modifier = modifier,
+            emailValue = email,
+            onEmailValueChange = loginVmInterface::onEmailValueChange,
+            passwordValue = pwd,
+            onPasswordValueChange = loginVmInterface::onPasswordValueChange,
+            stationIdValue = id,
+            onStationIdValueChange = loginVmInterface::onStationIdValueChange,
+            rememberMe = remember,
+            onCheckRememberMe = loginVmInterface::onCheckRememberMe,
+            isFieldNotEmpty = isNotEmpty,
+            onLogin = loginVmInterface::onLogin,
+        )
+    }
+}
+
+@Composable
+fun MainView(
+    modifier: Modifier = Modifier,
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    stationIdValue: String,
+    onStationIdValueChange: (String) -> Unit,
+    rememberMe: Boolean,
+    onCheckRememberMe: () -> Unit,
+    isFieldNotEmpty: Boolean,
+    onLogin: () -> Unit,
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(defaultPadding)
+            .verticalScroll(rememberScrollState())
+    ) {
+        val commonFieldModifier = Modifier.fillMaxWidth()
+
+        Title(
+            modifier = commonFieldModifier,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        EmailField(
+            modifier = commonFieldModifier,
+            value = emailValue,
+            onValueChange = onEmailValueChange,
+        )
+        PasswordField(
+            modifier = commonFieldModifier,
+            value = passwordValue,
+            onValueChange = onPasswordValueChange,
+        )
+        StationIdField(
+            modifier = commonFieldModifier,
+            value = stationIdValue,
+            onValueChange = onStationIdValueChange,
+            onKeyboardDone = { onLogin() },
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = commonFieldModifier
         ) {
-            vm.run {
-                Create(
-                    modifier = modifier,
-                    appState = appState,
-                    mainUiState = mainUiState,
-                    loginVmInterface = vm,
-                    loginUiData = loginUiData,
-                    loginUiState = loginUiState
-                )
-            }
-        }
-
-        @Composable
-        fun Create(
-            modifier: Modifier = Modifier,
-            appState: AppState,
-            mainUiState: MainUiState,
-            loginVmInterface: LoginVmInterface,
-            loginUiData: LoginUiData,
-            loginUiState: LoginUiState,
-        ) {
-            val context = LocalContext.current
-            val scope = rememberCoroutineScope()
-            val snackbarHostState = remember { SnackbarHostState() }
-
-            mainUiState.run {
-                when (val state = loginUiState.state) {
-                    is LoginUiState.State.OnNotification -> state.invokeOnce {
-                        showNotification(state.message)
-                    }
-
-                    LoginUiState.State.Idle -> setIdle()
-
-                    LoginUiState.State.Loading -> showLoading()
-
-                    is LoginUiState.State.LoggedIn -> {
-                        state.invokeOnce {
-                            setIdle()
-                            appState.navController.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
-                        }
-                    }
-
-                    is LoginUiState.State.OnFinish -> {} // Do nothing
-                }
-            }
-
-            loginUiData.run {
-                MainView(
-                    modifier = modifier,
-                    emailValue = email,
-                    onEmailValueChange = loginVmInterface::onEmailValueChange,
-                    passwordValue = pwd,
-                    onPasswordValueChange = loginVmInterface::onPasswordValueChange,
-                    stationIdValue = id,
-                    onStationIdValueChange = loginVmInterface::onStationIdValueChange,
-                    rememberMe = remember,
-                    onCheckRememberMe = loginVmInterface::onCheckRememberMe,
-                    isFieldNotEmpty = isNotEmpty,
-                    onLogin = loginVmInterface::onLogin,
-                )
-            }
-        }
-
-        @Composable
-        fun MainView(
-            modifier: Modifier = Modifier,
-            emailValue: String,
-            onEmailValueChange: (String) -> Unit,
-            passwordValue: String,
-            onPasswordValueChange: (String) -> Unit,
-            stationIdValue: String,
-            onStationIdValueChange: (String) -> Unit,
-            rememberMe: Boolean,
-            onCheckRememberMe: () -> Unit,
-            isFieldNotEmpty: Boolean,
-            onLogin: () -> Unit,
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(defaultPadding)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                val commonFieldModifier = Modifier.fillMaxWidth()
-
-                Title(
-                    modifier = commonFieldModifier,
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                EmailField(
-                    modifier = commonFieldModifier,
-                    value = emailValue,
-                    onValueChange = onEmailValueChange,
-                )
-                PasswordField(
-                    modifier = commonFieldModifier,
-                    value = passwordValue,
-                    onValueChange = onPasswordValueChange,
-                )
-                StationIdField(
-                    modifier = commonFieldModifier,
-                    value = stationIdValue,
-                    onValueChange = onStationIdValueChange,
-                    onKeyboardDone = { onLogin() },
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = commonFieldModifier
-                ) {
-                    LabeledCheckbox(
-                        label = "Remember Me",
-                        onCheckChanged = onCheckRememberMe,
-                        isChecked = rememberMe
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = { onLogin() },
-                    enabled = isFieldNotEmpty,
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = commonFieldModifier
-                ) {
-                    Text("Login")
-                }
-            }
-        }
-
-        @Composable
-        fun LabeledCheckbox(
-            label: String,
-            onCheckChanged: () -> Unit,
-            isChecked: Boolean,
-        ) {
-
-            Row(
-                Modifier
-                    .clickable(
-                        onClick = onCheckChanged
-                    )
-                    .padding(4.dp)
-            ) {
-                Checkbox(checked = isChecked, onCheckedChange = null)
-                Spacer(Modifier.size(6.dp))
-                Text(label)
-            }
-        }
-
-        @Composable
-        fun Title(
-            modifier: Modifier = Modifier,
-        ) {
-            Column(
-                modifier = modifier,
-            ) {
-                Text(
-                    text = "Welcome to ATM Sehat",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "Log in",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-        fun EmailField(
-            modifier: Modifier = Modifier,
-            value: String = "",
-            onValueChange: (String) -> Unit,
-            label: String = "Nurse Email",
-            placeholder: String = "Enter your Email",
-        ) {
-
-            val focusManager = LocalFocusManager.current
-            val leadingIcon = @Composable {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            TextField(
-                modifier = modifier,
-                value = value,
-                onValueChange = onValueChange,
-                leadingIcon = leadingIcon,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                label = { Text(label) },
-                placeholder = { Text(placeholder) },
-                singleLine = true,
+            LabeledCheckbox(
+                label = "Remember Me",
+                onCheckChanged = onCheckRememberMe,
+                isChecked = rememberMe
             )
         }
-
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-        fun PasswordField(
-            modifier: Modifier = Modifier,
-            value: String,
-            onValueChange: (String) -> Unit,
-            label: String = "Password",
-            placeholder: String = "Enter your Password",
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(
+            onClick = { onLogin() },
+            enabled = isFieldNotEmpty,
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
         ) {
-
-            var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
-            val focusManager = LocalFocusManager.current
-            val leadingIcon = @Composable {
-                Icon(
-                    Icons.Default.Key,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            val trailingIcon = @Composable {
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(
-                        if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-
-            TextField(
-                modifier = modifier,
-                value = value,
-                onValueChange = onValueChange,
-                leadingIcon = leadingIcon,
-                trailingIcon = trailingIcon,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                label = { Text(label) },
-                placeholder = { Text(placeholder) },
-                singleLine = true,
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
-            )
+            Text("Login")
         }
+    }
+}
 
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-        fun StationIdField(
-            modifier: Modifier = Modifier,
-            value: String = "",
-            onValueChange: (String) -> Unit,
-            onKeyboardDone: () -> Unit,
-            label: String = "Station Id",
-            placeholder: String = "Enter your Id",
-        ) {
+@Composable
+fun LabeledCheckbox(
+    label: String,
+    onCheckChanged: () -> Unit,
+    isChecked: Boolean,
+) {
 
-            val leadingIcon = @Composable {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+    Row(
+        Modifier
+            .clickable(
+                onClick = onCheckChanged
+            )
+            .padding(4.dp)
+    ) {
+        Checkbox(checked = isChecked, onCheckedChange = null)
+        Spacer(Modifier.size(6.dp))
+        Text(label)
+    }
+}
 
-            TextField(
-                modifier = modifier,
-                value = value,
-                onValueChange = onValueChange,
-                leadingIcon = leadingIcon,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Password
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone() }
-                ),
-                label = { Text(label) },
-                placeholder = { Text(placeholder) },
-                singleLine = true,
+@Composable
+fun Title(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            text = "Welcome to ATM Sehat",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = "Log in",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailField(
+    modifier: Modifier = Modifier,
+    value: String = "",
+    onValueChange: (String) -> Unit,
+    label: String = "Nurse Email",
+    placeholder: String = "Enter your Email",
+) {
+
+    val focusManager = LocalFocusManager.current
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Person,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    TextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        singleLine = true,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String = "Password",
+    placeholder: String = "Enter your Password",
+) {
+
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Key,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+    val trailingIcon = @Composable {
+        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+            Icon(
+                if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
 
-    @DevicePreviews
-    @Composable
-    fun LoginScreenPreview() {
-        AppTheme {
-            Create(
-                appState = rememberAppState(),
-                mainUiState = MainUiState(),
-                loginVmInterface = object : LoginVmInterface() {},
-                loginUiData = LoginUiData(),
-                loginUiState = LoginUiState(),
-            )
-        }
+    TextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        singleLine = true,
+        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StationIdField(
+    modifier: Modifier = Modifier,
+    value: String = "",
+    onValueChange: (String) -> Unit,
+    onKeyboardDone: () -> Unit,
+    label: String = "Station Id",
+    placeholder: String = "Enter your Id",
+) {
+
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Person,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    TextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Password
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { onKeyboardDone() }
+        ),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        singleLine = true,
+    )
+}
+
+@DevicePreviews
+@Composable
+fun LoginScreenPreview() {
+    MyTheme {
+        LoginScreen(
+            appState = rememberAppState(),
+            loginVmInterface = object : LoginVmInterface() {},
+            loginUiData = LoginUiData(),
+            loginUiState = LoginUiState(),
+        )
     }
 }

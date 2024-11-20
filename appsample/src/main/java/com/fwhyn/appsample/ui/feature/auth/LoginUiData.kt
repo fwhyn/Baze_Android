@@ -3,6 +3,7 @@ package com.fwhyn.appsample.ui.feature.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.fwhyn.appsample.data.model.auth.LoginParam
 
 class LoginUiData {
 

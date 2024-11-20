@@ -5,16 +5,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.fwhyn.appsample.data.model.auth.UserToken
-import com.fwhyn.data.helper.getTag
-import com.fwhyn.data.model.CustomException
-import com.fwhyn.domain.helper.Results
+import com.fwhyn.data.helper.extension.getTestTag
+import com.fwhyn.domain.helper.Rezult
 import com.fwhyn.domain.helper.SingleEvent
 
 class LoginUiState {
 
     var tryCount: Int = 0
-    var loginResult: Results<UserToken?, CustomException> = Results.Loading(0)
-    var state: State by mutableStateOf(State.Loading)
+    var loginResult: Rezult<UserToken?, Exception>? = null
+    var state: State by mutableStateOf(State.NotLoggedIn())
 
     sealed class State() : SingleEvent<Boolean>(true) {
 
@@ -24,16 +23,13 @@ class LoginUiState {
         // that it's always instantiated lazily when referenced
         // Example: objet Idle: State("Idle")
 
-        private val debugTag = LoginUiState::class.java.getTag()
+        private val debugTag = LoginUiState::class.java.getTestTag()
 
         constructor(message: String) : this() {
             Log.d(debugTag, "State: $message")
         }
 
-        class OnNotification(val message: String) : State("OnNotification")
-        object Idle : State("Idle")
-        object Loading : State("Loading")
         class LoggedIn : State("LoggedIn")
-        class OnFinish : State("OnFinish")
+        class NotLoggedIn : State("LoggedIn")
     }
 }

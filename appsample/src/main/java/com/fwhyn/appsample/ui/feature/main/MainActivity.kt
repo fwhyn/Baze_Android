@@ -25,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val vm: MainActivityViewModel by viewModels()
+    private val mainUiState = vm.mainUiState
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,11 +44,12 @@ class MainActivity : BaseActivity() {
                             windowSizeClass = calculateWindowSizeClass(this),
                             networkMonitor = vm.networkMonitor,
                         ),
-                        mainUiState = vm.mainUiState,
+                        mainUiState = mainUiState,
                     )
                 }
             }
         }
+        finishWhenNeeded()
     }
 
     private fun animateSplashScreen(onAnimationEnd: (animator: Animator) -> Unit = {}) {
@@ -76,10 +78,16 @@ class MainActivity : BaseActivity() {
         }
 
         splashScreen.setKeepOnScreenCondition {
-            when (vm.mainUiState.state) {
+            when (mainUiState.state) {
                 is MainUiState.State.Loading -> true
                 else -> false
             }
+        }
+    }
+
+    private fun finishWhenNeeded() {
+        if (mainUiState.state == MainUiState.State.OnFinish) {
+            finish()
         }
     }
 }

@@ -29,7 +29,7 @@ import com.fwhyn.ui.model.DialogModel
 fun BazeDialog(
     model: DialogModel,
 ) {
-    Create(
+    BazeDialog(
         message = model.message,
         title = model.title,
         onConfirmation = model.onConfirmation,
@@ -40,7 +40,7 @@ fun BazeDialog(
 }
 
 @Composable
-fun Create(
+private fun BazeDialog(
     message: String,
     title: String? = null,
     onConfirmation: ButtonModel,
@@ -131,7 +131,7 @@ private fun DialogButton(
 @Preview
 @Composable
 fun DialogPreview() {
-    Create(
+    BazeDialog(
         message = "Message Test...",
         title = "Title",
         onConfirmation = ButtonModel("Ok", {}),
@@ -144,7 +144,7 @@ fun DialogPreview() {
 @Preview
 @Composable
 fun DialogPreview1() {
-    Create(
+    BazeDialog(
         message = "Message Test...",
         onConfirmation = ButtonModel("Ok", {}),
         onDismissRequest = {}

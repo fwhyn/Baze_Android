@@ -2,6 +2,7 @@ package com.fwhyn.appsample.ui.feature.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fwhyn.appsample.R
 import com.fwhyn.data.helper.network.NetworkMonitor
 import com.fwhyn.data.model.memory.ManageMemoryAction
 import com.fwhyn.data.model.memory.ManageMemoryParam
@@ -27,7 +28,7 @@ class MainActivityViewModel @Inject constructor(
         mainUiState.showLoading(memoryUseCase.getId())
         memoryUseCase.setResultNotifier {
             when (it) {
-                is Rezult.Failure -> mainUiState.showNotification("Cleaning Memory Error")
+                is Rezult.Failure -> mainUiState.showNotification(R.string.cleaning_memory_error)
                 is Rezult.Success -> mainUiState.setIdle()
             }
         }.executeOnBackground(listOf(ManageMemoryParam(ManageMemoryAction.CLEAR)), viewModelScope)

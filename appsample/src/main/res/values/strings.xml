@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Baze App Sample</string>
+    <string name="cleaning_memory_error">Cleaning Memory Error</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="write_error">Write Error</string>
+    <string name="bad_request">Bad Request</string>
+    <string name="initial_state">Initial State</string>
+    <string name="success">Success</string>
+    <string name="out_memory_error">Out Of Memory Error</string>
+    <string name="request_time_out">Request Time Out</string>
+    <string name="setting_error">Setting Error</string>
 </resources>
