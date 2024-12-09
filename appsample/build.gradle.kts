@@ -18,6 +18,9 @@ android {
     namespace = moduleName
     compileSdk = mSdk
 
+    val serverUrl = "SERVER_URL"
+    val string = "String"
+
     defaultConfig {
         applicationId = moduleName
         minSdk = lSdk
@@ -32,9 +35,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(string, serverUrl, "\"https://dev.atm-sehat.com/\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField(string, serverUrl, "\"https://prod.atm-sehat.com/\"")
         }
     }
 
@@ -48,6 +56,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 
@@ -68,8 +77,10 @@ dependencies {
     implementation(project(mapOf("path" to ":baze")))
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation(libs.com.google.code.gson)
     implementation(libs.bundles.retrofit2)
+    implementation(libs.bundles.okhttp)
 
     implementation(libs.bundles.dagger.hilt)
     kapt(libs.bundles.dagger.hilt.compiler)

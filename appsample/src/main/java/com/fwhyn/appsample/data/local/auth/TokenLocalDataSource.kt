@@ -2,8 +2,8 @@ package com.fwhyn.appsample.data.local.auth
 
 import android.content.SharedPreferences
 import com.fwhyn.appsample.data.model.auth.UserToken
-import com.fwhyn.data.di.PreferenceModule
-import com.fwhyn.data.helper.saveString
+import com.fwhyn.appsample.di.PreferenceModule
+import com.fwhyn.data.helper.extension.put
 import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,6 +29,6 @@ class TokenLocalDataSource @Inject constructor(
         }
         set(value) {
             field = value
-            encryptedPreferences.saveString(TOKEN_KEY, if (field != null) Gson().toJson(field) else null)
+            encryptedPreferences.put(TOKEN_KEY, if (field != null) Gson().toJson(field) else null)
         }
 }

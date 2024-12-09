@@ -12,6 +12,7 @@ androidxCoreKtx = "1.13.1"
 androidxNavigation = "2.7.7"
 androidxComposeBom = "2024.06.00"
 retrofit = "2.9.0"
+okhttp = "4.10.0"
 
 # Test Dependency --------------------------------
 junit = "4.13.2"
@@ -47,6 +48,9 @@ io-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version = "2
 com-squareup-retrofit2-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 com-squareup-retrofit2-converter-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
 com-squareup-retrofit2-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+com-squareup-okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+com-squareup-okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 # Test Dependency --------------------------------
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -95,6 +99,11 @@ retrofit2 = [
     "com-squareup-retrofit2-retrofit",
     "com-squareup-retrofit2-converter-jackson",
     "com-squareup-retrofit2-converter-gson",
+]
+
+okhttp = [
+    "com-squareup-okhttp3-okhttp",
+    "com-squareup-okhttp3-logging-interceptor"
 ]
 
 # Test Bundles --------------------------------
