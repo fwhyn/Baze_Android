@@ -25,13 +25,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val vm: MainActivityViewModel by viewModels()
-    private val mainUiState = vm.mainUiState
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        animateSplashScreen()
+        val mainUiState = vm.mainUiState
+        animateSplashScreen(mainUiState)
         setContent {
             MyTheme {
                 // A surface container using the 'background' color from the theme
@@ -49,10 +49,13 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
-        finishWhenNeeded()
+        finishWhenNeeded(mainUiState)
     }
 
-    private fun animateSplashScreen(onAnimationEnd: (animator: Animator) -> Unit = {}) {
+    private fun animateSplashScreen(
+        mainUiState: MainUiState,
+        onAnimationEnd: (animator: Animator) -> Unit = {},
+    ) {
         val splashScreen = installSplashScreen()
         // Add a callback that's called when the splash screen is animating to the
         // app content.
@@ -85,7 +88,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun finishWhenNeeded() {
+    private fun finishWhenNeeded(mainUiState: MainUiState) {
         if (mainUiState.state == MainUiState.State.OnFinish) {
             finish()
         }
