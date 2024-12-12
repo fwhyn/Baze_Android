@@ -1,6 +1,7 @@
 package com.fwhyn.data.helper.extension
 
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 inline fun <reified T> SharedPreferences.get(key: String): T? {
@@ -10,7 +11,7 @@ inline fun <reified T> SharedPreferences.get(key: String): T? {
 }
 
 fun <T> SharedPreferences.put(key: String, data: T) {
-    val jsonString = GsonBuilder().create().toJson(data)
+    val jsonString = if (data != null) Gson().toJson(data) else null
 
     this.edit().putString(key, jsonString).apply()
 }

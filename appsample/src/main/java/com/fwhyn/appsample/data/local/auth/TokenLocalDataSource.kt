@@ -3,8 +3,8 @@ package com.fwhyn.appsample.data.local.auth
 import android.content.SharedPreferences
 import com.fwhyn.appsample.data.model.auth.UserToken
 import com.fwhyn.appsample.di.PreferenceModule
+import com.fwhyn.data.helper.extension.get
 import com.fwhyn.data.helper.extension.put
-import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,9 +19,7 @@ class TokenLocalDataSource @Inject constructor(
     var token: UserToken? = null
         get() {
             return if (field == null) {
-                val tokenString = encryptedPreferences.getString(TOKEN_KEY, null)
-
-                field = Gson().fromJson(tokenString, UserToken::class.java)
+                field = encryptedPreferences.get<UserToken>(TOKEN_KEY)
                 field
             } else {
                 field
@@ -29,6 +27,6 @@ class TokenLocalDataSource @Inject constructor(
         }
         set(value) {
             field = value
-            encryptedPreferences.put(TOKEN_KEY, if (field != null) Gson().toJson(field) else null)
+            encryptedPreferences.put(TOKEN_KEY, field)
         }
 }
