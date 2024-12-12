@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -229,7 +228,7 @@ fun Title(
         modifier = modifier,
     ) {
         Text(
-            text = "Welcome to ATM Sehat",
+            text = "Welcome to Sample App",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -242,7 +241,6 @@ fun Title(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(
     modifier: Modifier = Modifier,
@@ -279,7 +277,6 @@ fun EmailField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordField(
     modifier: Modifier = Modifier,
@@ -328,7 +325,6 @@ fun PasswordField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationIdField(
     modifier: Modifier = Modifier,

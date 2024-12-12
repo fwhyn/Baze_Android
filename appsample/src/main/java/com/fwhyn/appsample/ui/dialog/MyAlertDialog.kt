@@ -1,4 +1,4 @@
-package com.fwhyn.ui.dialog
+package com.fwhyn.appsample.ui.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
