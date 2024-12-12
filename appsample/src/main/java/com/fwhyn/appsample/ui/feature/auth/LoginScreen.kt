@@ -123,8 +123,6 @@ fun LoginScreen(
             onEmailValueChange = loginVmInterface::onEmailValueChange,
             passwordValue = pwd,
             onPasswordValueChange = loginVmInterface::onPasswordValueChange,
-            stationIdValue = id,
-            onStationIdValueChange = loginVmInterface::onStationIdValueChange,
             rememberMe = remember,
             onCheckRememberMe = loginVmInterface::onCheckRememberMe,
             isFieldNotEmpty = isNotEmpty,
@@ -140,8 +138,6 @@ fun MainView(
     onEmailValueChange: (String) -> Unit,
     passwordValue: String,
     onPasswordValueChange: (String) -> Unit,
-    stationIdValue: String,
-    onStationIdValueChange: (String) -> Unit,
     rememberMe: Boolean,
     onCheckRememberMe: () -> Unit,
     isFieldNotEmpty: Boolean,
@@ -170,12 +166,6 @@ fun MainView(
             modifier = commonFieldModifier,
             value = passwordValue,
             onValueChange = onPasswordValueChange,
-        )
-        StationIdField(
-            modifier = commonFieldModifier,
-            value = stationIdValue,
-            onValueChange = onStationIdValueChange,
-            onKeyboardDone = { onLogin() },
         )
         Spacer(modifier = Modifier.height(10.dp))
         Column(
@@ -322,42 +312,6 @@ fun PasswordField(
         placeholder = { Text(placeholder) },
         singleLine = true,
         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
-    )
-}
-
-@Composable
-fun StationIdField(
-    modifier: Modifier = Modifier,
-    value: String = "",
-    onValueChange: (String) -> Unit,
-    onKeyboardDone: () -> Unit,
-    label: String = "Station Id",
-    placeholder: String = "Enter your Id",
-) {
-
-    val leadingIcon = @Composable {
-        Icon(
-            Icons.Default.Person,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary
-        )
-    }
-
-    TextField(
-        modifier = modifier,
-        value = value,
-        onValueChange = onValueChange,
-        leadingIcon = leadingIcon,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done,
-            keyboardType = KeyboardType.Password
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = { onKeyboardDone() }
-        ),
-        label = { Text(label) },
-        placeholder = { Text(placeholder) },
-        singleLine = true,
     )
 }
 

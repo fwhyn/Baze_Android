@@ -45,10 +45,6 @@ class LoginViewModel @Inject constructor(
         loginUiData.pwd = value
     }
 
-    override fun onStationIdValueChange(value: String) {
-        loginUiData.id = value
-    }
-
     override fun onCheckRememberMe() {
         loginUiData.updateRemember()
     }
