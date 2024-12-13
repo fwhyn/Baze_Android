@@ -236,7 +236,7 @@ fun EmailField(
     modifier: Modifier = Modifier,
     value: String = "",
     onValueChange: (String) -> Unit,
-    label: String = "Nurse Email",
+    label: String = "Email",
     placeholder: String = "Enter your Email",
 ) {
 
