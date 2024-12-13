@@ -15,7 +15,7 @@ class TokenRepositoryFake @Inject constructor(
 ) : BaseRepositoryCoroutine<LoginParam?, UserToken?> {
     override suspend fun get(param: LoginParam?): UserToken? {
         var token = tokenLocalDataSource.token
-        if (token == null && param?.isNotEmpty() == true) {
+        if (token == null && param?.username == "admin" && param.password == "admin") {
             token = UserToken(
                 name = "fake",
                 code = "21fdhs"

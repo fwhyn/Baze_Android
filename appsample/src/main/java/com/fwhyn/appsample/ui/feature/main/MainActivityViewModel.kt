@@ -13,6 +13,8 @@ class MainActivityViewModel @Inject constructor(
 //    private val memoryUseCase: BaseUseCase<List<ManageMemoryParam>, Any?>,
 ) : ViewModel() {
 
+//    val mainUiState: MainUiState = MainUiState()
+
 //    init {
 //        clearPreviousMemory()
 //    }
