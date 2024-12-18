@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.google.dagger.hilt)
     kotlin("kapt")
 }
 
@@ -63,10 +62,6 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(libs.com.google.code.gson)
     implementation(libs.bundles.retrofit2)
-
-    implementation(libs.bundles.dagger.hilt)
-    kapt(libs.bundles.dagger.hilt.compiler)
-    annotationProcessor(libs.bundles.dagger.hilt.compiler)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidx.compose)
