@@ -76,7 +76,7 @@ dependencies {
     // Main Dependency
     implementation(project(mapOf("path" to ":baze")))
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation(libs.com.google.code.gson)
     implementation(libs.bundles.retrofit2)

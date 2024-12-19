@@ -3,7 +3,7 @@
 # Plugin
 agp = "8.7.3"
 kotlin = "1.9.25"
-googleDaggerHilt = "2.51"
+googleDaggerHilt = "2.53.1"
 androidxHilt = "1.2.0"
 
 # Main Dependency --------------------------------
@@ -11,7 +11,7 @@ androidxActivity = "1.9.3"
 androidxCoreKtx = "1.15.0"
 androidxNavigation = "2.8.5"
 androidxComposeBom = "2024.12.01"
-retrofit = "2.9.0"
+retrofit = "2.11.0"
 okhttp = "4.12.0"
 
 # Test Dependency --------------------------------
@@ -44,7 +44,7 @@ androidx-compose-material3-window-size = { group = "androidx.compose.material3",
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-io-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.5.0" }
+io-coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
 com-squareup-retrofit2-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 com-squareup-retrofit2-converter-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
@@ -59,7 +59,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "a
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
 org-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "3.2.0" }
 org-mockito-inline = { group = "org.mockito", name = "mockito-inline", version = "5.2.0" }
-org-jetbrains-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.8.1" }
+org-jetbrains-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.9.0" }
 
 # ----------------------------------------------------------------------------------------------------------------------
 [plugins]
