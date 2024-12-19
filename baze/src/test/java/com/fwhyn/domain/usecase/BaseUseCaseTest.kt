@@ -129,6 +129,42 @@ class BaseUseCaseTest {
             .executeOnBackground(Unit, scope)
     }
 
+    @Test
+    fun callbackOrderTest() = runTest {
+        val scope = this
+        val thisResults: ArrayList<String> = arrayListOf()
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val start = "start"
+        val finish = "finish"
+        val success = "success"
+
+        testInputEqualsOutput
+            .setLifeCycleNotifier {
+                when (it) {
+                    BaseUseCase.LifeCycle.OnStart -> thisResults.add(start)
+                    BaseUseCase.LifeCycle.OnFinish -> thisResults.add(finish)
+                }
+            }
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        print(it.err.message)
+                        Util.throwTestMustNotFailed()
+                    }
+
+                    is Rezult.Success -> thisResults.add(success)
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .executeOnBackground(input, scope)
+
+        testInputEqualsOutput.join()
+
+        Assert.assertEquals(start, thisResults[0])
+        Assert.assertEquals(success, thisResults[1])
+        Assert.assertEquals(finish, thisResults[2])
+    }
+
     // ----------------------------------------------------------------
     class TestInputEqualsOutput : BaseUseCase<String, String>() {
         override fun executeOnBackground(param: String, scope: CoroutineScope) {
