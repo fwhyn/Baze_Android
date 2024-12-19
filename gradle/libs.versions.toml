@@ -3,7 +3,7 @@
 # Plugin
 agp = "8.7.3"
 kotlin = "1.9.25"
-googleDaggerHilt = "2.53.1"
+googleDaggerHilt = "2.52"
 androidxHilt = "1.2.0"
 
 # Main Dependency --------------------------------
