@@ -5,7 +5,7 @@ rootProject.run {
 
     extra["javaVersion"] = JavaVersion.VERSION_1_8
 
-    extra["kotlinCompilerVersion"] = "1.5.1"
+    extra["kotlinCompilerVersion"] = "1.5.15"
 }
 
 plugins {
