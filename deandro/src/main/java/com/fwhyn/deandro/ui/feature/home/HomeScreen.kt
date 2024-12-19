@@ -28,7 +28,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -177,7 +176,7 @@ fun MainHomeView(
                 },
             ) {
                 OutlinedTextField(
-                    modifier = modifierMaxWidth.menuAnchor(MenuAnchorType.PrimaryEditable, true),
+                    modifier = modifierMaxWidth.menuAnchor(),
                     readOnly = true,
                     value = selectedOptionText,
                     onValueChange = { },
