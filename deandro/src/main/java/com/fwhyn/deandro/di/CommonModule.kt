@@ -1,6 +1,6 @@
 package com.fwhyn.deandro.di
 
-import com.fwhyn.ui.main.MainUiState
+import com.fwhyn.baze.ui.main.MainUiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

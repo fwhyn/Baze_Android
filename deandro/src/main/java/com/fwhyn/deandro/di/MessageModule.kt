@@ -1,8 +1,8 @@
 package com.fwhyn.deandro.di
 
-import com.fwhyn.data.model.Status
+import com.fwhyn.baze.data.model.Status
+import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.deandro.ui.common.GeneralMessageHandler
-import com.fwhyn.ui.helper.MessageHandler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

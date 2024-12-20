@@ -2,13 +2,13 @@ package com.fwhyn.deandro.ui.feature.home
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
-import com.fwhyn.data.model.Status
+import com.fwhyn.baze.data.model.Status
+import com.fwhyn.baze.domain.helper.Rezult
+import com.fwhyn.baze.domain.usecase.BaseUseCase
+import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
+import com.fwhyn.baze.ui.helper.MessageHandler
+import com.fwhyn.baze.ui.main.MainUiState
 import com.fwhyn.deandro.data.model.auth.UserToken
-import com.fwhyn.domain.helper.Rezult
-import com.fwhyn.domain.usecase.BaseUseCase
-import com.fwhyn.domain.usecase.BaseUseCaseRemote
-import com.fwhyn.ui.helper.MessageHandler
-import com.fwhyn.ui.main.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

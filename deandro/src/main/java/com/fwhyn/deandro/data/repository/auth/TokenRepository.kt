@@ -1,6 +1,6 @@
 package com.fwhyn.deandro.data.repository.auth
 
-import com.fwhyn.data.repository.BaseRepositoryCoroutine
+import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken

@@ -28,6 +28,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,13 +50,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
-import com.fwhyn.data.helper.extension.removeFromBackStack
+import com.fwhyn.baze.data.helper.extension.removeFromBackStack
+import com.fwhyn.baze.ui.helper.DevicePreviews
+import com.fwhyn.baze.ui.main.AppState
+import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.auth.navigateToLoginScreen
-import com.fwhyn.ui.helper.DevicePreviews
-import com.fwhyn.ui.main.AppState
-import com.fwhyn.ui.main.AppState.Companion.rememberAppState
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 
@@ -105,21 +106,21 @@ private fun HomeScreen(
 //        vmInterface::onPhotoSelected
 //    )
 
-        when (val state = uiState.state) {
-            is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
+    when (val state = uiState.state) {
+        is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
 //                appState.navController.navigateToPhotoEditScreen(key = state.key)
-            }
-
-            is HomeUiState.State.LoggedOut -> state.invokeOnce {
-                appState.navController.navigateToLoginScreen(navOptions {
-                    removeFromBackStack(
-                        HOME_ROUTE
-                    )
-                })
-            }
-
-            HomeUiState.State.Idle -> {} // Do nothing
         }
+
+        is HomeUiState.State.LoggedOut -> state.invokeOnce {
+            appState.navController.navigateToLoginScreen(navOptions {
+                removeFromBackStack(
+                    HOME_ROUTE
+                )
+            })
+        }
+
+        HomeUiState.State.Idle -> {} // Do nothing
+    }
 
 
 
@@ -176,7 +177,7 @@ fun MainHomeView(
                 },
             ) {
                 OutlinedTextField(
-                    modifier = modifierMaxWidth.menuAnchor(),
+                    modifier = modifierMaxWidth.menuAnchor(MenuAnchorType.PrimaryEditable, true),
                     readOnly = true,
                     value = selectedOptionText,
                     onValueChange = { },

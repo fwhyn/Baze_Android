@@ -2,12 +2,12 @@ package com.fwhyn.deandro.ui.feature.main
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.fwhyn.data.helper.extension.showToast
+import com.fwhyn.baze.data.helper.extension.showToast
+import com.fwhyn.baze.ui.dialog.BazeDialog
+import com.fwhyn.baze.ui.dialog.CircularProgressDialog
+import com.fwhyn.baze.ui.main.AppState
+import com.fwhyn.baze.ui.main.MainUiState
 import com.fwhyn.deandro.ui.NavigationHost
-import com.fwhyn.ui.dialog.BazeDialog
-import com.fwhyn.ui.dialog.CircularProgressDialog
-import com.fwhyn.ui.main.AppState
-import com.fwhyn.ui.main.MainUiState
 
 @Composable
 fun MainScreen(

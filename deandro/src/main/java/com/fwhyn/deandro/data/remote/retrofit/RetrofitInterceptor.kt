@@ -1,7 +1,7 @@
 package com.fwhyn.deandro.data.remote.retrofit
 
 import android.util.Log
-import com.fwhyn.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getTestTag
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import okhttp3.Interceptor
 import okhttp3.Request

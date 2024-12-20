@@ -1,7 +1,7 @@
 package com.fwhyn.deandro.data.remote.auth
 
-import com.fwhyn.data.model.Exzeption
-import com.fwhyn.data.model.Status
+import com.fwhyn.baze.data.model.Exzeption
+import com.fwhyn.baze.data.model.Status
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import javax.inject.Inject

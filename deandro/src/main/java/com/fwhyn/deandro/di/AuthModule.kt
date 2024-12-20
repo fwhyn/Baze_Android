@@ -1,6 +1,7 @@
 package com.fwhyn.deandro.di
 
-import com.fwhyn.data.repository.BaseRepositoryCoroutine
+import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
+import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
@@ -10,7 +11,6 @@ import com.fwhyn.deandro.data.remote.retrofit.RetrofitApiClient
 import com.fwhyn.deandro.data.repository.auth.TokenRepositoryFake
 import com.fwhyn.deandro.domain.usecase.auth.GetTokenUseCase
 import com.fwhyn.deandro.domain.usecase.auth.SetTokenUseCase
-import com.fwhyn.domain.usecase.BaseUseCaseRemote
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -53,13 +53,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.fwhyn.data.helper.extension.removeFromBackStack
+import com.fwhyn.baze.data.helper.extension.removeFromBackStack
+import com.fwhyn.baze.ui.helper.DevicePreviews
+import com.fwhyn.baze.ui.main.AppState
+import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.home.navigateToHomeScreen
-import com.fwhyn.ui.helper.DevicePreviews
-import com.fwhyn.ui.main.AppState
-import com.fwhyn.ui.main.AppState.Companion.rememberAppState
 
 const val LOGIN_ROUTE = "LOGIN_ROUTE"
 

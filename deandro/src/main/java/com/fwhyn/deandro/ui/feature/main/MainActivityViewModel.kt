@@ -1,8 +1,8 @@
 package com.fwhyn.deandro.ui.feature.main
 
 import androidx.lifecycle.ViewModel
-import com.fwhyn.data.helper.network.NetworkMonitor
-import com.fwhyn.ui.main.MainUiState
+import com.fwhyn.baze.data.helper.network.NetworkMonitor
+import com.fwhyn.baze.ui.main.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
