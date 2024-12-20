@@ -218,7 +218,7 @@ fun Title(
         modifier = modifier,
     ) {
         Text(
-            text = "Welcome to Sample App",
+            text = "Welcome...",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )

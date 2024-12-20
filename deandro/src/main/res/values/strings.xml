@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Baze App Sample</string>
+    <string name="app_name">Deandro</string>
     <string name="cleaning_memory_error">Cleaning Memory Error</string>
     <string name="unknown_error">Unknown Error</string>
     <string name="write_error">Write Error</string>
