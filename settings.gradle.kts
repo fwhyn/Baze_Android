@@ -21,5 +21,5 @@ pluginManagement {
 //}
 
 rootProject.name = "Baze"
-include(":appsample")
+include(":deandro")
 include(":baze")
