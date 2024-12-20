@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    val moduleName = "com.fwhyn.appsample"
+    val moduleName = "com.fwhyn.deandro"
 
     val lSdk: Int by rootProject.extra
     val mSdk: Int by rootProject.extra
