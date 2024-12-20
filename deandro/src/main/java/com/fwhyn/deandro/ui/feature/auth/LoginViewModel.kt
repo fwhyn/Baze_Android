@@ -1,0 +1,101 @@
+package com.fwhyn.deandro.ui.feature.auth
+
+import androidx.lifecycle.viewModelScope
+import com.fwhyn.data.model.Status
+import com.fwhyn.deandro.data.model.auth.LoginParam
+import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.domain.helper.Rezult
+import com.fwhyn.domain.usecase.BaseUseCase
+import com.fwhyn.domain.usecase.BaseUseCaseRemote
+import com.fwhyn.ui.helper.MessageHandler
+import com.fwhyn.ui.main.MainUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val mainUiState: MainUiState,
+    private val messageHandler: MessageHandler<Status>,
+    private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
+) : LoginVmInterface() {
+
+    companion object {
+        const val MAX_LOGIN_TRY = 3
+
+        const val LOGIN_SUCCESS = "LOGIN_SUCCESS"
+        const val LOGIN_FAILED = "LOGIN_FAILED"
+    }
+
+    val loginUiData = LoginUiData()
+    val loginUiState = LoginUiState()
+
+    init {
+        init()
+    }
+
+    private fun init() {
+        getToken()
+    }
+
+    override fun onEmailValueChange(value: String) {
+        loginUiData.email = value
+    }
+
+    override fun onPasswordValueChange(value: String) {
+        loginUiData.pwd = value
+    }
+
+    override fun onCheckRememberMe() {
+        loginUiData.updateRemember()
+    }
+
+    override fun onLogin() {
+        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+
+        getToken()
+    }
+
+//    override fun onCalledFromBackStack() {
+//        loginUiState.run {
+//            if (loginResult is Rezult.Success) {
+//                state = LoginUiState.State.OnFinish()
+//            }
+//        }
+//    }
+
+    private fun getToken() {
+        getTokenUseCase
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        if (loginUiState.tryCount > 0) {
+                            mainUiState.showNotification(messageHandler.getMessage(it.err.status))
+                        }
+                    }
+
+                    is Rezult.Success -> {
+                        if (it.dat != null) {
+                            loginUiState.state = LoginUiState.State.LoggedIn()
+                        }
+                    }
+                }
+
+                loginUiState.loginResult = it
+            }
+            .setLifeCycleNotifier {
+                when (it) {
+                    BaseUseCase.LifeCycle.OnStart -> mainUiState.showLoading()
+                    BaseUseCase.LifeCycle.OnFinish -> mainUiState.dismissLoading()
+                }
+            }
+            .executeOnBackground(loginUiData.loginData, viewModelScope)
+    }
+
+    private fun getTryCount(prevValue: Int): Int {
+        return if (prevValue == MAX_LOGIN_TRY) {
+            prevValue
+        } else {
+            prevValue + 1
+        }
+    }
+}
