@@ -1,9 +1,9 @@
 package com.fwhyn.deandro.domain.usecase.auth
 
+import com.fwhyn.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.deandro.data.helper.Constant.TIMEOUT_MILLIS
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
-import com.fwhyn.deandro.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.domain.usecase.BaseUseCaseRemote
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject

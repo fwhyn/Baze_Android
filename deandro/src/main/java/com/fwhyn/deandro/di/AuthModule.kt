@@ -1,12 +1,12 @@
 package com.fwhyn.deandro.di
 
+import com.fwhyn.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import com.fwhyn.deandro.data.remote.auth.LoginApi
 import com.fwhyn.deandro.data.remote.auth.TokenRemoteDataSource
 import com.fwhyn.deandro.data.remote.retrofit.RetrofitApiClient
-import com.fwhyn.deandro.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.deandro.data.repository.auth.TokenRepositoryFake
 import com.fwhyn.deandro.domain.usecase.auth.GetTokenUseCase
 import com.fwhyn.deandro.domain.usecase.auth.SetTokenUseCase
