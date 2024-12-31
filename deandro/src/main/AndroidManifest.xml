@@ -4,15 +4,15 @@
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_deandro"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo_deandro_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Baze">
         <activity
             android:name=".ui.feature.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Baze">
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
