@@ -9,7 +9,7 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 @InstallIn(ActivityRetainedComponent::class)
 @Module
-class CommonModule {
+class ActivityRetainedModule {
 
     @Provides
     @ActivityRetainedScoped

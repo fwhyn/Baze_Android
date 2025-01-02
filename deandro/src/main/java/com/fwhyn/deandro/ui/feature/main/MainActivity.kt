@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fwhyn.baze.ui.main.ActivityRetainedState
-import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
+import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.ui.common.BaseActivity
 import com.fwhyn.deandro.ui.config.MyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +30,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mainUiState = vm.activityRetainedState
-        animateSplashScreen(mainUiState)
+        val activityRetainedState = vm.activityRetainedState
+
+        animateSplashScreen(activityRetainedState)
         setContent {
             MyTheme {
                 // A surface container using the 'background' color from the theme
@@ -40,16 +41,13 @@ class MainActivity : BaseActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen(
-                        appState = rememberAppState(
-                            windowSizeClass = calculateWindowSizeClass(this),
-                            networkMonitor = vm.networkMonitor,
-                        ),
-                        activityRetainedState = mainUiState,
+                        activityState = rememberActivityState(window = calculateWindowSizeClass(this)),
+                        activityRetainedState = activityRetainedState,
                     )
                 }
             }
         }
-        finishWhenNeeded(mainUiState)
+        finishWhenNeeded(activityRetainedState)
     }
 
     private fun animateSplashScreen(

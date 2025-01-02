@@ -52,22 +52,21 @@ import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.fwhyn.baze.data.helper.extension.removeFromBackStack
 import com.fwhyn.baze.ui.helper.DevicePreviews
-import com.fwhyn.baze.ui.main.AppState
-import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
+import com.fwhyn.baze.ui.main.ActivityState
+import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.auth.navigateToLoginScreen
-import kotlinx.coroutines.CoroutineScope
 import java.io.File
 
 const val HOME_ROUTE = "homeRoute"
 
 fun NavGraphBuilder.addHomeScreen(
-    appState: AppState,
+    activityState: ActivityState,
 ) {
     composable(HOME_ROUTE) {
         HomeScreenRoute(
-            appState = appState,
+            activityState = activityState,
         )
     }
 }
@@ -79,13 +78,13 @@ fun NavController.navigateToHomeScreen(navOptions: NavOptions? = null) {
 @Composable
 private fun HomeScreenRoute(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    activityState: ActivityState,
     vm: HomeViewModel = hiltViewModel(),
 ) {
     vm.run {
         HomeScreen(
             modifier = modifier,
-            appState = appState,
+            activityState = activityState,
             vmInterface = vm,
             uiData = uiData,
             uiState = uiState,
@@ -96,7 +95,7 @@ private fun HomeScreenRoute(
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    activityState: ActivityState,
     vmInterface: HomeVmInterface,
     uiData: HomeUiData,
     uiState: HomeUiState,
@@ -108,11 +107,11 @@ private fun HomeScreen(
 
     when (val state = uiState.state) {
         is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
-//                appState.navController.navigateToPhotoEditScreen(key = state.key)
+//                activityState.navController.navigateToPhotoEditScreen(key = state.key)
         }
 
         is HomeUiState.State.LoggedOut -> state.invokeOnce {
-            appState.navController.navigateToLoginScreen(navOptions {
+            activityState.navigation.navigateToLoginScreen(navOptions {
                 removeFromBackStack(
                     HOME_ROUTE
                 )
@@ -126,7 +125,6 @@ private fun HomeScreen(
 
     MainHomeView(
         modifier = modifier,
-        scope = appState.scope,
         onLogout = vmInterface::onLogout,
         onAddPhoto = vmInterface::onAddPhoto,
     )
@@ -136,7 +134,6 @@ private fun HomeScreen(
 @Composable
 fun MainHomeView(
     modifier: Modifier = Modifier,
-    scope: CoroutineScope?,
     onLogout: () -> Unit,
     onAddPhoto: () -> Unit,
 ) {
@@ -216,7 +213,6 @@ fun MainHomeView(
 
         AddPhotoButton(
             modifier = Modifier.align(Alignment.BottomStart),
-            scope = scope,
             onAddPhoto = onAddPhoto,
         )
     }
@@ -283,7 +279,6 @@ fun PhotoGrid(
 @Composable
 fun AddPhotoButton(
     modifier: Modifier,
-    scope: CoroutineScope?,
     onAddPhoto: () -> Unit,
 ) {
 //            val pickImage = rememberLauncherForActivityResult(
@@ -329,7 +324,7 @@ private fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun HomeScreenPreview() {
     MyTheme {
         HomeScreen(
-            appState = rememberAppState(),
+            activityState = rememberActivityState(),
             vmInterface = object : HomeVmInterface() {},
             uiData = HomeUiData(),
             uiState = HomeUiState()

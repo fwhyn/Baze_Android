@@ -55,8 +55,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.fwhyn.baze.data.helper.extension.removeFromBackStack
 import com.fwhyn.baze.ui.helper.DevicePreviews
-import com.fwhyn.baze.ui.main.AppState
-import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
+import com.fwhyn.baze.ui.main.ActivityState
+import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.home.navigateToHomeScreen
@@ -64,13 +64,13 @@ import com.fwhyn.deandro.ui.feature.home.navigateToHomeScreen
 const val LOGIN_ROUTE = "LOGIN_ROUTE"
 
 fun NavGraphBuilder.addLoginScreen(
-    appState: AppState,
+    activityState: ActivityState,
 ) {
     composable(LOGIN_ROUTE) {
         // we place the our Home composable function here
         // in a production application home will probably take in some parameters
         LoginRoute(
-            appState = appState,
+            activityState = activityState,
         )
     }
 }
@@ -82,13 +82,13 @@ fun NavController.navigateToLoginScreen(navOptions: NavOptions? = null) {
 @Composable
 fun LoginRoute(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    activityState: ActivityState,
     vm: LoginViewModel = hiltViewModel(),
 ) {
     vm.run {
         LoginScreen(
             modifier = modifier,
-            appState = appState,
+            activityState = activityState,
             loginVmInterface = vm,
             loginUiData = loginUiData,
             loginUiState = loginUiState
@@ -99,7 +99,7 @@ fun LoginRoute(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    appState: AppState,
+    activityState: ActivityState,
     loginVmInterface: LoginVmInterface,
     loginUiData: LoginUiData,
     loginUiState: LoginUiState,
@@ -110,7 +110,7 @@ fun LoginScreen(
 
     when (val state = loginUiState.state) {
         is LoginUiState.State.LoggedIn -> state.invokeOnce {
-            appState.navController.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
+            activityState.navigation.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
         }
 
         is LoginUiState.State.NotLoggedIn -> {} // Do nothing
@@ -320,7 +320,7 @@ fun PasswordField(
 fun LoginScreenPreview() {
     MyTheme {
         LoginScreen(
-            appState = rememberAppState(),
+            activityState = rememberActivityState(),
             loginVmInterface = object : LoginVmInterface() {},
             loginUiData = LoginUiData(),
             loginUiState = LoginUiState(),
