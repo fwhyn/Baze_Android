@@ -1,7 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-rootProject.run {
-    extra["javaVersion"] = JavaVersion.VERSION_1_8
-}
 
 plugins {
     alias(libs.plugins.android.application) apply false

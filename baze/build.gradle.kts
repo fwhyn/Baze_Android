@@ -11,9 +11,7 @@ android {
 
     val lSdk: Int? = (project.property("LSDK") as? String)?.toInt()
     val mSdk: Int? = (project.property("MSDK") as? String)?.toInt()
-
     val javaVersion: JavaVersion = JavaVersion.valueOf(project.property("JAVA_VERSION") as String)
-
     val kotlinCompilerVersion: String? = project.property("KOTLIN_COMPILER_VERSION") as? String
 
     namespace = moduleName
