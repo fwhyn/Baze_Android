@@ -4,8 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.fwhyn.deandro.data.model.auth.LoginParam
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
 
-class LoginUiData {
+@ViewModelScoped
+class LoginUiData @Inject constructor() {
 
     var email: String by mutableStateOf("")
     var pwd: String by mutableStateOf("")

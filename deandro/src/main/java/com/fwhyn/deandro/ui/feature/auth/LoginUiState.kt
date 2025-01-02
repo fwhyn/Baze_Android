@@ -8,8 +8,11 @@ import com.fwhyn.baze.data.helper.extension.getTestTag
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.helper.SingleEvent
 import com.fwhyn.deandro.data.model.auth.UserToken
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
 
-class LoginUiState {
+@ViewModelScoped
+class LoginUiState @Inject constructor() {
 
     var tryCount: Int = 0
     var loginResult: Rezult<UserToken?, Exception>? = null

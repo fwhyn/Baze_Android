@@ -14,6 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    val loginUiData: LoginUiData,
+    val loginUiState: LoginUiState,
     private val mainUiState: MainUiState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
@@ -25,9 +27,6 @@ class LoginViewModel @Inject constructor(
         const val LOGIN_SUCCESS = "LOGIN_SUCCESS"
         const val LOGIN_FAILED = "LOGIN_FAILED"
     }
-
-    val loginUiData = LoginUiData()
-    val loginUiState = LoginUiState()
 
     init {
         init()
