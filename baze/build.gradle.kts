@@ -9,12 +9,12 @@ apply(from = "../publish-package.gradle")
 android {
     val moduleName = "com.fwhyn.baze"
 
-    val lSdk: Int by rootProject.extra
-    val mSdk: Int by rootProject.extra
+    val lSdk: Int? = (project.property("LSDK") as? String)?.toInt()
+    val mSdk: Int? = (project.property("MSDK") as? String)?.toInt()
 
     val javaVersion: JavaVersion by rootProject.extra
 
-    val kotlinCompilerVersion: String by rootProject.extra
+    val kotlinCompilerVersion: String? = project.property("KOTLIN_COMPILER_VERSION") as? String
 
     namespace = moduleName
     compileSdk = mSdk

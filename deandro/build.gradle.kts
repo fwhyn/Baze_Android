@@ -10,12 +10,14 @@ apply(from = "../properties.gradle")
 android {
     val moduleName = "com.fwhyn.deandro"
 
-    val lSdk: Int by rootProject.extra
-    val mSdk: Int by rootProject.extra
+    val lSdk: Int? = (project.property("LSDK") as? String)?.toInt()
+    val mSdk: Int? = (project.property("MSDK") as? String)?.toInt()
+    val verCode: Int? = (project.property("VERSION_CODE") as? String)?.toInt()
+    val verName: String? = project.property("VERSION_NAME") as? String
 
     val javaVersion: JavaVersion by rootProject.extra
 
-    val kotlinCompilerVersion: String by rootProject.extra
+    val kotlinCompilerVersion: String? = project.property("KOTLIN_COMPILER_VERSION") as? String
 
     namespace = moduleName
     compileSdk = mSdk
@@ -27,8 +29,8 @@ android {
         applicationId = moduleName
         minSdk = lSdk
         targetSdk = mSdk
-        versionCode = (project.property("VERSION_CODE") as? String)?.toInt()
-        versionName = project.property("VERSION_NAME") as? String
+        versionCode = verCode
+        versionName = verName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
