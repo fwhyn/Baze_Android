@@ -15,7 +15,7 @@ android {
     val verCode: Int? = (project.property("VERSION_CODE") as? String)?.toInt()
     val verName: String? = project.property("VERSION_NAME") as? String
 
-    val javaVersion: JavaVersion by rootProject.extra
+    val javaVersion: JavaVersion = JavaVersion.valueOf(project.property("JAVA_VERSION") as String)
 
     val kotlinCompilerVersion: String? = project.property("KOTLIN_COMPILER_VERSION") as? String
 
