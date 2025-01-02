@@ -5,6 +5,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "../properties.gradle")
+
 android {
     val moduleName = "com.fwhyn.deandro"
 
@@ -25,7 +27,7 @@ android {
         applicationId = moduleName
         minSdk = lSdk
         targetSdk = mSdk
-        versionCode = project.property("VERSION_CODE") as? Int
+        versionCode = (project.property("VERSION_CODE") as? String)?.toInt()
         versionName = project.property("VERSION_NAME") as? String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

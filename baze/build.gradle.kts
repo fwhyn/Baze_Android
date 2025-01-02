@@ -4,6 +4,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "../publish-package.gradle")
+
 android {
     val moduleName = "com.fwhyn.baze"
 
@@ -75,5 +77,3 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-
-apply(from = "../publish-package.gradle")

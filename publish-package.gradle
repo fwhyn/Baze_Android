@@ -1,5 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply from: "../properties.gradle"
 
 task androidJavadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
