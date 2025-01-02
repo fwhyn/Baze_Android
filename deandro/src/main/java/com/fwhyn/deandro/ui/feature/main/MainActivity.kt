@@ -3,6 +3,7 @@ package com.fwhyn.deandro.ui.feature.main
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.baze.ui.main.rememberActivityState
+import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.ui.common.BaseActivity
 import com.fwhyn.deandro.ui.config.MyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +32,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activityRetainedState = vm.activityRetainedState
+        Log.i("This Baze App is", "${if (BuildConfig.DEBUG) "debug" else "release"} version")
 
+        val activityRetainedState = vm.activityRetainedState
         animateSplashScreen(activityRetainedState)
         setContent {
             MyTheme {
