@@ -15,8 +15,8 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.baze.ui.main.AppState.Companion.rememberAppState
-import com.fwhyn.baze.ui.main.MainUiState
 import com.fwhyn.deandro.ui.common.BaseActivity
 import com.fwhyn.deandro.ui.config.MyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +30,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mainUiState = vm.mainUiState
+        val mainUiState = vm.activityState
         animateSplashScreen(mainUiState)
         setContent {
             MyTheme {
@@ -44,7 +44,7 @@ class MainActivity : BaseActivity() {
                             windowSizeClass = calculateWindowSizeClass(this),
                             networkMonitor = vm.networkMonitor,
                         ),
-                        mainUiState = mainUiState,
+                        activityState = mainUiState,
                     )
                 }
             }
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun animateSplashScreen(
-        mainUiState: MainUiState,
+        activityState: ActivityState,
         onAnimationEnd: (animator: Animator) -> Unit = {},
     ) {
         val splashScreen = installSplashScreen()
@@ -81,15 +81,15 @@ class MainActivity : BaseActivity() {
         }
 
         splashScreen.setKeepOnScreenCondition {
-            when (mainUiState.state) {
-                is MainUiState.State.Loading -> true
+            when (activityState.state) {
+                is ActivityState.State.Loading -> true
                 else -> false
             }
         }
     }
 
-    private fun finishWhenNeeded(mainUiState: MainUiState) {
-        if (mainUiState.state == MainUiState.State.OnFinish) {
+    private fun finishWhenNeeded(activityState: ActivityState) {
+        if (activityState.state == ActivityState.State.OnFinish) {
             finish()
         }
     }

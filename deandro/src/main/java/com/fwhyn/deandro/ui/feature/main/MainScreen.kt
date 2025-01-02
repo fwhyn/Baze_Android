@@ -5,36 +5,36 @@ import androidx.compose.ui.platform.LocalContext
 import com.fwhyn.baze.data.helper.extension.showToast
 import com.fwhyn.baze.ui.dialog.BazeDialog
 import com.fwhyn.baze.ui.dialog.CircularProgressDialog
+import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.baze.ui.main.AppState
-import com.fwhyn.baze.ui.main.MainUiState
 import com.fwhyn.deandro.ui.NavigationHost
 
 @Composable
 fun MainScreen(
     appState: AppState,
-    mainUiState: MainUiState,
+    activityState: ActivityState,
 ) {
     MainHomeView(
         appState = appState,
-        mainUiState = mainUiState,
+        activityState = activityState,
     )
 
-    when (val state = mainUiState.state) {
-        MainUiState.State.Idle -> {} // Do nothing
-        is MainUiState.State.Loading -> CircularProgressDialog(state.progress)
-        is MainUiState.State.OnNotification -> LocalContext.current.showToast(state.getMessageAndFinish(true))
-        is MainUiState.State.OnShowDialog<*> -> BazeDialog(state.model)
-        MainUiState.State.OnFinish -> {} // Do nothing
+    when (val state = activityState.state) {
+        ActivityState.State.Idle -> {} // Do nothing
+        is ActivityState.State.Loading -> CircularProgressDialog(state.progress)
+        is ActivityState.State.OnNotification -> LocalContext.current.showToast(state.getMessageAndFinish(true))
+        is ActivityState.State.OnShowDialog<*> -> BazeDialog(state.model)
+        ActivityState.State.OnFinish -> {} // Do nothing
     }
 }
 
 @Composable
 private fun MainHomeView(
     appState: AppState,
-    mainUiState: MainUiState,
+    activityState: ActivityState,
 ) {
     NavigationHost(
         appState = appState,
-        mainUiState = mainUiState,
+        activityState = activityState,
     )
 }

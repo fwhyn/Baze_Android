@@ -6,7 +6,7 @@ import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
-import com.fwhyn.baze.ui.main.MainUiState
+import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     val loginUiData: LoginUiData,
     val loginUiState: LoginUiState,
-    private val mainUiState: MainUiState,
+    private val activityState: ActivityState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
 ) : LoginVmInterface() {
@@ -68,7 +68,7 @@ class LoginViewModel @Inject constructor(
                 when (it) {
                     is Rezult.Failure -> {
                         if (loginUiState.tryCount > 0) {
-                            mainUiState.showNotification(messageHandler.getMessage(it.err.status))
+                            activityState.showNotification(messageHandler.getMessage(it.err.status))
                         }
                     }
 
@@ -83,8 +83,8 @@ class LoginViewModel @Inject constructor(
             }
             .setLifeCycleNotifier {
                 when (it) {
-                    BaseUseCase.LifeCycle.OnStart -> mainUiState.showLoading()
-                    BaseUseCase.LifeCycle.OnFinish -> mainUiState.dismissLoading()
+                    BaseUseCase.LifeCycle.OnStart -> activityState.showLoading()
+                    BaseUseCase.LifeCycle.OnFinish -> activityState.dismissLoading()
                 }
             }
             .executeOnBackground(loginUiData.loginData, viewModelScope)
