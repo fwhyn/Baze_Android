@@ -15,10 +15,10 @@ import com.fwhyn.baze.data.model.set
 import com.fwhyn.baze.domain.helper.SingleEvent
 import com.fwhyn.baze.ui.model.DialogModel
 
-class ActivityState {
+class ActivityRetainedState {
 
     companion object {
-        private val debugTag = ActivityState::class.java.getTestTag()
+        private val debugTag = ActivityRetainedState::class.java.getTestTag()
         private const val TAG_NOTIFICATION = "TAG_NOTIFICATION"
     }
 

@@ -1,6 +1,6 @@
 package com.fwhyn.deandro.di
 
-import com.fwhyn.baze.ui.main.ActivityState
+import com.fwhyn.baze.ui.main.ActivityRetainedState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ class CommonModule {
 
     @Provides
     @ActivityRetainedScoped
-    fun provideMainUiState(): ActivityState = ActivityState()
+    fun provideActivityRetainedState(): ActivityRetainedState = ActivityRetainedState()
 }

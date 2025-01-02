@@ -7,14 +7,14 @@ import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
-import com.fwhyn.baze.ui.main.ActivityState
+import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val activityState: ActivityState,
+    private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val setTokenUseCase: BaseUseCaseRemote<UserToken?, Unit>,
 //    private val setLinkUseCase: BaseUseCase<LinkSetParam, Unit>,
@@ -32,14 +32,14 @@ class HomeViewModel @Inject constructor(
         setTokenUseCase
             .setResultNotifier {
                 when (it) {
-                    is Rezult.Failure -> activityState.showNotification(messageHandler.getMessage(it.err.status))
+                    is Rezult.Failure -> activityRetainedState.showNotification(messageHandler.getMessage(it.err.status))
                     is Rezult.Success -> uiState.state = HomeUiState.State.LoggedOut()
                 }
             }
             .setLifeCycleNotifier {
                 when (it) {
-                    BaseUseCase.LifeCycle.OnStart -> activityState.showLoading()
-                    BaseUseCase.LifeCycle.OnFinish -> activityState.dismissLoading()
+                    BaseUseCase.LifeCycle.OnStart -> activityRetainedState.showLoading()
+                    BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
             .executeOnBackground(null, viewModelScope)
