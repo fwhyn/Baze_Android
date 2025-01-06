@@ -13,21 +13,16 @@ import com.fwhyn.baze.data.helper.extension.getTestTag
 import com.fwhyn.baze.data.model.Exzeption
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TokenByGoogleSignIn @Inject constructor(
-    @ApplicationContext val context: Context,
-) {
+class TokenByGoogleSignIn @Inject constructor() {
 
     companion object {
         private val TAG = TokenByGoogleSignIn::class.java.getTestTag()
         private const val WEB_CLIENT_ID = "269798095457-8gk7i3r85p4atv1tt4q0fgttpt3pgv3h.apps.googleusercontent.com"
     }
-
-    private val credentialManager = CredentialManager.create(context)
 
     private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
         .setFilterByAuthorizedAccounts(true)
@@ -39,11 +34,13 @@ class TokenByGoogleSignIn @Inject constructor(
         .addCredentialOption(googleIdOption)
         .build()
 
-    suspend fun getCredential() {
+    suspend fun getCredential(appContext: Context) {
+        val credentialManager = CredentialManager.create(appContext)
+
         try {
             val result = credentialManager.getCredential(
                 request = request,
-                context = activityContext,
+                context = appContext,
             )
             handleSignIn(result)
         } catch (e: GetCredentialException) {
