@@ -80,9 +80,11 @@ dependencies {
 
     implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
     implementation(libs.com.google.code.gson)
     implementation(libs.bundles.retrofit2)
     implementation(libs.bundles.okhttp)

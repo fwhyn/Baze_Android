@@ -1,25 +1,88 @@
 package com.fwhyn.deandro.data.remote.auth
 
+import android.content.Context
+import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import androidx.credentials.exceptions.GetCredentialException
+import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.model.Exzeption
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TokenByGoogleSignIn @Inject constructor() {
+class TokenByGoogleSignIn @Inject constructor(
+    @ApplicationContext val context: Context,
+) {
 
     companion object {
-        const val WEB_CLIENT_ID = "269798095457-8gk7i3r85p4atv1tt4q0fgttpt3pgv3h.apps.googleusercontent.com"
+        private val TAG = TokenByGoogleSignIn::class.java.getTestTag()
+        private const val WEB_CLIENT_ID = "269798095457-8gk7i3r85p4atv1tt4q0fgttpt3pgv3h.apps.googleusercontent.com"
     }
 
-//    val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-//        .setFilterByAuthorizedAccounts(true)
-//        .setServerClientId(WEB_CLIENT_ID)
-//        .setAutoSelectEnabled(true)
-//        .setNonce(<nonce string to use when generating a Google ID token>)
-//    .build()
-//
-//    private fun generateNonce(): String {
-//        val nonceBytes = ByteArray(16)
-//        SecureRandom().nextBytes(nonceBytes)
-//        return Base64.getUrlEncoder().encodeToString(nonceBytes)
-//    }
+    private val credentialManager = CredentialManager.create(context)
+
+    private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+        .setFilterByAuthorizedAccounts(true)
+        .setServerClientId(WEB_CLIENT_ID)
+        .setAutoSelectEnabled(true)
+        .build()
+
+    private val request: GetCredentialRequest = GetCredentialRequest.Builder()
+        .addCredentialOption(googleIdOption)
+        .build()
+
+    suspend fun getCredential() {
+        try {
+            val result = credentialManager.getCredential(
+                request = request,
+                context = activityContext,
+            )
+            handleSignIn(result)
+        } catch (e: GetCredentialException) {
+            throw Exzeption(throwable = e.cause)
+        }
+    }
+
+    private fun handleSignIn(result: GetCredentialResponse) {
+        // Handle the successfully returned credential.
+        when (val credential = result.credential) {
+
+            // Passkey credential
+            is PublicKeyCredential -> {
+                // Share responseJson such as a GetCredentialResponse on your server to
+                // validate and authenticate
+                val responseJson = credential.authenticationResponseJson
+            }
+
+            // Password credential
+            is PasswordCredential -> {
+                // Send ID and password to your server to validate and authenticate.
+                val username = credential.id
+                val password = credential.password
+            }
+
+            // GoogleIdToken credential
+            is CustomCredential -> {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    // Do something
+                } else {
+                    // Catch any unrecognized custom credential type here.
+                    Log.e(TAG, "Unexpected type of credential")
+                }
+            }
+
+            else -> {
+                // Catch any unrecognized credential type here.
+                Log.e(TAG, "Unexpected type of credential")
+            }
+        }
+    }
 }
