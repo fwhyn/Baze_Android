@@ -12,8 +12,6 @@ import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import com.fwhyn.deandro.data.remote.auth.TokenByGoogleSignIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,12 +52,9 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onLogin(context: Context) {
-//        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
-//
-//        getToken()
-        viewModelScope.launch(Dispatchers.IO) {
-            tokenByGoogleSignIn.getCredential(context)
-        }
+        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+
+        getToken()
     }
 
 //    override fun onCalledFromBackStack() {
