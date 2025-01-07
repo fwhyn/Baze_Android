@@ -1,5 +1,6 @@
 package com.fwhyn.deandro.ui.feature.auth
 
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
@@ -9,7 +10,10 @@ import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.deandro.data.remote.auth.TokenByGoogleSignIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,6 +23,7 @@ class LoginViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
+    private val tokenByGoogleSignIn: TokenByGoogleSignIn,
 ) : LoginVmInterface() {
 
     companion object {
@@ -48,10 +53,13 @@ class LoginViewModel @Inject constructor(
         loginUiData.updateRemember()
     }
 
-    override fun onLogin() {
-        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
-
-        getToken()
+    override fun onLogin(context: Context) {
+//        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+//
+//        getToken()
+        viewModelScope.launch(Dispatchers.IO) {
+            tokenByGoogleSignIn.getCredential(context)
+        }
     }
 
 //    override fun onCalledFromBackStack() {

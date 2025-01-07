@@ -126,7 +126,7 @@ fun LoginScreen(
             rememberMe = remember,
             onCheckRememberMe = loginVmInterface::onCheckRememberMe,
             isFieldNotEmpty = isNotEmpty,
-            onLogin = loginVmInterface::onLogin,
+            onLogin = { loginVmInterface.onLogin(context) },
         )
     }
 }

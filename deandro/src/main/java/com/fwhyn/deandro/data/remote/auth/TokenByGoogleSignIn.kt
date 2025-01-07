@@ -10,8 +10,8 @@ import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
 import com.fwhyn.baze.data.helper.extension.getTestTag
-import com.fwhyn.baze.data.model.Exzeption
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,8 +30,11 @@ class TokenByGoogleSignIn @Inject constructor() {
         .setAutoSelectEnabled(true)
         .build()
 
+    private val signInWithGoogleOption: GetSignInWithGoogleOption =
+        GetSignInWithGoogleOption.Builder(WEB_CLIENT_ID).build()
+
     private val request: GetCredentialRequest = GetCredentialRequest.Builder()
-        .addCredentialOption(googleIdOption)
+        .addCredentialOption(signInWithGoogleOption)
         .build()
 
     suspend fun getCredential(appContext: Context) {
@@ -44,7 +47,7 @@ class TokenByGoogleSignIn @Inject constructor() {
             )
             handleSignIn(result)
         } catch (e: GetCredentialException) {
-            throw Exzeption(throwable = e.cause)
+            Log.e(TAG, e.errorMessage.toString())
         }
     }
 
