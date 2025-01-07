@@ -10,7 +10,6 @@ import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
-import com.fwhyn.deandro.data.remote.auth.TokenByGoogleSignIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -21,7 +20,6 @@ class LoginViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
-    private val tokenByGoogleSignIn: TokenByGoogleSignIn,
 ) : LoginVmInterface() {
 
     companion object {
