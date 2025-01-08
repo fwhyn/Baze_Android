@@ -127,9 +127,44 @@ class CredentialLocalDataSource @Inject constructor(
     @RequiresApi(28)
     suspend fun createPasskey(
         activityContext: Context,
-        requestJson: String,
-        preferImmediatelyAvailableCredentials: Boolean,
+        preferImmediatelyAvailableCredentials: Boolean = false,
     ) {
+        val requestJson =
+            "{\n" +
+                    "  \"challenge\": \"abc123\",\n" +
+                    "  \"rp\": {\n" +
+                    "    \"name\": \"Credential Manager example\",\n" +
+                    "    \"id\": \"credential-manager-test.example.com\"\n" +
+                    "  },\n" +
+                    "  \"user\": {\n" +
+                    "    \"id\": \"def456\",\n" +
+                    "    \"name\": \"helloandroid@gmail.com\",\n" +
+                    "    \"displayName\": \"helloandroid@gmail.com\"\n" +
+                    "  },\n" +
+                    "  \"pubKeyCredParams\": [\n" +
+                    "    {\n" +
+                    "      \"type\": \"public-key\",\n" +
+                    "      \"alg\": -7\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"type\": \"public-key\",\n" +
+                    "      \"alg\": -257\n" +
+                    "    }\n" +
+                    "  ],\n" +
+                    "  \"timeout\": 1800000,\n" +
+                    "  \"attestation\": \"none\",\n" +
+                    "  \"excludeCredentials\": [\n" +
+                    "    {\"id\": \"ghi789\", \"type\": \"public-key\"},\n" +
+                    "    {\"id\": \"jkl012\", \"type\": \"public-key\"}\n" +
+                    "  ],\n" +
+                    "  \"authenticatorSelection\": {\n" +
+                    "    \"authenticatorAttachment\": \"platform\",\n" +
+                    "    \"requireResidentKey\": true,\n" +
+                    "    \"residentKey\": \"required\",\n" +
+                    "    \"userVerification\": \"required\"\n" +
+                    "  }\n" +
+                    "}"
+
         val createPublicKeyCredentialRequest = CreatePublicKeyCredentialRequest(
             // Contains the request in JSON format. Uses the standard WebAuthn
             // web JSON spec.
@@ -150,8 +185,11 @@ class CredentialLocalDataSource @Inject constructor(
                 context = activityContext,
                 request = createPublicKeyCredentialRequest,
             )
+
+            Log.d(TAG, "Success")
 //            handlePasskeyRegistrationResult(result)
         } catch (e: CreateCredentialException) {
+            Log.e(TAG, "Credential Creation Failed: ${e.errorMessage}")
             onCreatePasskeyFailed(e)
         }
     }
@@ -180,7 +218,7 @@ class CredentialLocalDataSource @Inject constructor(
             }
 
             is CreateCredentialUnknownException -> {
-                TODO("Need Implementation")
+                // TODO "Need Implementation"
             }
 
             is CreateCredentialCustomException -> {

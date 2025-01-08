@@ -1,5 +1,6 @@
 package com.fwhyn.deandro.ui.feature.auth
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
@@ -52,10 +53,11 @@ class LoginViewModel @Inject constructor(
         loginUiData.updateRemember()
     }
 
+    @SuppressLint("NewApi")
     override fun onLogin(context: Context) {
         viewModelScope.launch {
             activityRetainedState.showLoading()
-            credentialLocalDataSource.getCredential(context)
+            credentialLocalDataSource.createPasskey(context)
             activityRetainedState.dismissLoading()
         }
 //        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
