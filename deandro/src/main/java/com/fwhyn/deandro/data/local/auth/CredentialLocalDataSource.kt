@@ -2,7 +2,6 @@ package com.fwhyn.deandro.data.local.auth
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.credentials.CreatePasswordRequest
@@ -58,11 +57,11 @@ class CredentialLocalDataSource @Inject constructor(
         )
 
         try {
-            val response = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                credentialManager.prepareGetCredential(getCredRequest)
-            } else {
-                TODO("VERSION.SDK_INT < UPSIDE_DOWN_CAKE")
-            }
+//            val response = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+//                credentialManager.prepareGetCredential(getCredRequest)
+//            } else {
+//                TODO("VERSION.SDK_INT < UPSIDE_DOWN_CAKE")
+//            }
 
             val result = credentialManager.getCredential(
                 context = activityContext,

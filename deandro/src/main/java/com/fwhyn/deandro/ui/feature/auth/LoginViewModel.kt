@@ -8,9 +8,11 @@ import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
+import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +22,7 @@ class LoginViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
+    private val credentialLocalDataSource: CredentialLocalDataSource,
 ) : LoginVmInterface() {
 
     companion object {
@@ -50,9 +53,14 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onLogin(context: Context) {
-        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
-
-        getToken()
+        viewModelScope.launch {
+            activityRetainedState.showLoading()
+            credentialLocalDataSource.getCredential(context)
+            activityRetainedState.dismissLoading()
+        }
+//        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+//
+//        getToken()
     }
 
 //    override fun onCalledFromBackStack() {
