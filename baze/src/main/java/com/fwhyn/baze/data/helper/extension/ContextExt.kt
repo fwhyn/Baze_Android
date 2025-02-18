@@ -1,6 +1,7 @@
 package com.fwhyn.baze.data.helper.extension
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
@@ -24,4 +25,17 @@ fun Context.getBitmap(@DrawableRes id: Int): Bitmap? {
     } catch (e: Exception) {
         null
     }
+}
+
+fun Context.getAllActivities(): List<String> {
+    val packageName = this.packageName
+    val packageManager = this.packageManager
+    val activities = mutableListOf<String>()
+
+    val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+    packageInfo.activities?.forEach {
+        activities.add(it.name)
+    }
+
+    return activities
 }
