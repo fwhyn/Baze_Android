@@ -20,7 +20,7 @@ class GetMinTest {
 
     private fun getMin(input: List<Int>): Int {
         var min = input[0]
-        for (i in 1..<input.size) {
+        for (i in 1 until input.size) {
             val value = input[i]
             if (value < min) min = value
         }

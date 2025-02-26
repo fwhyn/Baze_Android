@@ -20,7 +20,7 @@ class GetMaxTest {
 
     private fun getMax(input: List<Int>): Int {
         var max = input[0]
-        for (i in 1..<input.size) {
+        for (i in 1 until input.size) {
             val value = input[i]
             if (value > max) max = value
         }
