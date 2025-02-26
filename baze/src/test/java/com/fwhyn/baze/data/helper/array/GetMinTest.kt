@@ -8,13 +8,10 @@ class GetMinTest {
     @Test
     fun getMinTest() {
         val input = arrayListOf(1, 2, 3, 5, 6)
-
         assertEquals(1, getMin(input))
 
         // ----------------------------------------------------------------
         val input1 = arrayListOf(1, 2, 3, -5, 6)
-        getMin(input)
-
         assertEquals(-5, getMin(input1))
     }
 

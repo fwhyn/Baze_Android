@@ -8,13 +8,10 @@ class GetMaxTest {
     @Test
     fun getMinTest() {
         val input = arrayListOf(1, 2, 3, 5, 6)
-
         assertEquals(6, getMax(input))
 
         // ----------------------------------------------------------------
         val input1 = arrayListOf(1, 2, 8, -5, 6)
-        getMax(input)
-
         assertEquals(8, getMax(input1))
     }
 
