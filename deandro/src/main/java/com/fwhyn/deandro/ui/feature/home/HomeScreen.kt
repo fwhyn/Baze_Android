@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +57,8 @@ import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
+import com.fwhyn.deandro.ui.dialog.BazeAlertDialog
+import com.fwhyn.deandro.ui.dialog.TryBottomDialog
 import com.fwhyn.deandro.ui.feature.auth.navigateToLoginScreen
 import java.io.File
 
@@ -120,8 +123,6 @@ private fun HomeScreen(
 
         HomeUiState.State.Idle -> {} // Do nothing
     }
-
-
 
     MainHomeView(
         modifier = modifier,
@@ -211,10 +212,30 @@ fun MainHomeView(
             Spacer(modifier = Modifier.weight(1.0f))
         }
 
+        var isShowingDialog by rememberSaveable { mutableStateOf(false) }
+
         AddPhotoButton(
             modifier = Modifier.align(Alignment.BottomStart),
-            onAddPhoto = onAddPhoto,
+            onAddPhoto = {
+                isShowingDialog = true
+            },
         )
+
+        if (isShowingDialog) {
+            TryBottomDialog {
+                isShowingDialog = false
+            }
+
+            BazeAlertDialog(
+                message = "test aja",
+                onConfirmation = {
+
+                },
+                onDismissRequest = {
+                    isShowingDialog = false
+                }
+            )
+        }
     }
 }
 
