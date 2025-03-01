@@ -29,6 +29,20 @@ class SortedArrayTest {
         assertEquals(6, input1[6])
     }
 
+    @Test
+    fun bubbleSorted_TheIsMinus_Test() {
+        val input1 = arrayListOf(-6, 1, 3, 2, 5, 4, 4, 10)
+        bubbleSorted(input1)
+        assertEquals(-6, input1[0])
+        assertEquals(1, input1[1])
+        assertEquals(2, input1[2])
+        assertEquals(3, input1[3])
+        assertEquals(4, input1[4])
+        assertEquals(4, input1[5])
+        assertEquals(5, input1[6])
+        assertEquals(10, input1[7])
+    }
+
     private fun bubbleSorted(input: ArrayList<Int>) {
 
         // iterate 0 until max index: i
