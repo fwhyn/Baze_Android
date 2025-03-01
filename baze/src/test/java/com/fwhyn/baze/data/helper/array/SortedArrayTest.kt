@@ -51,15 +51,21 @@ class SortedArrayTest {
 
         var n = 0
         for (i in input.indices) {
+            var swapped = false
+
             for (j in 0 until input.size - i - 1) {
                 val prev = input[j]
                 val next = input[j + 1]
                 if (prev > next) {
                     input[j] = next
                     input[j + 1] = prev
+
+                    swapped = true
                 }
                 println(++n)
             }
+
+            if (!swapped) break
         }
     }
 }
