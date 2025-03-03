@@ -13,7 +13,6 @@ import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,23 +54,22 @@ class LoginViewModel @Inject constructor(
 
     @SuppressLint("NewApi")
     override fun onLogin(context: Context) {
-        viewModelScope.launch {
-            activityRetainedState.showLoading()
-            credentialLocalDataSource.createPasskey(context)
-            activityRetainedState.dismissLoading()
-        }
-//        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
-//
-//        getToken()
+//        viewModelScope.launch {
+//            activityRetainedState.showLoading()
+//            credentialLocalDataSource.createPasskey(context)
+//            activityRetainedState.dismissLoading()
+//        }
+
+        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+
+        getToken()
     }
 
-//    override fun onCalledFromBackStack() {
-//        loginUiState.run {
-//            if (loginResult is Rezult.Success) {
-//                state = LoginUiState.State.OnFinish()
-//            }
-//        }
-//    }
+    override fun onCalledFromBackStack() {
+        if (loginUiState.loginResult is Rezult.Success) {
+            loginUiState.state = LoginUiState.State.LoggedIn()
+        }
+    }
 
     private fun getToken() {
         getTokenUseCase
