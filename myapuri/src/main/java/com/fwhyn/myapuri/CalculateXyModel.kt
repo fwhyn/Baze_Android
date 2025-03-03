@@ -1,7 +1,10 @@
 package com.fwhyn.myapuri
 
-class CalculateXyModel {
-    fun calculateXy(x: Int, y: Int): Int {
-        return x + y
+class CalculateXyModel : Calculate<CalculateXyModel.Input, Int> {
+
+    override fun calculate(input: Input): Int {
+        return input.x + input.y
     }
+
+    data class Input(val x: Int, val y: Int)
 }

@@ -4,14 +4,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-    private val calculateXyModel = CalculateXyModel()
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val calculateXyModel: Calculate<CalculateXyModel.Input, Int>
+) : ViewModel() {
 
     var result by mutableIntStateOf(0)
         private set
 
     fun calculateXy(x: Int, y: Int) {
-        result = calculateXyModel.calculateXy(x, y)
+        result = calculateXyModel.calculate(CalculateXyModel.Input(x, y))
     }
 }
