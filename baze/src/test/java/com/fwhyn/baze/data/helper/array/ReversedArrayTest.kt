@@ -3,7 +3,7 @@ package com.fwhyn.baze.data.helper.array
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ReversedTest {
+class ReversedArrayTest {
 
     @Test
     fun reversedWithNewObjectTest() {
@@ -68,30 +68,5 @@ class ReversedTest {
             list[i] = list[size - 1 - i]
             list[size - 1 - i] = temp
         }
-    }
-
-    @Test
-    fun reversedIntTest() {
-        val input = 1234
-        val output = reverseNumber(input)
-        assertEquals(4321, output)
-
-        // ----------------------------------------------------------------
-        val input1 = 3210
-        val output1 = reverseNumber(input1)
-        assertEquals(123, output1)
-    }
-
-    private fun reverseNumber(num: Int): Int {
-        var number = num
-        var reversedNumber = 0
-
-        while (number != 0) {
-            val lastDigit = number % 10
-            reversedNumber = reversedNumber * 10 + lastDigit
-            number /= 10
-        }
-
-        return reversedNumber
     }
 }
