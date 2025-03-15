@@ -35,6 +35,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "WEB_CLIENT_ID", "\"${project.properties["WEB_CLIENT_ID"]}\"")
     }
 
     buildTypes {
@@ -74,17 +76,19 @@ android {
     }
 }
 
+//noinspection UseTomlInstead
 dependencies {
     // ----------------------------------------------------------------
     // Main Dependency
     implementation(project(mapOf("path" to ":baze")))
 
-    implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
+    implementation("androidx.core:core-splashscreen:1.2.0-beta01")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
 
-    implementation("androidx.credentials:credentials:1.3.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.google.http-client:google-http-client-gson:1.46.3")
+    implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0")
 
     implementation(libs.com.google.code.gson)
     implementation(libs.bundles.retrofit2)

@@ -24,7 +24,7 @@ class LoginUiData @Inject constructor() {
         get() = email.isNotEmpty() && pwd.isNotEmpty()
 
     val loginData: LoginParam
-        get() = LoginParam(email, pwd).also {
+        get() = LoginParam.MyServer(email, pwd).also {
             it.forceLogin = LoginParam.ForceLogin.YES
             it.remember = remember
         }

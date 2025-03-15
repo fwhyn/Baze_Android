@@ -21,7 +21,6 @@ class TokenByGoogleSignIn @Inject constructor() {
 
     companion object {
         private val TAG = TokenByGoogleSignIn::class.java.getTestTag()
-        private const val WEB_CLIENT_ID = "269798095457-8gk7i3r85p4atv1tt4q0fgttpt3pgv3h.apps.googleusercontent.com"
     }
 
     private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
