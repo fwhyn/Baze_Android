@@ -2,12 +2,15 @@ package com.fwhyn.deandro.di
 
 import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
+import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.deandro.data.remote.auth.GoogleSignIn
 import com.fwhyn.deandro.data.remote.auth.LoginApi
 import com.fwhyn.deandro.data.remote.auth.TokenRemoteDataSource
 import com.fwhyn.deandro.data.remote.retrofit.RetrofitApiClient
+import com.fwhyn.deandro.data.repository.auth.TokenRepository
 import com.fwhyn.deandro.data.repository.auth.TokenRepositoryFake
 import com.fwhyn.deandro.domain.usecase.auth.GetTokenUseCase
 import com.fwhyn.deandro.domain.usecase.auth.SetTokenUseCase
@@ -40,8 +43,13 @@ class AuthModule {
     fun provideTokenRepository(
         tokenLocalDataSource: TokenLocalDataSource,
         tokenRemoteDataSource: TokenRemoteDataSource,
+        googleSignIn: GoogleSignIn,
     ): BaseRepositoryCoroutine<LoginParam?, UserToken?> {
-        return TokenRepositoryFake(tokenLocalDataSource, tokenRemoteDataSource)
+        return when (BuildConfig.FLAVOR) {
+            "Fake" -> TokenRepositoryFake(tokenLocalDataSource)
+            "Real" -> TokenRepository(tokenLocalDataSource, tokenRemoteDataSource, googleSignIn)
+            else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
+        }
     }
 
     @Provides

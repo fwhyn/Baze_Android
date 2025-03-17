@@ -39,6 +39,17 @@ android {
         buildConfigField("String", "WEB_CLIENT_ID", "\"${project.properties["WEB_CLIENT_ID"]}\"")
     }
 
+    flavorDimensions += "default"
+    productFlavors {
+        create("Fake") {
+            dimension = "default"
+        }
+
+        create("Real") {
+            dimension = "default"
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField(string, serverUrl, "\"https://dev.atm-sehat.com/\"")

@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class TokenRemoteDataSource @Inject constructor(
     private val loginApi: LoginApi,
 ) {
-    suspend fun getToken(loginParam: LoginParam): UserToken? {
+    suspend fun getToken(loginParam: LoginParam.MyServer): UserToken? {
         return if (loginParam.isNotEmpty()) {
             val response = loginApi.login(loginParam).also {
                 if (it.status_code != Status.Success.code) {
