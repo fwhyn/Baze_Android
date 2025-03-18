@@ -6,7 +6,7 @@ plugins {
     kotlin("kapt")
 }
 
-apply(from = "../properties.gradle")
+//apply(from = "../properties.gradle")
 
 android {
     val moduleName = "com.fwhyn.deandro"
