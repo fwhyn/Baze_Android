@@ -1,5 +1,6 @@
 package com.fwhyn.deandro.ui.feature.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,6 +59,7 @@ import com.fwhyn.baze.data.helper.extension.removeFromBackStack
 import com.fwhyn.baze.ui.helper.DevicePreviews
 import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.baze.ui.main.rememberActivityState
+import com.fwhyn.deandro.R
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.home.navigateToHomeScreen
@@ -105,8 +108,8 @@ fun LoginScreen(
     loginUiState: LoginUiState,
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    rememberCoroutineScope()
+    remember { SnackbarHostState() }
 
     when (val state = loginUiState.state) {
         is LoginUiState.State.LoggedIn -> state.invokeOnce {
@@ -186,6 +189,18 @@ fun MainView(
             modifier = commonFieldModifier
         ) {
             Text("Login")
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            onClick = { onLogin() },
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.google_sign_in), // Add Google logo in res/drawable
+                contentDescription = "Google Logo",
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
