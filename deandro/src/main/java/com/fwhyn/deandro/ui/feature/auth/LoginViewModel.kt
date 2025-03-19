@@ -1,7 +1,6 @@
 package com.fwhyn.deandro.ui.feature.auth
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
@@ -9,7 +8,6 @@ import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
-import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +20,10 @@ class LoginViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
-    private val credentialLocalDataSource: CredentialLocalDataSource,
 ) : LoginVmInterface() {
 
     companion object {
         const val MAX_LOGIN_TRY = 3
-
-        const val LOGIN_SUCCESS = "LOGIN_SUCCESS"
-        const val LOGIN_FAILED = "LOGIN_FAILED"
     }
 
     init {
@@ -37,7 +31,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun init() {
-        getToken()
+        getToken(LoginParam.Local)
     }
 
     override fun onEmailValueChange(value: String) {
@@ -53,16 +47,10 @@ class LoginViewModel @Inject constructor(
     }
 
     @SuppressLint("NewApi")
-    override fun onLogin(context: Context) {
-//        viewModelScope.launch {
-//            activityRetainedState.showLoading()
-//            credentialLocalDataSource.createPasskey(context)
-//            activityRetainedState.dismissLoading()
-//        }
-
+    override fun onLogin(loginParam: LoginParam) {
         loginUiState.tryCount = getTryCount(loginUiState.tryCount)
 
-        getToken()
+        getToken(loginParam)
     }
 
     override fun onCalledFromBackStack() {
@@ -71,7 +59,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun getToken() {
+    private fun getToken(loginParam: LoginParam) {
         getTokenUseCase
             .setResultNotifier {
                 when (it) {
@@ -96,7 +84,7 @@ class LoginViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .executeOnBackground(loginUiData.loginData, viewModelScope)
+            .executeOnBackground(loginParam, viewModelScope)
     }
 
     private fun getTryCount(prevValue: Int): Int {

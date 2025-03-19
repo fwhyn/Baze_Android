@@ -1,5 +1,7 @@
 package com.fwhyn.deandro.ui.feature.auth
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,14 +29,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,6 +60,7 @@ import com.fwhyn.baze.ui.helper.DevicePreviews
 import com.fwhyn.baze.ui.main.ActivityState
 import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.R
+import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.feature.home.navigateToHomeScreen
@@ -107,10 +108,6 @@ fun LoginScreen(
     loginUiData: LoginUiData,
     loginUiState: LoginUiState,
 ) {
-    val context = LocalContext.current
-    rememberCoroutineScope()
-    remember { SnackbarHostState() }
-
     when (val state = loginUiState.state) {
         is LoginUiState.State.LoggedIn -> state.invokeOnce {
             activityState.navigation.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
@@ -126,10 +123,10 @@ fun LoginScreen(
             onEmailValueChange = loginVmInterface::onEmailValueChange,
             passwordValue = pwd,
             onPasswordValueChange = loginVmInterface::onPasswordValueChange,
-            rememberMe = remember,
+            rememberMe = rememberMe,
             onCheckRememberMe = loginVmInterface::onCheckRememberMe,
             isFieldNotEmpty = isNotEmpty,
-            onLogin = { loginVmInterface.onLogin(context) },
+            onLogin = loginVmInterface::onLogin,
         )
     }
 }
@@ -144,8 +141,10 @@ fun MainView(
     rememberMe: Boolean,
     onCheckRememberMe: () -> Unit,
     isFieldNotEmpty: Boolean,
-    onLogin: () -> Unit,
+    onLogin: (LoginParam) -> Unit,
 ) {
+    val activity: Activity? = LocalActivity.current
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -160,6 +159,7 @@ fun MainView(
             modifier = commonFieldModifier,
         )
         Spacer(modifier = Modifier.height(20.dp))
+
         EmailField(
             modifier = commonFieldModifier,
             value = emailValue,
@@ -182,25 +182,60 @@ fun MainView(
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
+
         Button(
-            onClick = { onLogin() },
+            onClick = {
+                onLogin(
+                    LoginParam.MyServer(
+                        username = emailValue,
+                        password = passwordValue
+                    ).also {
+                        it.forceLogin = LoginParam.ForceLogin.YES
+                        it.remember = rememberMe
+                    }
+                )
+            },
             enabled = isFieldNotEmpty,
             shape = RoundedCornerShape(5.dp),
             modifier = commonFieldModifier
         ) {
             Text("Login")
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(1.dp))
         Button(
-            onClick = { onLogin() },
+            onClick = {
+                // TODO add onclick register
+            },
             shape = RoundedCornerShape(5.dp),
             modifier = commonFieldModifier
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.google_sign_in), // Add Google logo in res/drawable
-                contentDescription = "Google Logo",
-                modifier = Modifier.size(24.dp)
-            )
+            Text("Register")
+        }
+        Spacer(modifier = Modifier.height(1.dp))
+        Button(
+            onClick = {
+                onLogin(
+                    if (activity != null) {
+                        LoginParam.Google(activity)
+                    } else {
+                        throw Exception("Activity not found")
+                    }
+                )
+            },
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
+        ) {
+            Row {
+                Image(
+                    painter = painterResource(id = R.drawable.google_sign_in),
+                    contentDescription = "Google Logo",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    LocalContext.current.getString(com.google.android.gms.base.R.string.common_signin_button_text_long)
+                )
+            }
         }
     }
 }

@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName
 
 sealed class LoginParam() {
 
+    data class Google(
+        val activity: Activity,
+    ) : LoginParam()
+
+    data object Local : LoginParam()
+
     data class MyServer(
         @SerializedName("username") val username: String,
         @SerializedName("password") val password: String,
@@ -18,10 +24,6 @@ sealed class LoginParam() {
             return username.isNotEmpty() && username.isNotEmpty()
         }
     }
-
-    data class Google(
-        val activity: Activity,
-    ) : LoginParam()
 
     enum class ForceLogin(val data: Int) {
         YES(1),

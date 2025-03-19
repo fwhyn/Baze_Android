@@ -10,26 +10,25 @@ import javax.inject.Singleton
 @Singleton
 class TokenRepositoryFake @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource,
-) : BaseRepositoryCoroutine<LoginParam?, UserToken?> {
-    override suspend fun get(param: LoginParam?): UserToken? {
-        var token = tokenLocalDataSource.token
+) : BaseRepositoryCoroutine<LoginParam, UserToken?> {
+    override suspend fun get(param: LoginParam): UserToken? {
 
-        if (token == null && param != null) {
-            token = when (param) {
-                is LoginParam.Google -> getTokenByGoogle(param)
-                is LoginParam.MyServer -> getTokenFromRemote(param)
-            }
+        return when (param) {
+            is LoginParam.Google -> getTokenByGoogle(param)
+            LoginParam.Local -> tokenLocalDataSource.token
+            is LoginParam.MyServer -> getTokenFromRemote(param)
         }
-
-        return token
     }
 
-    override suspend fun set(param: LoginParam?, data: UserToken?) {
+    override suspend fun set(param: LoginParam, data: UserToken?) {
         tokenLocalDataSource.token = data
     }
 
     suspend fun getTokenByGoogle(param: LoginParam.Google): UserToken? {
-        return null
+        return UserToken(
+            name = "fake",
+            code = "21fdhs"
+        )
     }
 
     suspend fun getTokenFromRemote(param: LoginParam.MyServer): UserToken? {

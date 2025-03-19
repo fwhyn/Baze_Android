@@ -44,7 +44,7 @@ class AuthModule {
         tokenLocalDataSource: TokenLocalDataSource,
         tokenRemoteDataSource: TokenRemoteDataSource,
         googleSignIn: GoogleSignIn,
-    ): BaseRepositoryCoroutine<LoginParam?, UserToken?> {
+    ): BaseRepositoryCoroutine<LoginParam, UserToken?> {
         return when (BuildConfig.FLAVOR) {
             "Fake" -> TokenRepositoryFake(tokenLocalDataSource)
             "Real" -> TokenRepository(tokenLocalDataSource, tokenRemoteDataSource, googleSignIn)
