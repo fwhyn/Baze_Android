@@ -74,9 +74,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
         return this
     }
 
-    fun getId(): String {
-        return jobId
-    }
+    fun getId(): String = jobId
 
     fun setUiContext(context: CoroutineContext): BaseUseCase<PARAM, RESULT> {
         uiContext = context
@@ -90,15 +88,16 @@ abstract class BaseUseCase<PARAM, RESULT> {
         return this
     }
 
+    fun cancel() = job?.cancel()
+
+    suspend fun join() = job?.join()
+
     // ----------------------------------------------------------------
-    open fun executeOnBackground(param: PARAM, scope: CoroutineScope) {}
-    open fun execute(param: PARAM) {}
+    open fun execute(param: PARAM, scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) {}
 
     protected open fun runWithResult(scope: CoroutineScope, runAPi: suspend () -> RESULT) = runInternally(scope, runAPi)
-    protected fun runWithResult(runAPi: () -> RESULT) = runInternally(runAPi)
 
     protected open fun run(scope: CoroutineScope, runAPi: suspend () -> Unit) = runInternally(scope, runAPi, false)
-    protected fun run(runAPi: () -> Unit) = runInternally(runAPi, false)
 
     private fun <T> runInternally(
         scope: CoroutineScope,
@@ -122,97 +121,59 @@ abstract class BaseUseCase<PARAM, RESULT> {
                 }
 
                 if (withResult) {
-                    provideResultFromBackground(result as RESULT)
+                    provideResult(result as RESULT)
                 }
             } catch (e: Throwable) {
-                handleExceptionFromBackground(e)
+                handleException(e)
             }
         }
     }
 
-    private fun <T> runInternally(
-        runAPi: () -> T,
-        withResult: Boolean = true,
-    ) {
-        notifyOnStart()
-
-        try {
-            Log.d(debugTag, "RunApi Invoked")
-            val result = runAPi()
-            if (withResult) {
-                provideResult(result as RESULT)
-            }
-        } catch (e: Throwable) {
-            handleException(e)
-        }
-    }
-
-    private suspend fun handleExceptionFromBackground(e: Throwable) {
+    private suspend fun provideResult(result: RESULT) {
         withContext(uiContext) {
-            handleException(e)
-        }
-    }
+            Log.d(debugTag, "Rezult: $result")
 
-    private fun handleException(e: Throwable) {
-        when (e) {
-            is Exzeption -> {
-                Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
-                notifyResult(Rezult.Failure(e))
-            }
-
-            is Exception -> {
-                Log.d(debugTag, "Exception ${e.message}")
-                notifyResult(Rezult.Failure(Exzeption(throwable = e)))
-            }
-
-            else -> {
-                Log.d(debugTag, "Throwable ${e.message}")
-                notifyResult(Rezult.Failure(Exzeption(throwable = e)))
+            if (result != null) {
+                notifyResult(
+                    Rezult.Success(result)
+                )
+            } else {
+                notifyResult(
+                    Rezult.Failure(Exzeption())
+                )
             }
         }
     }
 
-    private suspend fun provideResultFromBackground(result: RESULT) {
-        withContext(uiContext) {
-            provideResult(result)
-        }
-    }
-
-    private fun provideResult(result: RESULT) {
-        Log.d(debugTag, "Rezult: $result")
-
-        if (result != null) {
-            notifyResult(
-                Rezult.Success(result)
-            )
-        } else {
-            notifyResult(
-                Rezult.Failure(Exzeption())
-            )
-        }
-    }
-
-    fun notifyResult(
+    private fun notifyResult(
         result: Rezult<RESULT, Exzeption>,
     ) {
         resultNotifier?.let { it(result) }
         notifyOnFinish()
     }
 
-    private fun notifyOnStart() {
-        lifeCycleNotifier?.let { it(LifeCycle.OnStart) }
-    }
+    private fun notifyOnStart() = lifeCycleNotifier?.let { it(LifeCycle.OnStart) }
+    private fun notifyOnFinish() = lifeCycleNotifier?.let { it(LifeCycle.OnFinish) }
 
-    private fun notifyOnFinish() {
-        lifeCycleNotifier?.let { it(LifeCycle.OnFinish) }
-    }
+    private suspend fun handleException(e: Throwable) {
+        withContext(uiContext) {
+            when (e) {
+                is Exzeption -> {
+                    Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
+                    notifyResult(Rezult.Failure(e))
+                }
 
-    fun cancel() {
-        job?.cancel()
-    }
+                is Exception -> {
+                    Log.d(debugTag, "Exception ${e.message}")
+                    notifyResult(Rezult.Failure(Exzeption(throwable = e)))
+                }
 
-    suspend fun join() {
-        job?.join()
+                else -> {
+                    Log.d(debugTag, "Throwable ${e.message}")
+                    notifyResult(Rezult.Failure(Exzeption(throwable = e)))
+                }
+            }
+        }
     }
 
     // ----------------------------------------------------------------
@@ -224,9 +185,9 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
 // ----------------------------------------------------------------
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResultInBackground(
+suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
     param: PARAM,
-    scope: CoroutineScope,
+    scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ): RESULT = suspendCancellableCoroutine { continuation ->
     setResultNotifier {
         when (it) {
@@ -240,5 +201,5 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResultInBackground(
             }
         }
     }
-    executeOnBackground(param, scope)
+    execute(param, scope)
 }

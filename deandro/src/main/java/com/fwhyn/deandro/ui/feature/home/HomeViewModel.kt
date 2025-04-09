@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .executeOnBackground(null, viewModelScope)
+            .execute(null, viewModelScope)
     }
 
     override fun onAddPhoto() {
@@ -64,7 +64,7 @@ class HomeViewModel @Inject constructor(
 //                        is Results.Success -> uiState.state =
 //                            HomeUiState.State.CallPhotoEdit(imageLinksKey!!)
 //                    }
-//                }.executeOnBackground(LinkSetParam(imageLinksKey!!, imageLinks), viewModelScope)
+//                }.execute(LinkSetParam(imageLinksKey!!, imageLinks), viewModelScope)
 //            }
 //        }
     }
@@ -76,7 +76,7 @@ class HomeViewModel @Inject constructor(
 
     private fun clearImageLinks() {
 //        uiData.imageLinksKey?.let {
-//            setLinkUseCase.executeOnBackground(
+//            setLinkUseCase.execute(
 //                LinkSetParam(it, null),
 //                CoroutineScope(Dispatchers.IO)
 //            )
@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
 //            val size = it.size
 //            if (size > 0) {
 //                val imageSetParamList = size.createList { index -> ImageSetParam(it[index], null) }
-//                setImagesUseCase.executeOnBackground(imageSetParamList, CoroutineScope(Dispatchers.IO))
+//                setImagesUseCase.execute(imageSetParamList, CoroutineScope(Dispatchers.IO))
 //            }
 //        }
     }

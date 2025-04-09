@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .executeOnBackground(loginParam, viewModelScope)
+            .execute(loginParam, viewModelScope)
     }
 
     private fun getTryCount(prevValue: Int): Int {

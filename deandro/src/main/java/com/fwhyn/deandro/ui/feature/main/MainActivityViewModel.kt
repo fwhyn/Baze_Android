@@ -26,6 +26,6 @@ class MainActivityViewModel @Inject constructor(
 //                is Rezult.Failure -> activityRetainedState.showNotification(R.string.cleaning_memory_error)
 //                is Rezult.Success -> activityRetainedState.setIdle()
 //            }
-//        }.executeOnBackground(listOf(ManageMemoryParam(ManageMemoryAction.CLEAR)), viewModelScope)
+//        }.execute(listOf(ManageMemoryParam(ManageMemoryAction.CLEAR)), viewModelScope)
 //    }
 }

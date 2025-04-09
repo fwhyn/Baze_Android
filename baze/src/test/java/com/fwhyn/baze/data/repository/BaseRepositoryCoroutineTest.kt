@@ -54,7 +54,7 @@ class BaseRepositoryCoroutineTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, this)
+            .execute(Unit, this)
 
         // ----------------------------------------------------------------
         getDataUseCase
@@ -65,27 +65,12 @@ class BaseRepositoryCoroutineTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, this)
+            .execute(Unit, this)
     }
-
-//    fun getData(coroutineContext: CoroutineContext, scope: CoroutineScope) {
-//        val dataSource = DataSource()
-//        val getDataUseCase: BaseUseCase<Unit, WeightData> = GetDataUseCase(dataSource)
-//
-//        getDataUseCase
-//            .setResultNotifier{
-//                when(it) {
-//                    is Rezult.Failure<Exzeption> -> throw Exception("Must not failed")
-//                    is Rezult.Success<WeightData> -> Assert.assertEquals(0, it.dat.value)
-//                }
-//            }
-//            .setWorkerContext(coroutineContext)
-//            .executeOnBackground(Unit, scope)
-//    }
 
     // ----------------------------------------------------------------
     class GetDataUseCase(val dataSource: BaseRepositoryCoroutine<Unit, WeightData>) : BaseUseCase<Unit, WeightData>() {
-        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+        override fun execute(param: Unit, scope: CoroutineScope) {
             runWithResult(scope) {
                 dataSource.get(param)
             }

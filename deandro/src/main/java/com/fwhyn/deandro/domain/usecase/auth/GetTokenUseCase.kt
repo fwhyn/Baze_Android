@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetTokenUseCase @Inject constructor(
     private val tokenRepository: BaseRepositoryCoroutine<LoginParam?, UserToken?>,
 ) : BaseUseCaseRemote<LoginParam, UserToken?>() {
-    override fun executeOnBackground(param: LoginParam, scope: CoroutineScope) {
+    override fun execute(param: LoginParam, scope: CoroutineScope) {
         setTimeOut(TIMEOUT_MILLIS)
 
         runWithResult(scope) {

@@ -76,7 +76,7 @@ class BaseUseCaseTest {
         testInputEqualsOutput
             .setResultNotifier(callback)
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(input, scope)
+            .execute(input, scope)
     }
 
     @Test
@@ -90,8 +90,8 @@ class BaseUseCaseTest {
         testInputEqualsOutput.setResultNotifier(callback)
         verify(testInputEqualsOutput, times(1)).setResultNotifier(eq(callback))
 
-        testInputEqualsOutput.executeOnBackground(input, scope)
-        verify(testInputEqualsOutput, times(1)).executeOnBackground(eq(input), eq(scope))
+        testInputEqualsOutput.execute(input, scope)
+        verify(testInputEqualsOutput, times(1)).execute(eq(input), eq(scope))
     }
 
     @Test
@@ -105,7 +105,7 @@ class BaseUseCaseTest {
         testInputEqualsOutput
             .setResultNotifier(callback)
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(input, scope)
+            .execute(input, scope)
     }
 
     @Test
@@ -126,7 +126,7 @@ class BaseUseCaseTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, scope)
+            .execute(Unit, scope)
     }
 
     @Test
@@ -136,7 +136,7 @@ class BaseUseCaseTest {
 
         val output = testInputEqualsOutput
             .setWorkerContext(coroutineContext)
-            .getResultInBackground(input, scope)
+            .getResult(input, scope)
 
         Assert.assertEquals("Output: $input", output)
     }
@@ -168,7 +168,7 @@ class BaseUseCaseTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(input, scope)
+            .execute(input, scope)
 
         testInputEqualsOutput.join()
 
@@ -194,7 +194,7 @@ class BaseUseCaseTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, scope)
+            .execute(Unit, scope)
 
         exzeptionError
             .setResultNotifier {
@@ -227,7 +227,7 @@ class BaseUseCaseTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, scope)
+            .execute(Unit, scope)
 
         exceptionError
             .setResultNotifier {
@@ -260,7 +260,7 @@ class BaseUseCaseTest {
                 }
             }
             .setWorkerContext(coroutineContext)
-            .executeOnBackground(Unit, scope)
+            .execute(Unit, scope)
 
         throwableError
             .setResultNotifier {
@@ -278,49 +278,31 @@ class BaseUseCaseTest {
 
     // ----------------------------------------------------------------
     class ExzeptionError : BaseUseCase<Unit, Unit>() {
-        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+        override fun execute(param: Unit, scope: CoroutineScope) {
             run(scope) {
-                throw Exzeption()
-            }
-        }
-
-        override fun execute(param: Unit) {
-            run {
                 throw Exzeption()
             }
         }
     }
 
     class ExceptionError : BaseUseCase<Unit, Unit>() {
-        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+        override fun execute(param: Unit, scope: CoroutineScope) {
             run(scope) {
-                throw Exception()
-            }
-        }
-
-        override fun execute(param: Unit) {
-            run {
                 throw Exception()
             }
         }
     }
 
     class ThrowableError : BaseUseCase<Unit, Unit>() {
-        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+        override fun execute(param: Unit, scope: CoroutineScope) {
             run(scope) {
-                throw Throwable()
-            }
-        }
-
-        override fun execute(param: Unit) {
-            run {
                 throw Throwable()
             }
         }
     }
 
     class TestInputEqualsOutput : BaseUseCase<String, String>() {
-        override fun executeOnBackground(param: String, scope: CoroutineScope) {
+        override fun execute(param: String, scope: CoroutineScope) {
             runWithResult(scope) {
                 delay(1000)
                 "Output: $param"
@@ -329,7 +311,7 @@ class BaseUseCaseTest {
     }
 
     class TestTimeOut : BaseUseCase<Unit, Unit>() {
-        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+        override fun execute(param: Unit, scope: CoroutineScope) {
             setTimeOut(1000)
             runWithResult(scope) {
                 loading()
