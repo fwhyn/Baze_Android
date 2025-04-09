@@ -24,6 +24,14 @@ import kotlin.coroutines.CoroutineContext
 annotation class SuppressWarning
 
 // ----------------------------------------------------------------
+/**
+ * Abstract class representing a base use case for executing business logic.
+ * This class provides a structure for handling asynchronous operations with
+ * support for lifecycle notifications, result handling, and timeout management.
+ *
+ * @param <PARAM> The type of the input parameter required to execute the use case.
+ * @param <RESULT> The type of the result produced by the use case.
+ */
 abstract class BaseUseCase<PARAM, RESULT> {
 
     private val debugTag = BaseUseCase::class.java.getTestTag()
@@ -40,6 +48,12 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private var job: Job? = null
 
     // ----------------------------------------------------------------
+    /**
+     * Sets the result notifier for the use case.
+     *
+     * @param resultNotifier A lambda function to handle the result of the use case.
+     * @return The current instance of the use case.
+     */
     fun setResultNotifier(
         resultNotifier: (Rezult<RESULT, Throwable>) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
@@ -48,6 +62,12 @@ abstract class BaseUseCase<PARAM, RESULT> {
         return this
     }
 
+    /**
+     * Sets the lifecycle notifier for the use case.
+     *
+     * @param lifeCycleNotifier A lambda function to handle lifecycle events.
+     * @return The current instance of the use case.
+     */
     fun setLifeCycleNotifier(
         lifeCycleNotifier: (LifeCycle) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
@@ -56,12 +76,23 @@ abstract class BaseUseCase<PARAM, RESULT> {
         return this
     }
 
+    /**
+     * Sets a timeout for the use case execution.
+     *
+     * @param time Timeout duration in milliseconds.
+     * @return The current instance of the use case.
+     */
     protected fun setTimeOut(time: Long): BaseUseCase<PARAM, RESULT> {
         timeOutMillis = time
 
         return this
     }
 
+    /**
+     * Cancels the currently active job, if any.
+     *
+     * @return The current instance of the use case.
+     */
     fun cancelPreviousActiveJob(): BaseUseCase<PARAM, RESULT> {
         if (job?.isActive == true) {
             Log.d(debugTag, "Cancelling job: $job")
@@ -73,29 +104,67 @@ abstract class BaseUseCase<PARAM, RESULT> {
         return this
     }
 
+    /**
+     * Retrieves the unique identifier of the current job.
+     *
+     * @return The unique job identifier.
+     */
     fun getId(): String = jobId
 
+    /**
+     * Sets the coroutine context for UI-related operations.
+     *
+     * @param context The coroutine context for UI operations.
+     * @return The current instance of the use case.
+     */
     fun setUiContext(context: CoroutineContext): BaseUseCase<PARAM, RESULT> {
         uiContext = context
 
         return this
     }
 
+    /**
+     * Sets the coroutine context for worker-related operations.
+     *
+     * @param context The coroutine context for worker operations.
+     * @return The current instance of the use case.
+     */
     fun setWorkerContext(context: CoroutineContext): BaseUseCase<PARAM, RESULT> {
         workerContext = context
 
         return this
     }
 
-    fun cancel() = job?.cancel()
-
+    /**
+     * Waits for the current job to complete.
+     *
+     * @throws CancellationException if the job is cancelled.
+     */
     suspend fun join() = job?.join()
 
     // ----------------------------------------------------------------
+    /**
+     * Executes the use case with the given parameter and coroutine scope.
+     *
+     * @param param The input parameter for the use case.
+     * @param scope The coroutine scope for execution.
+     */
     open fun execute(param: PARAM, scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) {}
 
+    /**
+     * Runs the use case with a result-producing operation.
+     *
+     * @param scope The coroutine scope for execution.
+     * @param runAPi A suspend function that produces the result.
+     */
     protected open fun runWithResult(scope: CoroutineScope, runAPi: suspend () -> RESULT) = runInternally(scope, runAPi)
 
+    /**
+     * Runs the use case with a non-result-producing operation.
+     *
+     * @param scope The coroutine scope for execution.
+     * @param runAPi A suspend function to execute.
+     */
     protected open fun run(scope: CoroutineScope, runAPi: suspend () -> Unit) = runInternally(scope, runAPi, false)
 
     private fun <T> runInternally(
@@ -149,13 +218,31 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private fun notifyOnFinish() = lifeCycleNotifier?.let { it(LifeCycle.OnFinish) }
 
     // ----------------------------------------------------------------
+    /**
+     * Enum representing the lifecycle states of the use case execution.
+     */
     enum class LifeCycle {
+        /**
+         * Indicates that the use case execution has started.
+         */
         OnStart,
+
+        /**
+         * Indicates that the use case execution has finished.
+         */
         OnFinish,
     }
 }
 
 // ----------------------------------------------------------------
+/**
+ * Extension function to get the result of the use case in a coroutine.
+ *
+ * @param param The input parameter for the use case.
+ * @param scope The coroutine scope for execution.
+ * @return The result of the use case.
+ * @throws Throwable if the execution fails.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
     param: PARAM,
