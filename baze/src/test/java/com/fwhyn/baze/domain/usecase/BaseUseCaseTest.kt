@@ -54,7 +54,7 @@ class BaseUseCaseTest {
     }
 
     @Test
-    fun outputShouldCorrespondsTheInput() = runTest {
+    fun outputShouldCorrespondTheInput() = runTest {
         val scope = this
 
         val testInputEqualsOutput = TestInputEqualsOutput()
@@ -177,7 +177,148 @@ class BaseUseCaseTest {
         Assert.assertEquals(finish, thisResults[2])
     }
 
+    @Test
+    fun exzeptionErrorTest() = runTest {
+        val exzeptionError = ExzeptionError()
+        val scope = this
+
+        exzeptionError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Exzeption)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .executeOnBackground(Unit, scope)
+
+        exzeptionError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Exzeption)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .execute(Unit)
+    }
+
+    @Test
+    fun exceptionErrorTest() = runTest {
+        val exceptionError = ExceptionError()
+        val scope = this
+
+        exceptionError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Exception)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .executeOnBackground(Unit, scope)
+
+        exceptionError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Exception)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .execute(Unit)
+    }
+
+    @Test
+    fun throwableErrorTest() = runTest {
+        val throwableError = ThrowableError()
+        val scope = this
+
+        throwableError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Throwable)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .executeOnBackground(Unit, scope)
+
+        throwableError
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Assert.assertTrue(theError is Throwable)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .execute(Unit)
+    }
+
     // ----------------------------------------------------------------
+    class ExzeptionError : BaseUseCase<Unit, Unit>() {
+        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+            run(scope) {
+                throw Exzeption()
+            }
+        }
+
+        override fun execute(param: Unit) {
+            run {
+                throw Exzeption()
+            }
+        }
+    }
+
+    class ExceptionError : BaseUseCase<Unit, Unit>() {
+        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+            run(scope) {
+                throw Exception()
+            }
+        }
+
+        override fun execute(param: Unit) {
+            run {
+                throw Exception()
+            }
+        }
+    }
+
+    class ThrowableError : BaseUseCase<Unit, Unit>() {
+        override fun executeOnBackground(param: Unit, scope: CoroutineScope) {
+            run(scope) {
+                throw Throwable()
+            }
+        }
+
+        override fun execute(param: Unit) {
+            run {
+                throw Throwable()
+            }
+        }
+    }
+
     class TestInputEqualsOutput : BaseUseCase<String, String>() {
         override fun executeOnBackground(param: String, scope: CoroutineScope) {
             runWithResult(scope) {

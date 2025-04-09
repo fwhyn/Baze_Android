@@ -192,14 +192,6 @@ abstract class BaseUseCase<PARAM, RESULT> {
         }
     }
 
-    suspend fun notifyResultFromBackground(
-        result: Rezult<RESULT, Exzeption>,
-    ) {
-        withContext(uiContext) {
-            notifyResult(result)
-        }
-    }
-
     fun notifyResult(
         result: Rezult<RESULT, Exzeption>,
     ) {
