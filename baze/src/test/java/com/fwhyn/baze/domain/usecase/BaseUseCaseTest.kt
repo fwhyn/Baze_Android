@@ -32,7 +32,7 @@ class BaseUseCaseTest {
     private val outputSuccess = "Output: Yana"
     private val outputFailed = "outputFailed"
 
-    private val results: ArrayList<Rezult<String, Exzeption>> = arrayListOf()
+    private val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
 
     @Before
     fun setUp() {
@@ -58,7 +58,7 @@ class BaseUseCaseTest {
         val scope = this
 
         val testInputEqualsOutput = TestInputEqualsOutput()
-        val callback = { result: Rezult<String, Exception> ->
+        val callback = { result: Rezult<String, Throwable> ->
 
             when (result) {
                 is Rezult.Failure -> {
@@ -117,7 +117,7 @@ class BaseUseCaseTest {
             .setResultNotifier {
                 when (it) {
                     is Rezult.Failure -> {
-                        val theError = it.err.throwable
+                        val theError = it.err
                         Log.e(testTag, theError.toString())
                         Assert.assertEquals(true, theError is TimeoutCancellationException)
                     }
@@ -196,6 +196,8 @@ class BaseUseCaseTest {
             .setWorkerContext(coroutineContext)
             .execute(Unit, scope)
 
+        exzeptionError.join()
+
         exzeptionError
             .setResultNotifier {
                 when (it) {
@@ -229,6 +231,8 @@ class BaseUseCaseTest {
             .setWorkerContext(coroutineContext)
             .execute(Unit, scope)
 
+        exceptionError.join()
+
         exceptionError
             .setResultNotifier {
                 when (it) {
@@ -244,16 +248,16 @@ class BaseUseCaseTest {
     }
 
     @Test
-    fun throwableErrorTest() = runTest {
-        val throwableError = ThrowableError()
+    fun securityExceptionErrorTest() = runTest {
+        val securityExceptionError = SecurityExceptionError()
         val scope = this
 
-        throwableError
+        securityExceptionError
             .setResultNotifier {
                 when (it) {
                     is Rezult.Failure -> {
                         val theError = it.err
-                        Assert.assertTrue(theError is Throwable)
+                        Assert.assertTrue(theError is SecurityException)
                     }
 
                     is Rezult.Success -> Util.throwMustNotSuccess()
@@ -262,12 +266,14 @@ class BaseUseCaseTest {
             .setWorkerContext(coroutineContext)
             .execute(Unit, scope)
 
-        throwableError
+        securityExceptionError.join()
+
+        securityExceptionError
             .setResultNotifier {
                 when (it) {
                     is Rezult.Failure -> {
                         val theError = it.err
-                        Assert.assertTrue(theError is Throwable)
+                        Assert.assertTrue(theError is SecurityException)
                     }
 
                     is Rezult.Success -> Util.throwMustNotSuccess()
@@ -293,10 +299,10 @@ class BaseUseCaseTest {
         }
     }
 
-    class ThrowableError : BaseUseCase<Unit, Unit>() {
+    class SecurityExceptionError : BaseUseCase<Unit, Unit>() {
         override fun execute(param: Unit, scope: CoroutineScope) {
             run(scope) {
-                throw Throwable()
+                throw SecurityException()
             }
         }
     }
@@ -325,16 +331,16 @@ class BaseUseCaseTest {
         }
     }
 
-    class CallbackInvocation : (Rezult<String, Exzeption>) -> Unit {
-        var onFailure = mock<(Rezult.Failure<Exzeption>) -> Unit>()
+    class CallbackInvocation : (Rezult<String, Throwable>) -> Unit {
+        var onFailure = mock<(Rezult.Failure<Throwable>) -> Unit>()
         var onSuccess = mock<(Rezult.Success<String>) -> Unit>()
 
-        override fun invoke(result: Rezult<String, Exzeption>) {
+        override fun invoke(result: Rezult<String, Throwable>) {
             when (result) {
                 is Rezult.Failure -> {
                     onFailure(result)
 
-                    verify(onFailure, times(1)).invoke(any<Rezult.Failure<Exzeption>>())
+                    verify(onFailure, times(1)).invoke(any<Rezult.Failure<Throwable>>())
                 }
 
                 is Rezult.Success -> {

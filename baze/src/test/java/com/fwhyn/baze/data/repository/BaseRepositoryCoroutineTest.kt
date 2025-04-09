@@ -1,7 +1,6 @@
 package com.fwhyn.baze.data.repository
 
 import MainDispatcherRule
-import com.fwhyn.baze.data.model.Exzeption
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +48,7 @@ class BaseRepositoryCoroutineTest {
         getDataUseCase
             .setResultNotifier {
                 when (it) {
-                    is Rezult.Failure<Exzeption> -> throw Exception("Must not failed")
+                    is Rezult.Failure<Throwable> -> throw Exception("Must not failed")
                     is Rezult.Success<WeightData> -> Assert.assertEquals(1, it.dat.value)
                 }
             }
@@ -60,7 +59,7 @@ class BaseRepositoryCoroutineTest {
         getDataUseCase
             .setResultNotifier {
                 when (it) {
-                    is Rezult.Failure<Exzeption> -> throw Exception("Must not failed")
+                    is Rezult.Failure<Throwable> -> throw Exception("Must not failed")
                     is Rezult.Success<WeightData> -> Assert.assertEquals(1, it.dat.value)
                 }
             }

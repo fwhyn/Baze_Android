@@ -3,7 +3,6 @@ package com.fwhyn.baze.domain.usecase
 import android.util.Log
 import com.fwhyn.baze.data.helper.Util
 import com.fwhyn.baze.data.helper.extension.getTestTag
-import com.fwhyn.baze.data.model.Exzeption
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +31,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     private var timeOutMillis: Long = 0
 
-    private var resultNotifier: ((Rezult<RESULT, Exzeption>) -> Unit)? = null
+    private var resultNotifier: ((Rezult<RESULT, Throwable>) -> Unit)? = null
     private var lifeCycleNotifier: ((LifeCycle) -> Unit)? = null
 
     private var uiContext: CoroutineContext = Dispatchers.Main
@@ -42,7 +41,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     // ----------------------------------------------------------------
     fun setResultNotifier(
-        resultNotifier: (Rezult<RESULT, Exzeption>) -> Unit,
+        resultNotifier: (Rezult<RESULT, Throwable>) -> Unit,
     ): BaseUseCase<PARAM, RESULT> {
         this.resultNotifier = resultNotifier
 
@@ -124,57 +123,30 @@ abstract class BaseUseCase<PARAM, RESULT> {
                     provideResult(result as RESULT)
                 }
             } catch (e: Throwable) {
-                handleException(e)
+                notifyResult(Rezult.Failure(e))
             }
         }
     }
 
     private suspend fun provideResult(result: RESULT) {
-        withContext(uiContext) {
-            Log.d(debugTag, "Rezult: $result")
+        Log.d(debugTag, "Rezult: $result")
 
-            if (result != null) {
-                notifyResult(
-                    Rezult.Success(result)
-                )
-            } else {
-                notifyResult(
-                    Rezult.Failure(Exzeption())
-                )
-            }
+        if (result != null) {
+            notifyResult(Rezult.Success(result))
+        } else {
+            notifyResult(Rezult.Failure(Throwable()))
         }
     }
 
-    private fun notifyResult(
-        result: Rezult<RESULT, Exzeption>,
-    ) {
-        resultNotifier?.let { it(result) }
-        notifyOnFinish()
+    private suspend fun notifyResult(result: Rezult<RESULT, Throwable>) {
+        withContext(uiContext) {
+            resultNotifier?.let { it(result) }
+            notifyOnFinish()
+        }
     }
 
     private fun notifyOnStart() = lifeCycleNotifier?.let { it(LifeCycle.OnStart) }
     private fun notifyOnFinish() = lifeCycleNotifier?.let { it(LifeCycle.OnFinish) }
-
-    private suspend fun handleException(e: Throwable) {
-        withContext(uiContext) {
-            when (e) {
-                is Exzeption -> {
-                    Log.d(debugTag, "Exzeption ${e.status.msg} ${e.status.code} ${e.throwable?.message}")
-                    notifyResult(Rezult.Failure(e))
-                }
-
-                is Exception -> {
-                    Log.d(debugTag, "Exception ${e.message}")
-                    notifyResult(Rezult.Failure(Exzeption(throwable = e)))
-                }
-
-                else -> {
-                    Log.d(debugTag, "Throwable ${e.message}")
-                    notifyResult(Rezult.Failure(Exzeption(throwable = e)))
-                }
-            }
-        }
-    }
 
     // ----------------------------------------------------------------
     enum class LifeCycle {
