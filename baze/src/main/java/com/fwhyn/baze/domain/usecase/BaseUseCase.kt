@@ -134,7 +134,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
         if (result != null) {
             notifyResult(Rezult.Success(result))
         } else {
-            notifyResult(Rezult.Failure(Throwable()))
+            notifyResult(Rezult.Failure(Throwable("Result is null")))
         }
     }
 
