@@ -4,13 +4,14 @@ import android.util.Log
 import com.fwhyn.baze.data.helper.Util
 import com.fwhyn.baze.data.helper.extension.getTestTag
 import com.fwhyn.baze.data.model.Exzeption
-import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
@@ -147,6 +148,11 @@ abstract class BaseUseCase<PARAM, RESULT> {
                 notifyResultFromBackground(
                     Rezult.Failure(Exzeption(throwable = e))
                 )
+            } catch (e: Throwable) {
+                Log.d(debugTag, "Throwable ${e.message}")
+                notifyResultFromBackground(
+                    Rezult.Failure(Exzeption(throwable = e))
+                )
             }
         }
     }
@@ -187,6 +193,11 @@ abstract class BaseUseCase<PARAM, RESULT> {
             )
         } catch (e: Exception) {
             Log.d(debugTag, "Exception ${e.message}")
+            notifyResult(
+                Rezult.Failure(Exzeption(throwable = e))
+            )
+        } catch (e: Throwable) {
+            Log.d(debugTag, "Throwable ${e.message}")
             notifyResult(
                 Rezult.Failure(Exzeption(throwable = e))
             )
@@ -238,20 +249,22 @@ abstract class BaseUseCase<PARAM, RESULT> {
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResultInBackground(
     param: PARAM,
     scope: CoroutineScope,
-): RESULT {
-    var result: RESULT? = null
-
+): RESULT = suspendCancellableCoroutine { continuation ->
     setResultNotifier {
         when (it) {
             is Rezult.Failure -> throw it.err
-            is Rezult.Success -> result = it.dat
+            is Rezult.Success -> {
+                if (continuation.isActive) {
+                    continuation.resume(it.dat) {
+                        throw it
+                    }
+                }
+            }
         }
     }
     executeOnBackground(param, scope)
-    join()
-
-    return result ?: throw Exzeption(status = Status.NotFound)
 }

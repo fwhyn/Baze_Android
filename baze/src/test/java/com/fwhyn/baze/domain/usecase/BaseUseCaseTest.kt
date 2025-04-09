@@ -130,6 +130,18 @@ class BaseUseCaseTest {
     }
 
     @Test
+    fun getResultInBackgroundTest() = runTest {
+        val scope = this
+        val testInputEqualsOutput = TestInputEqualsOutput()
+
+        val output = testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .getResultInBackground(input, scope)
+
+        Assert.assertEquals("Output: $input", output)
+    }
+
+    @Test
     fun callbackOrderTest() = runTest {
         val scope = this
         val thisResults: ArrayList<String> = arrayListOf()
