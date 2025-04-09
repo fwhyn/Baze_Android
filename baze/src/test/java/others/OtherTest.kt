@@ -1,4 +1,4 @@
-package com.fwhyn.baze.data.helper
+package others
 
 import com.fwhyn.baze.data.model.Exzeption
 import org.junit.Test

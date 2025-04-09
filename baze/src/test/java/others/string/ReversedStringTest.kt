@@ -1,4 +1,4 @@
-package com.fwhyn.baze.data.helper.string
+package others.string
 
 import org.junit.Assert
 import org.junit.Test
