@@ -64,7 +64,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     fun cancelPreviousActiveJob(): BaseUseCase<PARAM, RESULT> {
         if (job?.isActive == true) {
-            Log.d(debugTag, "Cancel Job: $job")
+            Log.d(debugTag, "Cancelling job: $job")
             job?.cancel()
 
             jobId = Util.getUniqueId()
@@ -106,16 +106,16 @@ abstract class BaseUseCase<PARAM, RESULT> {
         notifyOnStart()
 
         job = scope.launch(workerContext + SupervisorJob()) {
-            Log.d(debugTag, "Job Launched")
+            Log.d(debugTag, "Job is launched")
 
             try {
                 val result = if (timeOutMillis > 0) {
                     withTimeout(timeOutMillis) {
-                        Log.d(debugTag, "RunApi with Timeout Invoked")
+                        Log.d(debugTag, "RunApi with Timeout is invoked")
                         runAPi()
                     }
                 } else {
-                    Log.d(debugTag, "RunApi Invoked")
+                    Log.d(debugTag, "RunApi is invoked")
                     runAPi()
                 }
 
