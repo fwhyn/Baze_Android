@@ -36,18 +36,18 @@ object Util {
     }
 
     @JvmStatic
-    fun throwTestMustNotFailed() {
-        throw Exception("Test must not failed")
+    fun throwMustNotFailed() {
+        throw Exception("Must not failed")
     }
 
     @JvmStatic
     fun throwMustNoLoading() {
-        throw Exception("Test must no loading")
+        throw Exception("Must no loading")
     }
 
     @JvmStatic
     fun throwMustNotSuccess() {
-        throw Exception("Test must not success")
+        throw Exception("Must not success")
     }
 
     @JvmStatic

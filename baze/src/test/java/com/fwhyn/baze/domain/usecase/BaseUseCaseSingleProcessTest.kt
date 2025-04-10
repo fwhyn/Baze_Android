@@ -29,10 +29,8 @@ class BaseUseCaseSingleProcessTest {
 
     private val input = "Yana"
     private val outputSuccess = "Output: Yana"
-    private val outputFailed = "outputFailed"
 
-    private val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
-
+    // ----------------------------------------------------------------
     @Before
     fun setUp() {
     }
@@ -41,6 +39,7 @@ class BaseUseCaseSingleProcessTest {
     fun tearDown() {
     }
 
+    // ----------------------------------------------------------------
     @Test
     fun dataShouldBeHelloWorld() = runTest {
         val data = fetchData()
@@ -53,8 +52,110 @@ class BaseUseCaseSingleProcessTest {
     }
 
     @Test
+    fun setWithResultTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+
+        // Test with result enabled
+        testInputEqualsOutput
+            .setWithResult(true)
+            .setResultNotifier { result ->
+                when (result) {
+                    is Rezult.Failure -> Util.throwMustNotFailed()
+                    is Rezult.Success -> results.add(result)
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
+
+        // Test with result disabled
+        results.clear()
+        testInputEqualsOutput
+            .setWithResult(false)
+            .setResultNotifier { result ->
+                Util.throwMustNotFailed() // Should not be called
+            }
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertTrue(results.isEmpty())
+    }
+
+    @Test
+    fun setTimeOutMillisTest() = runTest {
+        val testTimeOut = TestTimeOut()
+        val scope = this
+
+        testTimeOut
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> {
+                        val theError = it.err
+                        Log.e(testTag, theError.toString())
+                        Assert.assertEquals(true, theError is TimeoutCancellationException)
+                    }
+
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .execute(Unit, scope)
+    }
+
+    @Test
+    fun getIdTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+
+        // Execute the use case
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        val initialId = testInputEqualsOutput.getId()
+        Assert.assertTrue(initialId.isNotEmpty())
+
+        // Cancel the active job and verify the ID changes
+        testInputEqualsOutput.cancelPreviousActiveJob()
+        val newId = testInputEqualsOutput.getId()
+        Assert.assertTrue(newId.isNotEmpty())
+        Assert.assertNotEquals(initialId, newId)
+    }
+
+    @Test
+    fun setUiContextTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+
+        // Set a custom UI context
+        val customUiContext = coroutineContext
+        testInputEqualsOutput
+            .setUiContext(customUiContext)
+            .setResultNotifier { result ->
+                when (result) {
+                    is Rezult.Failure -> Util.throwMustNotFailed()
+                    is Rezult.Success -> results.add(result)
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
+    }
+
+    @Test
     fun outputShouldCorrespondTheInput() = runTest {
         val scope = this
+        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
 
         val testInputEqualsOutput = TestInputEqualsOutput()
         val callback = { result: Rezult<String, Throwable> ->
@@ -62,7 +163,7 @@ class BaseUseCaseSingleProcessTest {
             when (result) {
                 is Rezult.Failure -> {
                     print(result.err.message)
-                    Util.throwTestMustNotFailed()
+                    Util.throwMustNotFailed()
                 }
 
                 is Rezult.Success -> {
@@ -94,7 +195,7 @@ class BaseUseCaseSingleProcessTest {
     }
 
     @Test
-    fun callbackInvocation() = runTest {
+    fun callbackInvocationTest() = runTest {
         val testInputEqualsOutput = TestInputEqualsOutput()
         val scope = this
         val input = "Yana"
@@ -108,27 +209,6 @@ class BaseUseCaseSingleProcessTest {
     }
 
     @Test
-    fun timeoutTest() = runTest {
-        val testTimeOut = TestTimeOut()
-        val scope = this
-
-        testTimeOut
-            .setResultNotifier {
-                when (it) {
-                    is Rezult.Failure -> {
-                        val theError = it.err
-                        Log.e(testTag, theError.toString())
-                        Assert.assertEquals(true, theError is TimeoutCancellationException)
-                    }
-
-                    is Rezult.Success -> Util.throwMustNotSuccess()
-                }
-            }
-            .setWorkerContext(coroutineContext)
-            .execute(Unit, scope)
-    }
-
-    @Test
     fun getResultInBackgroundTest() = runTest {
         val scope = this
         val testInputEqualsOutput = TestInputEqualsOutput()
@@ -137,7 +217,7 @@ class BaseUseCaseSingleProcessTest {
             .setWorkerContext(coroutineContext)
             .getResult(input, scope)
 
-        Assert.assertEquals("Output: $input", output)
+        Assert.assertEquals(outputSuccess, output)
     }
 
     @Test
@@ -160,7 +240,7 @@ class BaseUseCaseSingleProcessTest {
                 when (it) {
                     is Rezult.Failure -> {
                         print(it.err.message)
-                        Util.throwTestMustNotFailed()
+                        Util.throwMustNotFailed()
                     }
 
                     is Rezult.Success -> thisResults.add(success)
@@ -174,6 +254,33 @@ class BaseUseCaseSingleProcessTest {
         Assert.assertEquals(start, thisResults[0])
         Assert.assertEquals(success, thisResults[1])
         Assert.assertEquals(finish, thisResults[2])
+    }
+
+    @Test
+    fun cancelJobIfActiveTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+
+        testInputEqualsOutput
+            .setResultNotifier {
+                when (it) {
+                    is Rezult.Failure -> Util.throwMustNotFailed()
+                    is Rezult.Success -> Util.throwMustNotSuccess()
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .setTimeOutMillis(10000)
+            .execute(input, scope)
+
+        val oldId = testInputEqualsOutput.getId()
+        println(oldId)
+
+        testInputEqualsOutput.cancelPreviousActiveJob()
+
+        val newId = testInputEqualsOutput.getId()
+        println(newId)
+
+        Assert.assertTrue(oldId != newId)
     }
 
     @Test
