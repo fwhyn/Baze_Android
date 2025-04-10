@@ -10,10 +10,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 
 class BaseUseCaseMultiProcessTest {
 
@@ -136,44 +132,6 @@ class BaseUseCaseMultiProcessTest {
         override suspend fun onRunning(param: String): String {
             delay(1000)
             return "Output: $param"
-        }
-    }
-
-    class TestTimeOut : BaseUseCase<Unit, Unit>() {
-
-        init {
-            setTimeOutMillis(1000)
-        }
-
-        override suspend fun onRunning(param: Unit) {
-            loading()
-        }
-
-        suspend fun loading() {
-            while (true) {
-                delay(1)
-            }
-        }
-    }
-
-    class CallbackInvocation : (Rezult<String, Throwable>) -> Unit {
-        var onFailure = mock<(Rezult.Failure<Throwable>) -> Unit>()
-        var onSuccess = mock<(Rezult.Success<String>) -> Unit>()
-
-        override fun invoke(result: Rezult<String, Throwable>) {
-            when (result) {
-                is Rezult.Failure -> {
-                    onFailure(result)
-
-                    verify(onFailure, times(1)).invoke(any<Rezult.Failure<Throwable>>())
-                }
-
-                is Rezult.Success -> {
-                    onSuccess(result)
-
-                    verify(onSuccess, times(1)).invoke(any<Rezult.Success<String>>())
-                }
-            }
         }
     }
 }

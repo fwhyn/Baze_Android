@@ -43,7 +43,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
 
     private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.IO
-    private var job: Job? = null
+    protected open var job: Job? = null
         set(value) {
             cancelPreviousActiveJob()
             jobId = Util.getUniqueId()
