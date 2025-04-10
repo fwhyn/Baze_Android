@@ -44,6 +44,11 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.IO
     private var job: Job? = null
+        set(value) {
+            cancelPreviousActiveJob()
+            jobId = Util.getUniqueId()
+            field = value
+        }
 
     private var resultNotifier: ((Rezult<RESULT, Throwable>) -> Unit)? = null
     private var lifeCycleNotifier: ((LifeCycle) -> Unit)? = null
@@ -141,8 +146,6 @@ abstract class BaseUseCase<PARAM, RESULT> {
         if (job?.isActive == true) {
             Log.d(debugTag, "Cancelling job: $job")
             job?.cancel()
-
-            jobId = Util.getUniqueId()
         }
 
         return this

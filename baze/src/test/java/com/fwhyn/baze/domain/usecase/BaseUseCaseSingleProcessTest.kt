@@ -121,10 +121,14 @@ class BaseUseCaseSingleProcessTest {
         val initialId = testInputEqualsOutput.getId()
         Assert.assertTrue(initialId.isNotEmpty())
 
-        // Cancel the active job and verify the ID changes
+        // Cancel the active job and verify the ID remains the same
         testInputEqualsOutput.cancelPreviousActiveJob()
+        val sameId = testInputEqualsOutput.getId()
+        Assert.assertEquals(initialId, sameId)
+
+        // Execute a new job and verify the ID changes
+        testInputEqualsOutput.execute(input, scope)
         val newId = testInputEqualsOutput.getId()
-        Assert.assertTrue(newId.isNotEmpty())
         Assert.assertNotEquals(initialId, newId)
     }
 
@@ -310,26 +314,24 @@ class BaseUseCaseSingleProcessTest {
         val testInputEqualsOutput = TestInputEqualsOutput()
         val scope = this
 
+        // Start the first job
         testInputEqualsOutput
-            .setResultNotifier {
-                when (it) {
-                    is Rezult.Failure -> Util.throwMustNotFailed()
-                    is Rezult.Success -> Util.throwMustNotSuccess()
-                }
-            }
             .setWorkerContext(coroutineContext)
             .setTimeOutMillis(10000)
             .execute(input, scope)
 
         val oldId = testInputEqualsOutput.getId()
-        println(oldId)
+        Assert.assertTrue(oldId.isNotEmpty())
 
+        // Cancel the active job and verify the ID remains the same
         testInputEqualsOutput.cancelPreviousActiveJob()
+        val sameId = testInputEqualsOutput.getId()
+        Assert.assertEquals(oldId, sameId)
 
+        // Start a new job and verify the ID changes
+        testInputEqualsOutput.execute(input, scope)
         val newId = testInputEqualsOutput.getId()
-        println(newId)
-
-        Assert.assertTrue(oldId != newId)
+        Assert.assertNotEquals(oldId, newId)
     }
 
     @Test
