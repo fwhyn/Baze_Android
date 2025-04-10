@@ -3,7 +3,6 @@ package com.fwhyn.baze.data.repository
 import MainDispatcherRule
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -69,10 +68,9 @@ class BaseRepositoryCoroutineTest {
 
     // ----------------------------------------------------------------
     class GetDataUseCase(val dataSource: BaseRepositoryCoroutine<Unit, WeightData>) : BaseUseCase<Unit, WeightData>() {
-        override fun execute(param: Unit, scope: CoroutineScope) {
-            runWithResult(scope) {
-                dataSource.get(param)
-            }
+
+        override suspend fun onRunning(param: Unit): WeightData {
+            return dataSource.get(param)
         }
     }
 

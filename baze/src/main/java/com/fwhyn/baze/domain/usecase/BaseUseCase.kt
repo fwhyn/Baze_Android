@@ -37,41 +37,26 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private val debugTag = BaseUseCase::class.java.getTestTag()
     protected open var jobId = Util.getUniqueId()
 
+    private var withResult: Boolean = true
+
     private var timeOutMillis: Long = 0
+
+    private var uiContext: CoroutineContext = Dispatchers.Main
+    private var workerContext: CoroutineContext = Dispatchers.IO
+    private var job: Job? = null
 
     private var resultNotifier: ((Rezult<RESULT, Throwable>) -> Unit)? = null
     private var lifeCycleNotifier: ((LifeCycle) -> Unit)? = null
 
-    private var uiContext: CoroutineContext = Dispatchers.Main
-    private var workerContext: CoroutineContext = Dispatchers.IO
-
-    private var job: Job? = null
-
     // ----------------------------------------------------------------
     /**
-     * Sets the result notifier for the use case.
+     * Sets whether the use case should return a result.
      *
-     * @param resultNotifier A lambda function to handle the result of the use case.
+     * @param withResult A boolean indicating if the result should be returned.
      * @return The current instance of the use case.
      */
-    fun setResultNotifier(
-        resultNotifier: (Rezult<RESULT, Throwable>) -> Unit,
-    ): BaseUseCase<PARAM, RESULT> {
-        this.resultNotifier = resultNotifier
-
-        return this
-    }
-
-    /**
-     * Sets the lifecycle notifier for the use case.
-     *
-     * @param lifeCycleNotifier A lambda function to handle lifecycle events.
-     * @return The current instance of the use case.
-     */
-    fun setLifeCycleNotifier(
-        lifeCycleNotifier: (LifeCycle) -> Unit,
-    ): BaseUseCase<PARAM, RESULT> {
-        this.lifeCycleNotifier = lifeCycleNotifier
+    fun setWithResult(withResult: Boolean): BaseUseCase<PARAM, RESULT> {
+        this.withResult = withResult
 
         return this
     }
@@ -82,24 +67,8 @@ abstract class BaseUseCase<PARAM, RESULT> {
      * @param time Timeout duration in milliseconds.
      * @return The current instance of the use case.
      */
-    protected fun setTimeOut(time: Long): BaseUseCase<PARAM, RESULT> {
+    fun setTimeOutMillis(time: Long): BaseUseCase<PARAM, RESULT> {
         timeOutMillis = time
-
-        return this
-    }
-
-    /**
-     * Cancels the currently active job, if any.
-     *
-     * @return The current instance of the use case.
-     */
-    fun cancelPreviousActiveJob(): BaseUseCase<PARAM, RESULT> {
-        if (job?.isActive == true) {
-            Log.d(debugTag, "Cancelling job: $job")
-            job?.cancel()
-
-            jobId = Util.getUniqueId()
-        }
 
         return this
     }
@@ -136,9 +105,51 @@ abstract class BaseUseCase<PARAM, RESULT> {
     }
 
     /**
-     * Waits for the current job to complete.
+     * Sets the result notifier for the use case.
      *
-     * @throws CancellationException if the job is cancelled.
+     * @param resultNotifier A lambda function to handle the result of the use case.
+     * @return The current instance of the use case.
+     */
+    fun setResultNotifier(
+        resultNotifier: (Rezult<RESULT, Throwable>) -> Unit,
+    ): BaseUseCase<PARAM, RESULT> {
+        this.resultNotifier = resultNotifier
+
+        return this
+    }
+
+    /**
+     * Sets the lifecycle notifier for the use case.
+     *
+     * @param lifeCycleNotifier A lambda function to handle lifecycle events.
+     * @return The current instance of the use case.
+     */
+    fun setLifeCycleNotifier(
+        lifeCycleNotifier: (LifeCycle) -> Unit,
+    ): BaseUseCase<PARAM, RESULT> {
+        this.lifeCycleNotifier = lifeCycleNotifier
+
+        return this
+    }
+
+    /**
+     * Cancels the currently active job, if any.
+     *
+     * @return The current instance of the use case.
+     */
+    fun cancelPreviousActiveJob(): BaseUseCase<PARAM, RESULT> {
+        if (job?.isActive == true) {
+            Log.d(debugTag, "Cancelling job: $job")
+            job?.cancel()
+
+            jobId = Util.getUniqueId()
+        }
+
+        return this
+    }
+
+    /**
+     * Waits for the current job to complete.
      */
     suspend fun join() = job?.join()
 
@@ -149,23 +160,16 @@ abstract class BaseUseCase<PARAM, RESULT> {
      * @param param The input parameter for the use case.
      * @param scope The coroutine scope for execution.
      */
-    open fun execute(param: PARAM, scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) {}
+    fun execute(param: PARAM, scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) {
+        runInternally(scope, { onRunning(param) }, withResult)
+    }
 
     /**
-     * Runs the use case with a result-producing operation.
+     * Executes the use case with the given parameter and coroutine scope.
      *
-     * @param scope The coroutine scope for execution.
-     * @param runAPi A suspend function that produces the result.
+     * @param param The input parameter for the use case.
      */
-    protected open fun runWithResult(scope: CoroutineScope, runAPi: suspend () -> RESULT) = runInternally(scope, runAPi)
-
-    /**
-     * Runs the use case with a non-result-producing operation.
-     *
-     * @param scope The coroutine scope for execution.
-     * @param runAPi A suspend function to execute.
-     */
-    protected open fun run(scope: CoroutineScope, runAPi: suspend () -> Unit) = runInternally(scope, runAPi, false)
+    protected abstract suspend fun onRunning(param: PARAM): RESULT
 
     private fun <T> runInternally(
         scope: CoroutineScope,

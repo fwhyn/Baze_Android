@@ -1,7 +1,7 @@
 package com.fwhyn.deandro.di
 
 import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
-import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
+import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
@@ -28,14 +28,14 @@ class AuthModule {
     @Provides
     fun provideGetTokenUseCase(
         tokenRepository: BaseRepositoryCoroutine<LoginParam?, UserToken?>,
-    ): BaseUseCaseRemote<LoginParam, UserToken?> {
+    ): BaseUseCase<LoginParam, UserToken?> {
         return GetTokenUseCase(tokenRepository)
     }
 
     @Provides
     fun provideSetTokenUseCase(
         tokenRepository: BaseRepositoryCoroutine<LoginParam?, UserToken?>,
-    ): BaseUseCaseRemote<UserToken?, Unit> {
+    ): BaseUseCase<UserToken?, Unit> {
         return SetTokenUseCase(tokenRepository)
     }
 

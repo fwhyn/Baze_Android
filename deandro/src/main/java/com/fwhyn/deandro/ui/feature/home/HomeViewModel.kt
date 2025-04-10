@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
-import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.UserToken
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
-    private val setTokenUseCase: BaseUseCaseRemote<UserToken?, Unit>,
+    private val setTokenUseCase: BaseUseCase<UserToken?, Unit>,
 //    private val setLinkUseCase: BaseUseCase<LinkSetParam, Unit>,
 //    private val setImagesUseCase: BaseUseCase<List<ImageSetParam>, Unit>,
 ) : HomeVmInterface() {
@@ -32,7 +31,12 @@ class HomeViewModel @Inject constructor(
         setTokenUseCase
             .setResultNotifier {
                 when (it) {
-                    is Rezult.Failure -> activityRetainedState.showNotification(messageHandler.getMessage(it.err.status))
+                    is Rezult.Failure -> {
+                        activityRetainedState.showNotification(
+                            messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
+                        )
+                    }
+
                     is Rezult.Success -> uiState.state = HomeUiState.State.LoggedOut()
                 }
             }

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
-import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.LoginParam
@@ -19,7 +18,7 @@ class LoginViewModel @Inject constructor(
     val loginUiState: LoginUiState,
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
-    private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
+    private val getTokenUseCase: BaseUseCase<LoginParam, UserToken?>,
 ) : LoginVmInterface() {
 
     companion object {
@@ -65,7 +64,9 @@ class LoginViewModel @Inject constructor(
                 when (it) {
                     is Rezult.Failure -> {
                         if (loginUiState.tryCount > 0) {
-                            activityRetainedState.showNotification(messageHandler.getMessage(it.err.status))
+                            activityRetainedState.showNotification(
+                                messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
+                            )
                         }
                     }
 

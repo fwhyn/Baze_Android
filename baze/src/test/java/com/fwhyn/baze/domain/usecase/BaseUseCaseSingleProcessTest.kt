@@ -6,7 +6,6 @@ import com.fwhyn.baze.data.helper.Util
 import com.fwhyn.baze.data.helper.extension.getTestTag
 import com.fwhyn.baze.data.model.Exzeption
 import com.fwhyn.baze.domain.helper.Rezult
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -21,9 +20,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
-class BaseUseCaseTest {
+class BaseUseCaseSingleProcessTest {
 
-    val testTag = BaseUseCaseTest::class.java.getTestTag()
+    val testTag = BaseUseCaseSingleProcessTest::class.java.getTestTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -284,44 +283,38 @@ class BaseUseCaseTest {
 
     // ----------------------------------------------------------------
     class ExzeptionError : BaseUseCase<Unit, Unit>() {
-        override fun execute(param: Unit, scope: CoroutineScope) {
-            run(scope) {
-                throw Exzeption()
-            }
+        override suspend fun onRunning(param: Unit) {
+            throw Exzeption()
         }
     }
 
     class ExceptionError : BaseUseCase<Unit, Unit>() {
-        override fun execute(param: Unit, scope: CoroutineScope) {
-            run(scope) {
-                throw Exception()
-            }
+        override suspend fun onRunning(param: Unit) {
+            throw Exception()
         }
     }
 
     class SecurityExceptionError : BaseUseCase<Unit, Unit>() {
-        override fun execute(param: Unit, scope: CoroutineScope) {
-            run(scope) {
-                throw SecurityException()
-            }
+        override suspend fun onRunning(param: Unit) {
+            throw SecurityException()
         }
     }
 
     class TestInputEqualsOutput : BaseUseCase<String, String>() {
-        override fun execute(param: String, scope: CoroutineScope) {
-            runWithResult(scope) {
-                delay(1000)
-                "Output: $param"
-            }
+        override suspend fun onRunning(param: String): String {
+            delay(1000)
+            return "Output: $param"
         }
     }
 
     class TestTimeOut : BaseUseCase<Unit, Unit>() {
-        override fun execute(param: Unit, scope: CoroutineScope) {
-            setTimeOut(1000)
-            runWithResult(scope) {
-                loading()
-            }
+
+        init {
+            setTimeOutMillis(1000)
+        }
+
+        override suspend fun onRunning(param: Unit) {
+            loading()
         }
 
         suspend fun loading() {

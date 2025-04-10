@@ -15,7 +15,7 @@ import javax.inject.Inject
 class LoginUiState @Inject constructor() {
 
     var tryCount: Int = 0
-    var loginResult: Rezult<UserToken?, Exception>? = null
+    var loginResult: Rezult<UserToken?, Throwable>? = null
     var state: State by mutableStateOf(State.NotLoggedIn())
 
     sealed class State() : SingleEvent<Boolean>(true) {
@@ -33,6 +33,6 @@ class LoginUiState @Inject constructor() {
         }
 
         class LoggedIn : State("LoggedIn")
-        class NotLoggedIn : State("LoggedIn")
+        class NotLoggedIn : State("NotLoggedIn")
     }
 }
