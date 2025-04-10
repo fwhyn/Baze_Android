@@ -153,6 +153,67 @@ class BaseUseCaseSingleProcessTest {
     }
 
     @Test
+    fun setWorkerContextTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+
+        // Set a custom worker context
+        val customWorkerContext = coroutineContext
+        testInputEqualsOutput
+            .setWorkerContext(customWorkerContext)
+            .setResultNotifier { result ->
+                when (result) {
+                    is Rezult.Failure -> Util.throwMustNotFailed()
+                    is Rezult.Success -> results.add(result)
+                }
+            }
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
+    }
+
+    @Test
+    fun setResultNotifierTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+
+        testInputEqualsOutput
+            .setResultNotifier { result ->
+                when (result) {
+                    is Rezult.Failure -> Util.throwMustNotFailed()
+                    is Rezult.Success -> results.add(result)
+                }
+            }
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
+    }
+
+    @Test
+    fun setLifeCycleNotifierTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val lifeCycleEvents: ArrayList<BaseUseCase.LifeCycle> = arrayListOf()
+
+        testInputEqualsOutput
+            .setLifeCycleNotifier { event -> lifeCycleEvents.add(event) }
+            .setWorkerContext(coroutineContext)
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(2, lifeCycleEvents.size)
+        Assert.assertEquals(BaseUseCase.LifeCycle.OnStart, lifeCycleEvents[0])
+        Assert.assertEquals(BaseUseCase.LifeCycle.OnFinish, lifeCycleEvents[1])
+    }
+
+    @Test
     fun outputShouldCorrespondTheInput() = runTest {
         val scope = this
         val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
@@ -206,18 +267,6 @@ class BaseUseCaseSingleProcessTest {
             .setResultNotifier(callback)
             .setWorkerContext(coroutineContext)
             .execute(input, scope)
-    }
-
-    @Test
-    fun getResultInBackgroundTest() = runTest {
-        val scope = this
-        val testInputEqualsOutput = TestInputEqualsOutput()
-
-        val output = testInputEqualsOutput
-            .setWorkerContext(coroutineContext)
-            .getResult(input, scope)
-
-        Assert.assertEquals(outputSuccess, output)
     }
 
     @Test
@@ -281,6 +330,33 @@ class BaseUseCaseSingleProcessTest {
         println(newId)
 
         Assert.assertTrue(oldId != newId)
+    }
+
+    @Test
+    fun joinTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        var isJobCompleted = false
+
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .setResultNotifier { isJobCompleted = true }
+            .execute(input, scope)
+
+        testInputEqualsOutput.join()
+        Assert.assertTrue(isJobCompleted)
+    }
+
+    @Test
+    fun getResultInBackgroundTest() = runTest {
+        val scope = this
+        val testInputEqualsOutput = TestInputEqualsOutput()
+
+        val output = testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .getResult(input, scope)
+
+        Assert.assertEquals(outputSuccess, output)
     }
 
     @Test
