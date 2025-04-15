@@ -1,4 +1,4 @@
-package com.fwhyn.baze
+package com.fwhyn.myapuri
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

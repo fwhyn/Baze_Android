@@ -1,18 +1,28 @@
 package com.fwhyn.deandro.data.model.auth
 
+import android.app.Activity
 import com.google.gson.annotations.SerializedName
 
-data class LoginParam(
-    @SerializedName("username") val username: String,
-    @SerializedName("password") val password: String,
-) {
-    @SerializedName("id_atm_sehat_kit")
-    val id: String = "rspon1"
-    var forceLogin: ForceLogin = ForceLogin.NO
-    var remember: Boolean = false
+sealed class LoginParam() {
 
-    fun isNotEmpty(): Boolean {
-        return username.isNotEmpty() && username.isNotEmpty()
+    data class Google(
+        val activity: Activity,
+    ) : LoginParam()
+
+    data object Local : LoginParam()
+
+    data class MyServer(
+        @SerializedName("username") val username: String,
+        @SerializedName("password") val password: String,
+    ) : LoginParam() {
+        @SerializedName("id_atm_sehat_kit")
+        val id: String = "rspon1"
+        var forceLogin: ForceLogin = ForceLogin.NO
+        var remember: Boolean = false
+
+        fun isNotEmpty(): Boolean {
+            return username.isNotEmpty() && username.isNotEmpty()
+        }
     }
 
     enum class ForceLogin(val data: Int) {

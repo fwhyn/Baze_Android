@@ -1,19 +1,15 @@
 package com.fwhyn.deandro.ui.feature.auth
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
-import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
-import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,15 +18,11 @@ class LoginViewModel @Inject constructor(
     val loginUiState: LoginUiState,
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
-    private val getTokenUseCase: BaseUseCaseRemote<LoginParam, UserToken?>,
-    private val credentialLocalDataSource: CredentialLocalDataSource,
+    private val getTokenUseCase: BaseUseCase<LoginParam, UserToken?>,
 ) : LoginVmInterface() {
 
     companion object {
         const val MAX_LOGIN_TRY = 3
-
-        const val LOGIN_SUCCESS = "LOGIN_SUCCESS"
-        const val LOGIN_FAILED = "LOGIN_FAILED"
     }
 
     init {
@@ -38,7 +30,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun init() {
-        getToken()
+        getToken(LoginParam.Local)
     }
 
     override fun onEmailValueChange(value: String) {
@@ -54,32 +46,27 @@ class LoginViewModel @Inject constructor(
     }
 
     @SuppressLint("NewApi")
-    override fun onLogin(context: Context) {
-        viewModelScope.launch {
-            activityRetainedState.showLoading()
-            credentialLocalDataSource.createPasskey(context)
-            activityRetainedState.dismissLoading()
-        }
-//        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
-//
-//        getToken()
+    override fun onLogin(loginParam: LoginParam) {
+        loginUiState.tryCount = getTryCount(loginUiState.tryCount)
+
+        getToken(loginParam)
     }
 
-//    override fun onCalledFromBackStack() {
-//        loginUiState.run {
-//            if (loginResult is Rezult.Success) {
-//                state = LoginUiState.State.OnFinish()
-//            }
-//        }
-//    }
+    override fun onCalledFromBackStack() {
+        if (loginUiState.loginResult is Rezult.Success) {
+            loginUiState.state = LoginUiState.State.LoggedIn()
+        }
+    }
 
-    private fun getToken() {
+    private fun getToken(loginParam: LoginParam) {
         getTokenUseCase
             .setResultNotifier {
                 when (it) {
                     is Rezult.Failure -> {
                         if (loginUiState.tryCount > 0) {
-                            activityRetainedState.showNotification(messageHandler.getMessage(it.err.status))
+                            activityRetainedState.showNotification(
+                                messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
+                            )
                         }
                     }
 
@@ -98,7 +85,7 @@ class LoginViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .executeOnBackground(loginUiData.loginData, viewModelScope)
+            .execute(loginParam, viewModelScope)
     }
 
     private fun getTryCount(prevValue: Int): Int {

@@ -1,9 +1,9 @@
-package com.fwhyn.baze.data.helper.array
+package others.array
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ReversedTest {
+class ReversedArrayTest {
 
     @Test
     fun reversedWithNewObjectTest() {

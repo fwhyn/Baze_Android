@@ -1,0 +1,14 @@
+################################################################
+# Add bellow properties to C:\Users\UserName\.gradle\gradle.properties
+#
+################################################################
+# Properties for Maven Publish
+ossrhPassword=Please fill the ossrhPassword here
+ossrhUsername=Please fill the ossrhUsername here
+signing.keyId=Please fill the signing.keyId here
+signing.password=Please fill the signing.password here
+signing.secretKeyRingFile=Please fill the signing.secretKeyRingFile here.Example: C\:/Users/UserName/.gnupg/secring.gpg
+#
+################################################################
+# Google Sign In
+WEB_CLIENT_ID=Please fill the WEB_CLIENT_ID here

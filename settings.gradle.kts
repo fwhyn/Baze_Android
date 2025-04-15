@@ -23,3 +23,4 @@ pluginManagement {
 rootProject.name = "Baze"
 include(":deandro")
 include(":baze")
+include(":myapuri")

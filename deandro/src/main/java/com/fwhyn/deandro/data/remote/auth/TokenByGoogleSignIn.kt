@@ -10,6 +10,7 @@ import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
 import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.deandro.BuildConfig
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -21,17 +22,16 @@ class TokenByGoogleSignIn @Inject constructor() {
 
     companion object {
         private val TAG = TokenByGoogleSignIn::class.java.getTestTag()
-        private const val WEB_CLIENT_ID = "269798095457-8gk7i3r85p4atv1tt4q0fgttpt3pgv3h.apps.googleusercontent.com"
     }
 
     private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
         .setFilterByAuthorizedAccounts(true)
-        .setServerClientId(WEB_CLIENT_ID)
+        .setServerClientId(BuildConfig.WEB_CLIENT_ID)
         .setAutoSelectEnabled(true)
         .build()
 
     private val signInWithGoogleOption: GetSignInWithGoogleOption =
-        GetSignInWithGoogleOption.Builder(WEB_CLIENT_ID).build()
+        GetSignInWithGoogleOption.Builder(BuildConfig.WEB_CLIENT_ID).build()
 
     private val request: GetCredentialRequest = GetCredentialRequest.Builder()
         .addCredentialOption(signInWithGoogleOption)

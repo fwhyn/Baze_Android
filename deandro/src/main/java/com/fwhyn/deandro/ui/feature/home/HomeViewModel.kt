@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
-import com.fwhyn.baze.domain.usecase.BaseUseCaseRemote
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
 import com.fwhyn.deandro.data.model.auth.UserToken
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
-    private val setTokenUseCase: BaseUseCaseRemote<UserToken?, Unit>,
+    private val setTokenUseCase: BaseUseCase<UserToken?, Unit>,
 //    private val setLinkUseCase: BaseUseCase<LinkSetParam, Unit>,
 //    private val setImagesUseCase: BaseUseCase<List<ImageSetParam>, Unit>,
 ) : HomeVmInterface() {
@@ -32,7 +31,12 @@ class HomeViewModel @Inject constructor(
         setTokenUseCase
             .setResultNotifier {
                 when (it) {
-                    is Rezult.Failure -> activityRetainedState.showNotification(messageHandler.getMessage(it.err.status))
+                    is Rezult.Failure -> {
+                        activityRetainedState.showNotification(
+                            messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
+                        )
+                    }
+
                     is Rezult.Success -> uiState.state = HomeUiState.State.LoggedOut()
                 }
             }
@@ -42,7 +46,7 @@ class HomeViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .executeOnBackground(null, viewModelScope)
+            .execute(null, viewModelScope)
     }
 
     override fun onAddPhoto() {
@@ -64,7 +68,7 @@ class HomeViewModel @Inject constructor(
 //                        is Results.Success -> uiState.state =
 //                            HomeUiState.State.CallPhotoEdit(imageLinksKey!!)
 //                    }
-//                }.executeOnBackground(LinkSetParam(imageLinksKey!!, imageLinks), viewModelScope)
+//                }.execute(LinkSetParam(imageLinksKey!!, imageLinks), viewModelScope)
 //            }
 //        }
     }
@@ -76,7 +80,7 @@ class HomeViewModel @Inject constructor(
 
     private fun clearImageLinks() {
 //        uiData.imageLinksKey?.let {
-//            setLinkUseCase.executeOnBackground(
+//            setLinkUseCase.execute(
 //                LinkSetParam(it, null),
 //                CoroutineScope(Dispatchers.IO)
 //            )
@@ -88,7 +92,7 @@ class HomeViewModel @Inject constructor(
 //            val size = it.size
 //            if (size > 0) {
 //                val imageSetParamList = size.createList { index -> ImageSetParam(it[index], null) }
-//                setImagesUseCase.executeOnBackground(imageSetParamList, CoroutineScope(Dispatchers.IO))
+//                setImagesUseCase.execute(imageSetParamList, CoroutineScope(Dispatchers.IO))
 //            }
 //        }
     }
