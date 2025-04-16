@@ -88,7 +88,7 @@ dependencies {
     // Main Dependency
     implementation(project(mapOf("path" to ":baze")))
 
-    implementation("androidx.core:core-splashscreen:1.2.0-beta01")
+    implementation("androidx.core:core-splashscreen:1.1.0-rc01")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
 
     implementation("com.google.android.gms:play-services-auth:21.3.0")

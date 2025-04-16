@@ -7,13 +7,16 @@ plugins {
 }
 
 android {
+    val lSdk: Int = (project.property("LSDK") as String).toInt()
+    val mSdk: Int = (project.property("MSDK") as String).toInt()
+
     namespace = "com.fwhyn.myapuri"
-    compileSdk = 35
+    compileSdk = mSdk
 
     defaultConfig {
         applicationId = "com.fwhyn.myapuri"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = lSdk
+        targetSdk = mSdk
         versionCode = 1
         versionName = "1.0"
 

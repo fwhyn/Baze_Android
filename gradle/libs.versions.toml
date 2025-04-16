@@ -7,8 +7,8 @@ googleDaggerHilt = "2.52"
 androidxHilt = "1.2.0"
 
 # Main Dependency --------------------------------
-androidxActivity = "1.10.1"
-androidxCoreKtx = "1.15.0"
+androidxActivity = "1.9.3"
+androidxCoreKtx = "1.13.1"
 androidxNavigation = "2.8.8"
 androidxComposeBom = "2025.02.00"
 retrofit = "2.11.0"

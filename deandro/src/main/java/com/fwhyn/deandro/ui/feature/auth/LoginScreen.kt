@@ -1,7 +1,6 @@
 package com.fwhyn.deandro.ui.feature.auth
 
 import android.app.Activity
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -143,7 +142,7 @@ fun MainView(
     isFieldNotEmpty: Boolean,
     onLogin: (LoginParam) -> Unit,
 ) {
-    val activity: Activity? = LocalActivity.current
+    val activity: Activity? = LocalContext.current as? Activity
 
     Column(
         verticalArrangement = Arrangement.Center,
