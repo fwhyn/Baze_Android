@@ -1,11 +1,11 @@
 package com.fwhyn.baze.domain.helper
 
 import android.util.Log
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 
 open class Event<T>(data: T) {
 
-    private val debugTag = Event::class.java.getTestTag()
+    private val debugTag = Event::class.java.getDebugTag()
 
     var invoked = false
         private set

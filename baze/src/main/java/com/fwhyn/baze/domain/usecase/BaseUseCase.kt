@@ -2,7 +2,7 @@ package com.fwhyn.baze.domain.usecase
 
 import android.util.Log
 import com.fwhyn.baze.data.helper.Util
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ annotation class SuppressWarning
  */
 abstract class BaseUseCase<PARAM, RESULT> {
 
-    private val debugTag = BaseUseCase::class.java.getTestTag()
+    private val debugTag = BaseUseCase::class.java.getDebugTag()
     protected open var jobId = Util.getUniqueId()
 
     private var withResult: Boolean = true

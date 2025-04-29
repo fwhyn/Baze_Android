@@ -4,15 +4,15 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import android.net.Uri
 import androidx.navigation.NavOptionsBuilder
-import com.fwhyn.baze.data.helper.Constant.TAG_BAZE_TEST
+import com.fwhyn.baze.data.helper.Constant.TAG_BAZE_DEBUG
 import java.io.File
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class Extension
 
-fun <T> Class<T>.getTestTag(): String {
-    return this.simpleName + TAG_BAZE_TEST
+fun <T> Class<T>.getDebugTag(): String {
+    return this.simpleName + TAG_BAZE_DEBUG
 }
 
 fun <T> Class<T>.getTag(): String {

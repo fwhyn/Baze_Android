@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import com.fwhyn.baze.data.helper.Util
 import com.fwhyn.baze.data.helper.extension.clear
 import com.fwhyn.baze.data.helper.extension.copy
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.data.model.PairData
 import com.fwhyn.baze.data.model.remove
 import com.fwhyn.baze.data.model.set
@@ -18,7 +18,7 @@ import com.fwhyn.baze.ui.model.DialogModel
 class ActivityRetainedState {
 
     companion object {
-        private val debugTag = ActivityRetainedState::class.java.getTestTag()
+        private val debugTag = ActivityRetainedState::class.java.getDebugTag()
         private const val TAG_NOTIFICATION = "TAG_NOTIFICATION"
     }
 

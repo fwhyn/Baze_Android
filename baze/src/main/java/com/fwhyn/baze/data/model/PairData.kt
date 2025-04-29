@@ -1,7 +1,7 @@
 package com.fwhyn.baze.data.model
 
 import android.util.Log
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import java.io.Serializable
 
 open class PairData<A, B>(
@@ -11,7 +11,7 @@ open class PairData<A, B>(
     override fun toString(): String = "($first, $second)"
 }
 
-private val debugTag = PairData::class.java.getTestTag()
+private val debugTag = PairData::class.java.getDebugTag()
 
 fun <Key, Data> PairData<Key, Data>.copy(
     first: Key = this.first,

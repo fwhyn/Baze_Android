@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.helper.SingleEvent
 import com.fwhyn.deandro.data.model.auth.UserToken
@@ -26,7 +26,7 @@ class LoginUiState @Inject constructor() {
         // that it's always instantiated lazily when referenced
         // Example: objet Idle: State("Idle")
 
-        private val debugTag = LoginUiState::class.java.getTestTag()
+        private val debugTag = LoginUiState::class.java.getDebugTag()
 
         constructor(message: String) : this() {
             Log.d(debugTag, "State: $message")

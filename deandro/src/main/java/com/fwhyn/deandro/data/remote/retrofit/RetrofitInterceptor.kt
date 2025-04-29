@@ -1,7 +1,7 @@
 package com.fwhyn.deandro.data.remote.retrofit
 
 import android.util.Log
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -14,7 +14,7 @@ class RetrofitInterceptor @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource,
 ) : Interceptor {
 
-    private val debugTag = RetrofitInterceptor::class.java.getTestTag()
+    private val debugTag = RetrofitInterceptor::class.java.getDebugTag()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest: Request = chain.request()

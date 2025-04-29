@@ -3,7 +3,7 @@ package com.fwhyn.baze.domain.usecase
 import MainDispatcherRule
 import android.util.Log
 import com.fwhyn.baze.data.helper.Util
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.data.model.Exzeption
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.TimeoutCancellationException
@@ -22,7 +22,7 @@ import org.mockito.kotlin.verify
 
 class BaseUseCaseSingleProcessTest {
 
-    val testTag = BaseUseCaseSingleProcessTest::class.java.getTestTag()
+    val testTag = BaseUseCaseSingleProcessTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()

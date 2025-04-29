@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
@@ -25,7 +25,7 @@ class GoogleSignIn @Inject constructor(
         private const val MAX_SIGN_IN_TRY = 3
     }
 
-    val debugTag = GoogleSignIn::class.java.getTestTag()
+    val debugTag = GoogleSignIn::class.java.getDebugTag()
 
     // ----------------------------------------------------------------
     var googleIdTokenCredential: GoogleIdTokenCredential? = null

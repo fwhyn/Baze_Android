@@ -1,7 +1,7 @@
 package com.fwhyn.baze.domain.usecase
 
 import MainDispatcherRule
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -13,7 +13,7 @@ import org.junit.Test
 
 class BaseUseCaseMultiProcessTest {
 
-    val testTag = BaseUseCaseMultiProcessTest::class.java.getTestTag()
+    val testTag = BaseUseCaseMultiProcessTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()

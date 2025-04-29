@@ -23,7 +23,7 @@ import androidx.credentials.exceptions.CreateCredentialUnknownException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCredentialDomException
-import com.fwhyn.baze.data.helper.extension.getTestTag
+import com.fwhyn.baze.data.helper.extension.getDebugTag
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +34,7 @@ class CredentialLocalDataSourceOld @Inject constructor(
 ) {
 
     companion object {
-        val TAG = CredentialLocalDataSourceOld::class.java.getTestTag()
+        val TAG = CredentialLocalDataSourceOld::class.java.getDebugTag()
     }
 
     private val credentialManager = CredentialManager.create(context)
