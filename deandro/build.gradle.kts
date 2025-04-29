@@ -91,8 +91,10 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.2.0-beta01")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
 
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation("com.google.http-client:google-http-client-gson:1.46.3") {
         exclude(group = "org.apache.httpcomponents")
     }
