@@ -61,9 +61,9 @@ class GoogleSignIn @Inject constructor(
                     val result = it.err
 
                     if (result is NoCredentialException) {
-                        Log.d(debugTag, "Re-login")
-
                         if (signInTry <= MAX_SIGN_IN_TRY) {
+                            Log.d(debugTag, "Re-login")
+
                             signIn(activity, false, onFinished)
                             signInTry++
                         } else {
