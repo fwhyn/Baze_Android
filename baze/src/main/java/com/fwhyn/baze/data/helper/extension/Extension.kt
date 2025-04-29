@@ -5,6 +5,8 @@ import android.graphics.RectF
 import android.net.Uri
 import androidx.navigation.NavOptionsBuilder
 import com.fwhyn.baze.data.helper.Constant.TAG_BAZE_DEBUG
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -55,4 +57,14 @@ fun Float.round(decimals: Int = 0): Float {
 fun Double.round(decimals: Int = 0): Double {
     val multiplier = 10.0.pow(decimals)
     return (this * multiplier).roundToInt() / multiplier
+}
+
+// ----------------------------------------------------------------
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> CancellableContinuation<T>.continueIfActive(data: T) {
+    if (this.isActive) {
+        this.resume(data) { error ->
+            throw error
+        }
+    }
 }

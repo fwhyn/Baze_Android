@@ -17,22 +17,23 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GoogleSignIn @Inject constructor(
+open class GoogleSignIn @Inject constructor(
     private val credentialLocalDataSource: CredentialLocalDataSource,
 ) {
 
     companion object {
-        private const val MAX_SIGN_IN_TRY = 3
+        const val MAX_SIGN_IN_TRY = 3
     }
 
     val debugTag = GoogleSignIn::class.java.getDebugTag()
 
     // ----------------------------------------------------------------
-    var googleIdTokenCredential: GoogleIdTokenCredential? = null
-        private set
+    protected var googleIdTokenCredential: GoogleIdTokenCredential? = null
     private var onFinishedCallback: ((Rezult<GoogleIdTokenCredential, ErrorType>) -> Unit)? = null
 
-    private var signInTry = 0
+    protected var signInTry = 0
+
+    fun getGoogleIdTokenCredential(): GoogleIdTokenCredential? = googleIdTokenCredential
 
     suspend fun signIn(
         activity: Activity,
@@ -52,50 +53,50 @@ class GoogleSignIn @Inject constructor(
             .addCredentialOption(getGoogleOption(loginUsingExistingUser))
             .build()
 
-        credentialLocalDataSource.getCredential(
+        val credentialResult = credentialLocalDataSource.getCredential(
             activityContext = activity,
             request = request
-        ) {
-            when (it) {
-                is Rezult.Failure -> {
-                    val result = it.err
+        )
 
-                    if (result is NoCredentialException) {
-                        if (signInTry <= MAX_SIGN_IN_TRY) {
-                            Log.d(debugTag, "Re-login")
+        when (credentialResult) {
+            is Rezult.Failure -> {
+                val result = credentialResult.err
 
-                            signIn(activity, false, onFinished)
-                            signInTry++
-                        } else {
-                            Log.e(debugTag, "No user granted")
+                if (result is NoCredentialException) {
+                    if (signInTry <= MAX_SIGN_IN_TRY) {
+                        Log.d(debugTag, "Re-login")
 
-                            setCredentialResult(null, ErrorType.NoUserGranted)
-                            signInTry = 0
-                        }
+                        signIn(activity, false, onFinished)
+                        signInTry++
                     } else {
                         Log.e(debugTag, "No user granted")
 
                         setCredentialResult(null, ErrorType.NoUserGranted)
+                        signInTry = 0
                     }
+                } else {
+                    Log.e(debugTag, "No user granted")
+
+                    setCredentialResult(null, ErrorType.NoUserGranted)
                 }
+            }
 
-                is Rezult.Success -> {
-                    val result = it.dat
-                    if (isGoogleCredential(result)) {
-                        val credential = result.credential
+            is Rezult.Success -> {
+                val result = credentialResult.dat
+                if (isGoogleCredential(result)) {
+                    val credential = result.credential
 
-                        setCredentialResult(GoogleIdTokenCredential.createFrom(credential.data), ErrorType.None)
-                    } else {
-                        Log.e(debugTag, "Unexpected credential")
+                    setCredentialResult(GoogleIdTokenCredential.createFrom(credential.data), ErrorType.None)
+                } else {
+                    Log.e(debugTag, "Unexpected credential")
 
-                        setCredentialResult(null, ErrorType.UnexpectedCredential)
-                    }
+                    setCredentialResult(null, ErrorType.UnexpectedCredential)
                 }
             }
         }
     }
 
-    private fun getGoogleOption(loginUsingExistingUser: Boolean): GetGoogleIdOption {
+    protected fun getGoogleOption(loginUsingExistingUser: Boolean): GetGoogleIdOption {
         val builder = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(loginUsingExistingUser)
             .setServerClientId(BuildConfig.WEB_CLIENT_ID)
@@ -107,7 +108,7 @@ class GoogleSignIn @Inject constructor(
         return builder.build()
     }
 
-    private fun isGoogleCredential(result: GetCredentialResponse): Boolean {
+    protected fun isGoogleCredential(result: GetCredentialResponse): Boolean {
         val credential = result.credential
         return credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
     }

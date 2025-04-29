@@ -14,22 +14,25 @@ import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpRequest
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.services.drive.DriveScopes
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object GoogleDriveAccess {
+@Singleton
+class GoogleDriveAccess @Inject constructor() {
 
-    const val REQUEST_AUTHORIZE: Int = 170121231
+    companion object {
+        const val REQUEST_AUTHORIZE: Int = 170121231
 
-    private const val TAG = "GoogleDriveAccess"
+        private const val TAG = "GoogleDriveAccess"
+    }
 
     // ----------------------------------------------------------------
     private var onSuccess: OnSuccessCallback? = null
     private var onFailed: OnFailedCallback? = null
 
-    @JvmStatic
     var authorizationResult: AuthorizationResult? = null
         private set
 
-    @JvmStatic
     fun getGDriveAccess(
         activity: Activity,
         onSuccess: OnSuccessCallback,
@@ -82,7 +85,6 @@ object GoogleDriveAccess {
             }
     }
 
-    @JvmStatic
     fun extractResult(activity: Activity, data: Intent) {
         try {
             val authorizationResult = Identity.getAuthorizationClient(activity).getAuthorizationResultFromIntent(data)
@@ -107,12 +109,10 @@ object GoogleDriveAccess {
         }
     }
 
-    @JvmStatic
     fun isAuthorized(): Boolean {
         return authorizationResult != null
     }
 
-    @JvmStatic
     fun getHttpRequestInitializer(timeoutMillis: Int): HttpRequestInitializer {
         return HttpRequestInitializer { request: HttpRequest ->
             request.headers = HttpHeaders().apply {

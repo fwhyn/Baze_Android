@@ -2,6 +2,7 @@ package com.fwhyn.baze.domain.usecase
 
 import android.util.Log
 import com.fwhyn.baze.data.helper.Util
+import com.fwhyn.baze.data.helper.extension.continueIfActive
 import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.baze.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
@@ -258,13 +259,7 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
     setResultNotifier {
         when (it) {
             is Rezult.Failure -> throw it.err
-            is Rezult.Success -> {
-                if (continuation.isActive) {
-                    continuation.resume(it.dat) { error ->
-                        throw error
-                    }
-                }
-            }
+            is Rezult.Success -> continuation.continueIfActive(it.dat)
         }
     }
     execute(param, scope)

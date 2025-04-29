@@ -20,16 +20,16 @@ class CredentialLocalDataSource @Inject constructor(
     suspend fun getCredential(
         activityContext: Context,
         request: GetCredentialRequest,
-        onFinished: suspend (result: Rezult<GetCredentialResponse, GetCredentialException>) -> Unit,
-    ) {
-        try {
+    ): Rezult<GetCredentialResponse, GetCredentialException> {
+        return try {
             val result = credentialManager.getCredential(
                 request = request,
                 context = activityContext,
             )
-            onFinished(Rezult.Success(result))
+
+            Rezult.Success(result)
         } catch (e: GetCredentialException) {
-            onFinished(Rezult.Failure(e))
+            Rezult.Failure(e)
         }
     }
 }
