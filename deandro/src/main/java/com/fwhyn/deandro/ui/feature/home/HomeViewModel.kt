@@ -1,5 +1,7 @@
 package com.fwhyn.deandro.ui.feature.home
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.baze.data.model.Status
@@ -7,6 +9,9 @@ import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.baze.ui.helper.MessageHandler
 import com.fwhyn.baze.ui.main.ActivityRetainedState
+import com.fwhyn.deandro.access.data.remote.GoogleDriveAccess
+import com.fwhyn.deandro.access.domain.model.GetAccessParam
+import com.fwhyn.deandro.access.domain.usecase.GetAccessUseCaseInterface
 import com.fwhyn.deandro.data.model.auth.UserToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -16,8 +21,7 @@ class HomeViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
     private val setTokenUseCase: BaseUseCase<UserToken?, Unit>,
-//    private val setLinkUseCase: BaseUseCase<LinkSetParam, Unit>,
-//    private val setImagesUseCase: BaseUseCase<List<ImageSetParam>, Unit>,
+    private val getAccessUseCase: GetAccessUseCaseInterface,
 ) : HomeVmInterface() {
 
     companion object {
@@ -26,6 +30,18 @@ class HomeViewModel @Inject constructor(
 
     val uiData = HomeUiData()
     val uiState = HomeUiState()
+
+    var getGoogleDriveAccessParam: GetAccessParam.GoogleDrive? = null
+
+    override var onActivityResult: ((Activity, Int, Int, Intent?) -> Unit)? = { activity, requestCode, resultCode,
+                                                                                data ->
+        when (requestCode) {
+            GoogleDriveAccess.REQUEST_AUTHORIZE -> getGoogleDriveAccessParam?.onRetrieveResult?.invoke(data)
+            else -> {
+                // do nothing
+            }
+        }
+    }
 
     override fun onLogout() {
         setTokenUseCase
@@ -49,10 +65,20 @@ class HomeViewModel @Inject constructor(
             .execute(null, viewModelScope)
     }
 
-    override fun onAddPhoto() {
+    override fun onAddPhoto(activity: Activity) {
 //        uiData.imagePicker?.let {
 //            ImageStorageUtil.launchMediaPicker(it)
 //        }
+        val param = GetAccessParam.GoogleDrive(activity).also { getGoogleDriveAccessParam = it }
+
+        getAccessUseCase
+            .setResultNotifier {
+
+            }
+            .setLifeCycleNotifier {
+
+            }
+            .execute(param, viewModelScope)
     }
 
     override fun onPhotoSelected(photos: List<Uri>) {

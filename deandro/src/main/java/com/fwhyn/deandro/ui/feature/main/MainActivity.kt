@@ -2,6 +2,9 @@ package com.fwhyn.deandro.ui.feature.main
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.app.Activity
+import android.app.ComponentCaller
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,6 +30,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val vm: MainActivityViewModel by viewModels()
+    private var onActivityResult: ((activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? =
+        null
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +49,20 @@ class MainActivity : BaseActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen(
-                        activityState = rememberActivityState(window = calculateWindowSizeClass(this)),
+                        activityState = rememberActivityState(
+                            window = calculateWindowSizeClass(this),
+                            onActivityResult = onActivityResult
+                        ),
                         activityRetainedState = activityRetainedState,
                     )
                 }
             }
         }
         finishWhenNeeded(activityRetainedState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, caller: ComponentCaller) {
+        onActivityResult?.invoke(this, requestCode, resultCode, data)
     }
 
     private fun animateSplashScreen(

@@ -1,11 +1,11 @@
-package com.fwhyn.deandro.data.remote.auth
+package com.fwhyn.deandro.access.data.remote
 
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
-import androidx.core.app.ActivityCompat.startIntentSenderForResult
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import com.google.android.gms.auth.api.identity.Identity
@@ -59,7 +59,7 @@ class GoogleDriveAccess @Inject constructor() {
                         Log.d(TAG, "Get Google Drive access")
 
                         pendingIntent?.let {
-                            startIntentSenderForResult(
+                            ActivityCompat.startIntentSenderForResult(
                                 activity,
                                 pendingIntent.intentSender,
                                 REQUEST_AUTHORIZE,
@@ -81,7 +81,7 @@ class GoogleDriveAccess @Inject constructor() {
             .addOnFailureListener { e ->
                 Log.e(TAG, "Failed to authorize: " + e.localizedMessage)
 
-                setAuthResult(null, ErrorType.AutorizationFailed)
+                setAuthResult(null, ErrorType.AuthorizationFailed)
             }
     }
 
@@ -137,7 +137,7 @@ class GoogleDriveAccess @Inject constructor() {
     enum class ErrorType {
         None,
         UiPopUpFailed,
-        AutorizationFailed,
+        AuthorizationFailed,
         UnexpectedError,
     }
 }

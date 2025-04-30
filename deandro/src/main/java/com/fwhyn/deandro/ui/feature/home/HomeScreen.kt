@@ -1,5 +1,7 @@
 package com.fwhyn.deandro.ui.feature.home
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,6 +110,8 @@ private fun HomeScreen(
 //        vmInterface::onPhotoSelected
 //    )
 
+    vmInterface.onActivityResult = activityState.onActivityResult
+
     when (val state = uiState.state) {
         is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
 //                activityState.navController.navigateToPhotoEditScreen(key = state.key)
@@ -136,8 +140,11 @@ private fun HomeScreen(
 fun MainHomeView(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
-    onAddPhoto: () -> Unit,
+    onAddPhoto: (Activity) -> Unit,
 ) {
+
+    val activity: Activity = LocalActivity.current!!
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -217,8 +224,11 @@ fun MainHomeView(
         AddPhotoButton(
             modifier = Modifier.align(Alignment.BottomStart),
             onAddPhoto = {
-                isShowingDialog = true
+                onAddPhoto(activity)
             },
+//            onAddPhoto = {
+//                isShowingDialog = true
+//            },
         )
 
         if (isShowingDialog) {
