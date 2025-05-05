@@ -33,15 +33,18 @@ class HomeViewModel @Inject constructor(
 
     var getGoogleDriveAccessParam: GetAccessParam.GoogleDrive? = null
 
-    override var onActivityResult: ((Activity, Int, Int, Intent?) -> Unit)? = { activity, requestCode, resultCode,
-                                                                                data ->
-        when (requestCode) {
-            GoogleDriveAccess.REQUEST_AUTHORIZE -> getGoogleDriveAccessParam?.onRetrieveResult?.invoke(data)
-            else -> {
-                // do nothing
+    override var onActivityResult: ((Activity, Int, Int, Intent?) -> Unit)? =
+        { activity, requestCode, resultCode, data ->
+            when (requestCode) {
+                GoogleDriveAccess.REQUEST_AUTHORIZE -> {
+                    data?.let { getGoogleDriveAccessParam?.onRetrieveResult?.invoke(it) }
+                }
+
+                else -> {
+                    // do nothing
+                }
             }
         }
-    }
 
     override fun onLogout() {
         setTokenUseCase
