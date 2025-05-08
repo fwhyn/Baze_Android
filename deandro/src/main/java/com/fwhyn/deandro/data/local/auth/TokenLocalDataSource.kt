@@ -1,10 +1,10 @@
 package com.fwhyn.deandro.data.local.auth
 
 import android.content.SharedPreferences
-import com.fwhyn.baze.data.helper.extension.get
-import com.fwhyn.baze.data.helper.extension.put
 import com.fwhyn.deandro.data.model.auth.UserToken
 import com.fwhyn.deandro.di.PreferenceModule
+import com.fwhyn.lib.baze.data.helper.extension.get
+import com.fwhyn.lib.baze.data.helper.extension.put
 import javax.inject.Inject
 import javax.inject.Singleton
 

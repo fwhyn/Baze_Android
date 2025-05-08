@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.fwhyn.baze.data.helper.extension.getDebugTag
-import com.fwhyn.baze.domain.helper.Rezult
-import com.fwhyn.baze.domain.helper.SingleEvent
 import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.domain.helper.Rezult
+import com.fwhyn.lib.baze.domain.helper.SingleEvent
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 

@@ -9,8 +9,8 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
-import com.fwhyn.baze.data.helper.extension.getDebugTag
 import com.fwhyn.deandro.BuildConfig
+import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential

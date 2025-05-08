@@ -1,8 +1,8 @@
 package com.fwhyn.deandro.data.model.auth
 
-import com.fwhyn.baze.data.model.Status
 import com.fwhyn.deandro.data.model.response.StatusInterface
 import com.fwhyn.deandro.data.model.response.TimeInterface
+import com.fwhyn.lib.baze.data.model.Status
 import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(

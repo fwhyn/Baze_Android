@@ -1,10 +1,10 @@
 package com.fwhyn.deandro.domain.usecase.auth
 
-import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
-import com.fwhyn.baze.domain.usecase.BaseUseCase
 import com.fwhyn.deandro.data.helper.Constant.TIMEOUT_MILLIS
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.lib.baze.data.repository.BaseRepositoryCoroutine
+import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
 import javax.inject.Inject
 
 class GetTokenUseCase @Inject constructor(

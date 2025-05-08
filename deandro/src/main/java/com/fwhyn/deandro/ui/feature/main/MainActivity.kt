@@ -19,11 +19,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.fwhyn.baze.ui.main.ActivityRetainedState
-import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.ui.common.BaseActivity
 import com.fwhyn.deandro.ui.config.MyTheme
+import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.ui.main.rememberActivityState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,6 +1,6 @@
 package com.fwhyn.deandro.di
 
-import com.fwhyn.baze.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -53,15 +53,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
-import com.fwhyn.baze.data.helper.extension.removeFromBackStack
-import com.fwhyn.baze.ui.helper.DevicePreviews
-import com.fwhyn.baze.ui.main.ActivityState
-import com.fwhyn.baze.ui.main.rememberActivityState
 import com.fwhyn.deandro.ui.config.MyTheme
 import com.fwhyn.deandro.ui.config.defaultPadding
 import com.fwhyn.deandro.ui.dialog.BazeAlertDialog
 import com.fwhyn.deandro.ui.dialog.TryBottomDialog
 import com.fwhyn.deandro.ui.feature.auth.navigateToLoginScreen
+import com.fwhyn.lib.baze.data.helper.extension.removeFromBackStack
+import com.fwhyn.lib.baze.ui.helper.DevicePreviews
+import com.fwhyn.lib.baze.ui.main.ActivityState
+import com.fwhyn.lib.baze.ui.main.rememberActivityState
 import java.io.File
 
 const val HOME_ROUTE = "homeRoute"

@@ -1,9 +1,9 @@
 package com.fwhyn.deandro.data.repository.auth
 
-import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
+import com.fwhyn.lib.baze.data.repository.BaseRepositoryCoroutine
 import javax.inject.Inject
 import javax.inject.Singleton
 

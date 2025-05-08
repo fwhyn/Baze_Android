@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
-import com.fwhyn.baze.data.helper.extension.continueIfActive
-import com.fwhyn.baze.data.helper.extension.getDebugTag
-import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.deandro.BuildConfig
 import com.fwhyn.deandro.data.local.auth.CredentialLocalDataSource
+import com.fwhyn.lib.baze.data.helper.extension.continueIfActive
+import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.domain.helper.Rezult
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.CoroutineScope

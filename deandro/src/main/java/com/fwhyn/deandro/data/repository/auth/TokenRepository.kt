@@ -1,12 +1,12 @@
 package com.fwhyn.deandro.data.repository.auth
 
-import com.fwhyn.baze.data.repository.BaseRepositoryCoroutine
-import com.fwhyn.baze.domain.helper.Rezult
 import com.fwhyn.deandro.data.local.auth.TokenLocalDataSource
 import com.fwhyn.deandro.data.model.auth.LoginParam
 import com.fwhyn.deandro.data.model.auth.UserToken
 import com.fwhyn.deandro.data.remote.auth.GoogleSignIn
 import com.fwhyn.deandro.data.remote.auth.TokenRemoteDataSource
+import com.fwhyn.lib.baze.data.repository.BaseRepositoryCoroutine
+import com.fwhyn.lib.baze.domain.helper.Rezult
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import javax.inject.Inject
 import javax.inject.Singleton
