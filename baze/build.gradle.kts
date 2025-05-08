@@ -7,7 +7,7 @@ plugins {
 apply(from = "../publish-package.gradle")
 
 android {
-    val moduleName = "com.fwhyn.baze"
+    val moduleName = "com.fwhyn.lib.baze"
 
     val lSdk: Int = (project.property("LSDK") as String).toInt()
     val mSdk: Int = (project.property("MSDK") as String).toInt()
