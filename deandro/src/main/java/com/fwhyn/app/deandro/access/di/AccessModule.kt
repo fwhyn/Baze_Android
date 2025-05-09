@@ -3,6 +3,7 @@ package com.fwhyn.app.deandro.access.di
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.access.data.remote.GoogleDriveAccess
 import com.fwhyn.app.deandro.access.data.repository.AccessRepository
+import com.fwhyn.app.deandro.access.data.repository.AccessRepositoryFake
 import com.fwhyn.app.deandro.access.data.repository.AccessRepositoryInterface
 import com.fwhyn.app.deandro.access.domain.usecase.GetAccessUseCase
 import com.fwhyn.app.deandro.access.domain.usecase.GetAccessUseCaseInterface
@@ -27,7 +28,7 @@ class AccessModule {
         googleDriveAccess: GoogleDriveAccess
     ): AccessRepositoryInterface {
         return when (BuildConfig.FLAVOR) {
-            "Fake" -> TODO()
+            "Fake" -> AccessRepositoryFake()
             "Real" -> AccessRepository(googleDriveAccess)
             else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
         }
