@@ -1,4 +1,4 @@
-package com.fwhyn.app.deandro.feature.presentation.auth
+package com.fwhyn.app.deandro.feature.presentation.login
 
 import android.app.Activity
 import androidx.activity.compose.LocalActivity

@@ -1,4 +1,4 @@
-package com.fwhyn.app.deandro.feature.presentation.auth
+package com.fwhyn.app.deandro.feature.presentation.login
 
 import android.util.Log
 import androidx.compose.runtime.getValue

@@ -57,7 +57,7 @@ import com.fwhyn.app.deandro.common.ui.config.MyTheme
 import com.fwhyn.app.deandro.common.ui.config.defaultPadding
 import com.fwhyn.app.deandro.common.ui.dialog.BazeAlertDialog
 import com.fwhyn.app.deandro.common.ui.dialog.TryBottomDialog
-import com.fwhyn.app.deandro.feature.presentation.auth.navigateToLoginScreen
+import com.fwhyn.app.deandro.feature.presentation.login.navigateToLoginScreen
 import com.fwhyn.lib.baze.data.helper.extension.removeFromBackStack
 import com.fwhyn.lib.baze.ui.helper.DevicePreviews
 import com.fwhyn.lib.baze.ui.main.ActivityState

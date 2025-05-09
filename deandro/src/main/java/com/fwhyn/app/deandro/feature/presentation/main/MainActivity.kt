@@ -33,7 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
-    private val vm: MainActivityViewModel by viewModels()
+    private val vm: MainViewModel by viewModels()
     private var onActivityResult: ((activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? =
         null
 

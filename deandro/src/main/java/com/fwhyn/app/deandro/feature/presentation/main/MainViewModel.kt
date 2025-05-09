@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     val networkMonitor: NetworkMonitor,
     val activityRetainedState: ActivityRetainedState,
 //    private val memoryUseCase: BaseUseCase<List<ManageMemoryParam>, Any?>,
