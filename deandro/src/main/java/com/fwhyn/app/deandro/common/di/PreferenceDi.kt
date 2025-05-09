@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class PreferenceModule {
+class PreferenceDi {
 
     @Qualifier
     annotation class EncryptedPrefs

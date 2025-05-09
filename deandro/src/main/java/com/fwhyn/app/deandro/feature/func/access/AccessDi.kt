@@ -1,4 +1,4 @@
-package com.fwhyn.app.deandro.feature.func.access.di
+package com.fwhyn.app.deandro.feature.func.access
 
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
@@ -14,7 +14,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-class AccessModule {
+class AccessDi {
 
     @Provides
     fun provideGetAccessUseCase(

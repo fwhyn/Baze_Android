@@ -1,4 +1,4 @@
-package com.fwhyn.app.deandro.feature.func.auth.di
+package com.fwhyn.app.deandro.feature.func.auth
 
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.common.network.api.RetrofitApiClient
@@ -7,6 +7,7 @@ import com.fwhyn.app.deandro.feature.func.auth.data.model.LoginParam
 import com.fwhyn.app.deandro.feature.func.auth.data.model.UserToken
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.GoogleSignIn
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.LoginApi
+import com.fwhyn.app.deandro.feature.func.auth.data.remote.RetrofitInterceptor
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.TokenRemoteDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.repository.TokenRepository
 import com.fwhyn.app.deandro.feature.func.auth.data.repository.TokenRepositoryFake
@@ -23,7 +24,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class AuthModule {
+class AuthDi {
 
     @Provides
     fun provideGetTokenUseCase(
@@ -56,5 +57,10 @@ class AuthModule {
     @Singleton
     fun provideLoginInterface(retrofit: Retrofit): LoginApi {
         return RetrofitApiClient(retrofit, LoginApi::class.java).client
+    }
+
+    @Provides
+    fun provideRetrofitInterceptor(tokenLocalDataSource: TokenLocalDataSource): RetrofitInterceptor {
+        return RetrofitInterceptor(tokenLocalDataSource)
     }
 }

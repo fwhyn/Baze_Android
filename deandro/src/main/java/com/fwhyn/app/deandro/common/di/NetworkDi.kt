@@ -1,8 +1,9 @@
 package com.fwhyn.app.deandro.common.di
 
 import com.fwhyn.app.deandro.BuildConfig
-import com.fwhyn.app.deandro.feature.func.auth.data.local.TokenLocalDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.RetrofitInterceptor
+import com.fwhyn.lib.baze.data.helper.network.AlwaysOnlineNetworkMonitor
+import com.fwhyn.lib.baze.data.helper.network.NetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class NetworkModule {
+class NetworkDi {
 
     @Provides
     @Singleton
@@ -47,7 +48,6 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideRetrofitInterceptor(tokenLocalDataSource: TokenLocalDataSource): RetrofitInterceptor {
-        return RetrofitInterceptor(tokenLocalDataSource)
-    }
+    @Singleton
+    fun provideNetworkMonitor(): NetworkMonitor = AlwaysOnlineNetworkMonitor()
 }
