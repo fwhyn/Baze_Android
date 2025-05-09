@@ -1,0 +1,13 @@
+package com.fwhyn.app.deandro.feature.presentation.auth
+
+import androidx.lifecycle.ViewModel
+import com.fwhyn.app.deandro.feature.func.auth.data.model.LoginParam
+
+abstract class LoginVmInterface : ViewModel() {
+
+    open fun onEmailValueChange(value: String) {}
+    open fun onPasswordValueChange(value: String) {}
+    open fun onCheckRememberMe() {}
+    open fun onLogin(loginParam: LoginParam) {}
+    open fun onCalledFromBackStack() {}
+}
