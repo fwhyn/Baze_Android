@@ -201,16 +201,16 @@ fun MainView(
         ) {
             Text("Login")
         }
-        Spacer(modifier = Modifier.height(1.dp))
-        Button(
-            onClick = {
-                // TODO add onclick register
-            },
-            shape = RoundedCornerShape(5.dp),
-            modifier = commonFieldModifier
-        ) {
-            Text("Register")
-        }
+//        Spacer(modifier = Modifier.height(1.dp))
+//        Button(
+//            onClick = {
+//                // TODO add onclick register
+//            },
+//            shape = RoundedCornerShape(5.dp),
+//            modifier = commonFieldModifier
+//        ) {
+//            Text("Register")
+//        }
         Spacer(modifier = Modifier.height(1.dp))
         Button(
             onClick = {
