@@ -1,0 +1,35 @@
+package com.fwhyn.app.deandro.access.di
+
+import com.fwhyn.app.deandro.BuildConfig
+import com.fwhyn.app.deandro.access.data.remote.GoogleDriveAccess
+import com.fwhyn.app.deandro.access.data.repository.AccessRepository
+import com.fwhyn.app.deandro.access.data.repository.AccessRepositoryInterface
+import com.fwhyn.app.deandro.access.domain.usecase.GetAccessUseCase
+import com.fwhyn.app.deandro.access.domain.usecase.GetAccessUseCaseInterface
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@InstallIn(SingletonComponent::class)
+@Module
+class AccessModule {
+
+    @Provides
+    fun provideGetAccessUseCase(
+        accessRepository: AccessRepositoryInterface,
+    ): GetAccessUseCaseInterface {
+        return GetAccessUseCase(accessRepository)
+    }
+
+    @Provides
+    fun provideAccessRepository(
+        googleDriveAccess: GoogleDriveAccess
+    ): AccessRepositoryInterface {
+        return when (BuildConfig.FLAVOR) {
+            "Fake" -> TODO()
+            "Real" -> AccessRepository(googleDriveAccess)
+            else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
+        }
+    }
+}

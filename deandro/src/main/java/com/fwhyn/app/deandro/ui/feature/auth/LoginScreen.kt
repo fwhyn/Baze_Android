@@ -1,0 +1,379 @@
+package com.fwhyn.app.deandro.ui.feature.auth
+
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
+import com.fwhyn.app.deandro.R
+import com.fwhyn.app.deandro.data.model.auth.LoginParam
+import com.fwhyn.app.deandro.ui.config.MyTheme
+import com.fwhyn.app.deandro.ui.config.defaultPadding
+import com.fwhyn.app.deandro.ui.feature.home.navigateToHomeScreen
+import com.fwhyn.lib.baze.data.helper.extension.removeFromBackStack
+import com.fwhyn.lib.baze.ui.helper.DevicePreviews
+import com.fwhyn.lib.baze.ui.main.ActivityState
+import com.fwhyn.lib.baze.ui.main.rememberActivityState
+
+const val LOGIN_ROUTE = "LOGIN_ROUTE"
+
+fun NavGraphBuilder.addLoginScreen(
+    activityState: ActivityState,
+) {
+    composable(LOGIN_ROUTE) {
+        // we place the our Home composable function here
+        // in a production application home will probably take in some parameters
+        LoginRoute(
+            activityState = activityState,
+        )
+    }
+}
+
+fun NavController.navigateToLoginScreen(navOptions: NavOptions? = null) {
+    this.navigate(LOGIN_ROUTE, navOptions)
+}
+
+@Composable
+fun LoginRoute(
+    modifier: Modifier = Modifier,
+    activityState: ActivityState,
+    vm: LoginViewModel = hiltViewModel(),
+) {
+    vm.run {
+        LoginScreen(
+            modifier = modifier,
+            activityState = activityState,
+            loginVmInterface = vm,
+            loginUiData = loginUiData,
+            loginUiState = loginUiState
+        )
+    }
+}
+
+@Composable
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    activityState: ActivityState,
+    loginVmInterface: LoginVmInterface,
+    loginUiData: LoginUiData,
+    loginUiState: LoginUiState,
+) {
+    when (val state = loginUiState.state) {
+        is LoginUiState.State.LoggedIn -> state.invokeOnce {
+            activityState.navigation.navigateToHomeScreen(navOptions { removeFromBackStack(LOGIN_ROUTE) })
+        }
+
+        is LoginUiState.State.NotLoggedIn -> {} // Do nothing
+    }
+
+    loginUiData.run {
+        MainView(
+            modifier = modifier,
+            emailValue = email,
+            onEmailValueChange = loginVmInterface::onEmailValueChange,
+            passwordValue = pwd,
+            onPasswordValueChange = loginVmInterface::onPasswordValueChange,
+            rememberMe = rememberMe,
+            onCheckRememberMe = loginVmInterface::onCheckRememberMe,
+            isFieldNotEmpty = isNotEmpty,
+            onLogin = loginVmInterface::onLogin,
+        )
+    }
+}
+
+@Composable
+fun MainView(
+    modifier: Modifier = Modifier,
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    rememberMe: Boolean,
+    onCheckRememberMe: () -> Unit,
+    isFieldNotEmpty: Boolean,
+    onLogin: (LoginParam) -> Unit,
+) {
+    val activity: Activity? = LocalActivity.current
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(defaultPadding)
+            .verticalScroll(rememberScrollState())
+    ) {
+        val commonFieldModifier = Modifier.fillMaxWidth()
+
+        Title(
+            modifier = commonFieldModifier,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+
+        EmailField(
+            modifier = commonFieldModifier,
+            value = emailValue,
+            onValueChange = onEmailValueChange,
+        )
+        PasswordField(
+            modifier = commonFieldModifier,
+            value = passwordValue,
+            onValueChange = onPasswordValueChange,
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = commonFieldModifier
+        ) {
+            LabeledCheckbox(
+                label = "Remember Me",
+                onCheckChanged = onCheckRememberMe,
+                isChecked = rememberMe
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = {
+                onLogin(
+                    LoginParam.MyServer(
+                        username = emailValue,
+                        password = passwordValue
+                    ).also {
+                        it.forceLogin = LoginParam.ForceLogin.YES
+                        it.remember = rememberMe
+                    }
+                )
+            },
+            enabled = isFieldNotEmpty,
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
+        ) {
+            Text("Login")
+        }
+        Spacer(modifier = Modifier.height(1.dp))
+        Button(
+            onClick = {
+                // TODO add onclick register
+            },
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
+        ) {
+            Text("Register")
+        }
+        Spacer(modifier = Modifier.height(1.dp))
+        Button(
+            onClick = {
+                onLogin(
+                    if (activity != null) {
+                        LoginParam.Google(activity)
+                    } else {
+                        throw Exception("Activity not found")
+                    }
+                )
+            },
+            shape = RoundedCornerShape(5.dp),
+            modifier = commonFieldModifier
+        ) {
+            Row {
+                Image(
+                    painter = painterResource(id = R.drawable.google_sign_in),
+                    contentDescription = "Google Logo",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    LocalContext.current.getString(com.google.android.gms.base.R.string.common_signin_button_text_long)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LabeledCheckbox(
+    label: String,
+    onCheckChanged: () -> Unit,
+    isChecked: Boolean,
+) {
+
+    Row(
+        Modifier
+            .clickable(
+                onClick = onCheckChanged
+            )
+            .padding(4.dp)
+    ) {
+        Checkbox(checked = isChecked, onCheckedChange = null)
+        Spacer(Modifier.size(6.dp))
+        Text(label)
+    }
+}
+
+@Composable
+fun Title(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            text = "Welcome...",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = "Log in",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun EmailField(
+    modifier: Modifier = Modifier,
+    value: String = "",
+    onValueChange: (String) -> Unit,
+    label: String = "Email",
+    placeholder: String = "Enter your Email",
+) {
+
+    val focusManager = LocalFocusManager.current
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Person,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    TextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        singleLine = true,
+    )
+}
+
+@Composable
+fun PasswordField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String = "Password",
+    placeholder: String = "Enter your Password",
+) {
+
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Key,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+    val trailingIcon = @Composable {
+        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+            Icon(
+                if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+
+    TextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        placeholder = { Text(placeholder) },
+        singleLine = true,
+        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
+    )
+}
+
+@DevicePreviews
+@Composable
+fun LoginScreenPreview() {
+    MyTheme {
+        LoginScreen(
+            activityState = rememberActivityState(),
+            loginVmInterface = object : LoginVmInterface() {},
+            loginUiData = LoginUiData(),
+            loginUiState = LoginUiState(),
+        )
+    }
+}

@@ -9,7 +9,7 @@ plugins {
 //apply(from = "../properties.gradle")
 
 android {
-    val moduleName = "com.fwhyn.deandro"
+    val moduleName = "com.fwhyn.app.deandro"
 
     val lSdk: Int = (project.property("LSDK") as String).toInt()
     val mSdk: Int = (project.property("MSDK") as String).toInt()
