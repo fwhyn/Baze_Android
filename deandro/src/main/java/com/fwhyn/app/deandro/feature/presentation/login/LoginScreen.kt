@@ -58,7 +58,7 @@ import androidx.navigation.navOptions
 import com.fwhyn.app.deandro.R
 import com.fwhyn.app.deandro.common.ui.config.MyTheme
 import com.fwhyn.app.deandro.common.ui.config.defaultPadding
-import com.fwhyn.app.deandro.feature.func.auth.data.model.LoginParam
+import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.presentation.home.navigateToHomeScreen
 import com.fwhyn.lib.baze.data.helper.extension.removeFromBackStack
 import com.fwhyn.lib.baze.ui.helper.DevicePreviews
@@ -141,7 +141,7 @@ fun MainView(
     rememberMe: Boolean,
     onCheckRememberMe: () -> Unit,
     isFieldNotEmpty: Boolean,
-    onLogin: (LoginParam) -> Unit,
+    onLogin: (GetAuthTokenParam) -> Unit,
 ) {
     val activity: Activity? = LocalActivity.current
 
@@ -186,13 +186,11 @@ fun MainView(
         Button(
             onClick = {
                 onLogin(
-                    LoginParam.MyServer(
+                    GetAuthTokenParam.MyServer(
                         username = emailValue,
-                        password = passwordValue
-                    ).also {
-                        it.forceLogin = LoginParam.ForceLogin.YES
-                        it.remember = rememberMe
-                    }
+                        password = passwordValue,
+                        remember = rememberMe
+                    )
                 )
             },
             enabled = isFieldNotEmpty,
@@ -216,7 +214,7 @@ fun MainView(
             onClick = {
                 onLogin(
                     if (activity != null) {
-                        LoginParam.Google(activity)
+                        GetAuthTokenParam.Google(activity)
                     } else {
                         throw Exception("Activity not found")
                     }

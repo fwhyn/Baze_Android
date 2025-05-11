@@ -22,7 +22,7 @@ import javax.inject.Singleton
 import kotlin.coroutines.coroutineContext
 
 @Singleton
-open class GoogleSignIn @Inject constructor(
+open class AuthTokenByGoogleDataSource @Inject constructor(
     private val credentialLocalDataSource: CredentialLocalDataSource,
 ) {
 
@@ -30,7 +30,7 @@ open class GoogleSignIn @Inject constructor(
         const val MAX_SIGN_IN_TRY = 3
     }
 
-    val debugTag = GoogleSignIn::class.java.getDebugTag()
+    val debugTag = AuthTokenByGoogleDataSource::class.java.getDebugTag()
 
     // ----------------------------------------------------------------
     private var googleIdTokenCredential: GoogleIdTokenCredential? = null

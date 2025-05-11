@@ -2,24 +2,22 @@ package com.fwhyn.app.deandro.feature.func.auth
 
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.common.network.api.RetrofitApiClient
-import com.fwhyn.app.deandro.feature.func.auth.data.local.TokenLocalDataSource
-import com.fwhyn.app.deandro.feature.func.auth.data.model.LoginParam
-import com.fwhyn.app.deandro.feature.func.auth.data.model.UserToken
-import com.fwhyn.app.deandro.feature.func.auth.data.remote.GoogleSignIn
+import com.fwhyn.app.deandro.common.network.api.RetrofitProvider
+import com.fwhyn.app.deandro.feature.func.auth.data.local.AuthTokenLocalDataSource
+import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByGoogleDataSource
+import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByMyServerDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.LoginApi
-import com.fwhyn.app.deandro.feature.func.auth.data.remote.RetrofitInterceptor
-import com.fwhyn.app.deandro.feature.func.auth.data.remote.TokenRemoteDataSource
-import com.fwhyn.app.deandro.feature.func.auth.data.repository.TokenRepository
-import com.fwhyn.app.deandro.feature.func.auth.data.repository.TokenRepositoryFake
-import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetTokenUseCase
-import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetTokenUseCase
-import com.fwhyn.lib.baze.data.repository.BaseRepositoryCoroutine
-import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
+import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepository
+import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepositoryFake
+import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepositoryImpl
+import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
+import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCaseImpl
+import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCase
+import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -28,39 +26,39 @@ class AuthDi {
 
     @Provides
     fun provideGetTokenUseCase(
-        tokenRepository: BaseRepositoryCoroutine<LoginParam?, UserToken?>,
-    ): BaseUseCase<LoginParam, UserToken?> {
-        return GetTokenUseCase(tokenRepository)
+        authTokenRepository: AuthTokenRepository,
+    ): GetAuthTokenUseCase {
+        return GetAuthTokenUseCaseImpl(authTokenRepository)
     }
 
     @Provides
     fun provideSetTokenUseCase(
-        tokenRepository: BaseRepositoryCoroutine<LoginParam?, UserToken?>,
-    ): BaseUseCase<UserToken?, Unit> {
-        return SetTokenUseCase(tokenRepository)
+        authTokenRepository: AuthTokenRepository,
+    ): SetAuthTokenUseCase {
+        return SetAuthTokenUseCaseImpl(authTokenRepository)
     }
 
     @Provides
     fun provideTokenRepository(
-        tokenLocalDataSource: TokenLocalDataSource,
-        tokenRemoteDataSource: TokenRemoteDataSource,
-        googleSignIn: GoogleSignIn,
-    ): BaseRepositoryCoroutine<LoginParam, UserToken?> {
+        authTokenLocalDataSource: AuthTokenLocalDataSource,
+        authTokenByMyServerDataSource: AuthTokenByMyServerDataSource,
+        authTokenByGoogleDataSource: AuthTokenByGoogleDataSource,
+    ): AuthTokenRepository {
         return when (BuildConfig.FLAVOR) {
-            "Fake" -> TokenRepositoryFake(tokenLocalDataSource)
-            "Real" -> TokenRepository(tokenLocalDataSource, tokenRemoteDataSource, googleSignIn)
+            "Fake" -> AuthTokenRepositoryFake(authTokenLocalDataSource)
+            "Real" -> AuthTokenRepositoryImpl(
+                authTokenLocalDataSource,
+                authTokenByMyServerDataSource,
+                authTokenByGoogleDataSource
+            )
+
             else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
         }
     }
 
     @Provides
     @Singleton
-    fun provideLoginInterface(retrofit: Retrofit): LoginApi {
-        return RetrofitApiClient(retrofit, LoginApi::class.java).client
-    }
-
-    @Provides
-    fun provideRetrofitInterceptor(tokenLocalDataSource: TokenLocalDataSource): RetrofitInterceptor {
-        return RetrofitInterceptor(tokenLocalDataSource)
+    fun provideLoginInterface(retrofitProvider: RetrofitProvider): LoginApi {
+        return RetrofitApiClient(retrofitProvider.get(null), LoginApi::class.java).client
     }
 }

@@ -14,5 +14,5 @@ sealed class GetAccessParam() {
 
     data object MyServer : GetAccessParam()
 
-    data object Nothing : GetAccessParam()
+    data object None : GetAccessParam()
 }

@@ -1,24 +1,7 @@
 package com.fwhyn.app.deandro.feature.func.access.data.repository
 
-import com.fwhyn.app.deandro.feature.func.access.data.helper.get
-import com.fwhyn.app.deandro.feature.func.access.data.model.AccessData
-import com.fwhyn.app.deandro.feature.func.access.data.model.AccessParam
-import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
+import com.fwhyn.app.deandro.feature.func.access.data.model.AccessResultRaw
+import com.fwhyn.app.deandro.feature.func.access.data.model.GetAccessRepoParam
+import com.fwhyn.lib.baze.data.repository.GetRepositoryCoroutine
 
-class AccessRepository(
-    private val googleDriveAccess: GoogleDriveAccess
-) : AccessRepositoryInterface {
-    override suspend fun get(param: AccessParam): AccessData {
-        return when (param) {
-            is AccessParam.GoogleDrive -> googleDriveAccess.get(param)
-            AccessParam.Nothing -> TODO()
-        }
-    }
-
-    override suspend fun set(
-        param: AccessParam,
-        data: AccessData
-    ) {
-        TODO("Not yet implemented")
-    }
-}
+interface AccessRepository : GetRepositoryCoroutine<GetAccessRepoParam, AccessResultRaw>

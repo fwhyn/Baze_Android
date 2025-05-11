@@ -1,25 +1,21 @@
-package com.fwhyn.app.deandro.feature.func.auth.data.remote
+package com.fwhyn.app.deandro.common.network.api
 
 import android.util.Log
-import com.fwhyn.app.deandro.feature.func.auth.data.local.TokenLocalDataSource
 import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class RetrofitInterceptor @Inject constructor(
-    private val tokenLocalDataSource: TokenLocalDataSource,
+class ApiRequestInterceptor(
+    private val ongGetToken: () -> String,
 ) : Interceptor {
 
-    private val debugTag = RetrofitInterceptor::class.java.getDebugTag()
+    private val debugTag = ApiRequestInterceptor::class.java.getDebugTag()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest: Request = chain.request()
-        val token = tokenLocalDataSource.token
-        val tokenCode = "Bearer " + token?.code
+        val token = ongGetToken()
+        val tokenCode = "Bearer $token"
         Log.d(debugTag, tokenCode)
 
         val interceptedRequest: Request = originalRequest

@@ -3,18 +3,14 @@ package com.fwhyn.app.deandro.feature.func.auth.data.model
 import android.app.Activity
 import com.google.gson.annotations.SerializedName
 
-sealed class LoginParam() {
+sealed class GetAuthTokenRepoParam() {
 
-    data class Google(
-        val activity: Activity,
-    ) : LoginParam()
-
-    data object Local : LoginParam()
+    data object Local : GetAuthTokenRepoParam()
 
     data class MyServer(
         @SerializedName("username") val username: String,
         @SerializedName("password") val password: String,
-    ) : LoginParam() {
+    ) : GetAuthTokenRepoParam() {
         @SerializedName("id_atm_sehat_kit")
         val id: String = "rspon1"
         var forceLogin: ForceLogin = ForceLogin.NO
@@ -24,6 +20,10 @@ sealed class LoginParam() {
             return username.isNotEmpty() && username.isNotEmpty()
         }
     }
+
+    data class Google(
+        val activity: Activity,
+    ) : GetAuthTokenRepoParam()
 
     enum class ForceLogin(val data: Int) {
         YES(1),

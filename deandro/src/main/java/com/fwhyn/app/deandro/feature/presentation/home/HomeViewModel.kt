@@ -6,8 +6,10 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
 import com.fwhyn.app.deandro.feature.func.access.domain.model.GetAccessParam
-import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCaseInterface
-import com.fwhyn.app.deandro.feature.func.auth.data.model.UserToken
+import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCase
+import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
+import com.fwhyn.app.deandro.feature.func.auth.domain.model.SetAuthTokenParam
+import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCase
 import com.fwhyn.lib.baze.data.model.Status
 import com.fwhyn.lib.baze.domain.helper.Rezult
 import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
@@ -20,8 +22,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
     private val messageHandler: MessageHandler<Status>,
-    private val setTokenUseCase: BaseUseCase<UserToken?, Unit>,
-    private val getAccessUseCase: GetAccessUseCaseInterface,
+    private val setTokenUseCase: SetAuthTokenUseCase,
+    private val getAccessUseCase: GetAccessUseCase,
 ) : HomeVmInterface() {
 
     companion object {
@@ -65,7 +67,7 @@ class HomeViewModel @Inject constructor(
                     BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
                 }
             }
-            .execute(null, viewModelScope)
+            .execute(SetAuthTokenParam.Local(AuthTokenModel.None), viewModelScope)
     }
 
     override fun onAddPhoto(activity: Activity) {

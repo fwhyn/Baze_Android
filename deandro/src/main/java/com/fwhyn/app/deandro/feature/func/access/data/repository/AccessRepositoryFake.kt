@@ -1,13 +1,13 @@
 package com.fwhyn.app.deandro.feature.func.access.data.repository
 
-import com.fwhyn.app.deandro.feature.func.access.data.model.AccessData
-import com.fwhyn.app.deandro.feature.func.access.data.model.AccessParam
+import com.fwhyn.app.deandro.feature.func.access.data.model.AccessResultRaw
+import com.fwhyn.app.deandro.feature.func.access.data.model.GetAccessRepoParam
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 
-class AccessRepositoryFake : AccessRepositoryInterface {
-    override suspend fun get(param: AccessParam): AccessData {
+class AccessRepositoryFake : AccessRepository {
+    override suspend fun get(param: GetAccessRepoParam): AccessResultRaw {
         return when (param) {
-            is AccessParam.GoogleDrive -> AccessData.GoogleDrive(
+            is GetAccessRepoParam.GoogleDrive -> AccessResultRaw.GoogleDrive(
                 AuthorizationResult(
                     null,
                     null,
@@ -18,14 +18,7 @@ class AccessRepositoryFake : AccessRepositoryInterface {
                 )
             )
 
-            AccessParam.Nothing -> TODO()
+            GetAccessRepoParam.None -> TODO()
         }
-    }
-
-    override suspend fun set(
-        param: AccessParam,
-        data: AccessData
-    ) {
-        TODO("Not yet implemented")
     }
 }
