@@ -3,6 +3,7 @@ package com.fwhyn.app.deandro.feature.func.auth.data.remote
 import com.fwhyn.app.deandro.feature.func.auth.data.model.GetAuthTokenRepoParam
 import com.fwhyn.lib.baze.data.model.Exzeption
 import com.fwhyn.lib.baze.data.model.Status
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,16 +13,28 @@ class AuthTokenByMyServerDataSource @Inject constructor(
 ) {
     suspend fun login(getAuthTokenRepoParam: GetAuthTokenRepoParam.MyServer): LoginApi.Response {
         return if (getAuthTokenRepoParam.isNotEmpty()) {
-            val response: LoginApi.Response = loginApi.login(
-                getAuthTokenRepoParam,
-                getAuthTokenRepoParam.forceLogin.data
-            ).also {
-                if (it.status_code != Status.Success.code) {
-                    throw Exzeption(it.status)
+            try {
+                val response: LoginApi.Response = loginApi.login(
+                    getAuthTokenRepoParam,
+                    getAuthTokenRepoParam.forceLogin.data
+                ).also {
+                    if (it.status_code != Status.Success.code) {
+                        throw Exzeption(it.status)
+                    }
+                }
+
+                response
+            } catch (e: HttpException) {
+                when (e.code()) {
+                    401 -> throw Exzeption(
+                        status = Status.Unauthorized,
+                        throwable = Throwable("Invalid username or password"),
+                    )
+
+                    422 -> throw Exzeption(status = Status.BadRequest)
+                    else -> throw Exzeption()
                 }
             }
-
-            response
         } else {
             throw Exzeption(
                 status = Status.BadRequest,
