@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.fwhyn.app.deandro.R
 import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
+import com.fwhyn.app.deandro.feature.func.access.domain.model.AccessResult
 import com.fwhyn.app.deandro.feature.func.access.domain.model.GetAccessParam
 import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCase
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
@@ -78,10 +80,16 @@ class HomeViewModel @Inject constructor(
 
         getAccessUseCase
             .setResultNotifier {
-
+                when (it) {
+                    is Rezult.Failure<Throwable> -> activityRetainedState.showNotification(R.string.unauthorized)
+                    is Rezult.Success<AccessResult> -> activityRetainedState.showNotification(R.string.success)
+                }
             }
             .setLifeCycleNotifier {
-
+                when (it) {
+                    BaseUseCase.LifeCycle.OnStart -> activityRetainedState.showLoading()
+                    BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
+                }
             }
             .execute(param, viewModelScope)
     }
