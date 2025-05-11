@@ -25,7 +25,13 @@ class AuthTokenRepositoryImpl @Inject constructor(
             is GetAuthTokenRepoParam.MyServer -> authTokenByMyServerDataSource.get(param)
         }
 
-        if (param !is GetAuthTokenRepoParam.Local) {
+        val isRemember = when (param) {
+            is GetAuthTokenRepoParam.MyServer -> param.remember
+            is GetAuthTokenRepoParam.Google -> false
+            GetAuthTokenRepoParam.Local -> false
+        }
+
+        if (param !is GetAuthTokenRepoParam.Local && isRemember) {
             set(SetAuthTokenRepoParam.Local, response)
         }
 

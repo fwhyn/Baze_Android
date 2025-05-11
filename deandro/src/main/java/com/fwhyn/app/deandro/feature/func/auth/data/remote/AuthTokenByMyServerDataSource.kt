@@ -12,7 +12,10 @@ class AuthTokenByMyServerDataSource @Inject constructor(
 ) {
     suspend fun login(getAuthTokenRepoParam: GetAuthTokenRepoParam.MyServer): LoginApi.Response {
         return if (getAuthTokenRepoParam.isNotEmpty()) {
-            val response: LoginApi.Response = loginApi.login(getAuthTokenRepoParam).also {
+            val response: LoginApi.Response = loginApi.login(
+                getAuthTokenRepoParam,
+                getAuthTokenRepoParam.forceLogin.data
+            ).also {
                 if (it.status_code != Status.Success.code) {
                     throw Exzeption(it.status)
                 }

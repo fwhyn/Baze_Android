@@ -14,7 +14,7 @@ interface LoginApi {
 
     @POST("api/v1/auth/login/petugas")
     suspend fun login(
-        @Body req: GetAuthTokenRepoParam,
+        @Body req: GetAuthTokenRepoParam.MyServer,
         @Query("force_login") forceLogin: Int = GetAuthTokenRepoParam.ForceLogin.NO.data,
     ): Response
 
