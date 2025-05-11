@@ -9,4 +9,5 @@
     <string name="out_memory_error">Out Of Memory Error</string>
     <string name="request_time_out">Request Time Out</string>
     <string name="setting_error">Setting Error</string>
+    <string name="unauthorized">Unauthorized</string>
 </resources>

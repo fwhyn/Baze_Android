@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
+import com.fwhyn.lib.baze.data.model.Exzeption
 import com.fwhyn.lib.baze.data.model.Status
 import com.fwhyn.lib.baze.domain.helper.Rezult
 import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
@@ -65,9 +66,9 @@ class LoginViewModel @Inject constructor(
                 when (it) {
                     is Rezult.Failure -> {
                         if (loginUiState.tryCount > 0) {
-                            activityRetainedState.showNotification(
-                                messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
-                            )
+                            val exception = it.err as? Exzeption
+                            val status = exception?.status ?: Status.UnknownError
+                            activityRetainedState.showNotification(messageHandler.getMessage(status))
                         }
                     }
 

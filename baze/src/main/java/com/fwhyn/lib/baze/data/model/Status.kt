@@ -2,7 +2,7 @@ package com.fwhyn.lib.baze.data.model
 
 sealed class Status(val code: Int, val msg: String) {
     data object Success : Status(200, "Success")
-    data object Unauthorized : Status(401, "Not Found")
+    data object Unauthorized : Status(401, "Unauthorized")
     data object NotFound : Status(404, "Not Found")
     data object BadRequest : Status(400, "Bad Request")
     data object WriteError : Status(417, "Write Error")
