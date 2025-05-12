@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -116,7 +118,7 @@ fun News(
         }
 
         is Result.Success -> {
-            LazyColumn(modifier = modifier) {
+            LazyColumn(modifier = modifier.fillMaxSize()) {
                 items(value.data) { newsItem ->
                     NewsItem(news = newsItem)
                 }
@@ -139,6 +141,7 @@ fun NewsItem(news: News) {
         Text(text = news.title)
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = news.description)
+        HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Color.LightGray)
     }
 }
 
