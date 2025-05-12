@@ -1,4 +1,4 @@
-package com.fwhyn.app.cc.ui.theme
+package com.fwhyn.app.cc.common.ui.config
 
 import androidx.compose.ui.graphics.Color
 

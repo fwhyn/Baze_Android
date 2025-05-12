@@ -1,4 +1,4 @@
-package com.fwhyn.app.cc
+package com.fwhyn.app.cc.feature.presentation.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.fwhyn.app.cc.ui.theme.BazeTheme
+import com.fwhyn.app.cc.common.ui.config.BazeTheme
 
 class CeeCeeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

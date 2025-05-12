@@ -1,4 +1,4 @@
-package com.fwhyn.app.cc.ui.theme
+package com.fwhyn.app.cc.common.ui.config
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

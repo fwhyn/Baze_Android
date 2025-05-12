@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Baze">
         <activity
-            android:name=".CeeCeeActivity"
+            android:name=".feature.presentation.main.CeeCeeActivity"
             android:exported="true"
             android:theme="@style/Theme.Baze">
             <intent-filter>
