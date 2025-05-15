@@ -1,8 +1,8 @@
-package com.fwhyn.lib.baze.data.repository
+package com.fwhyn.lib.baze.common.data.repository
 
 import MainDispatcherRule
-import com.fwhyn.lib.baze.domain.helper.Rezult
-import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.test.runTest
 import org.junit.After

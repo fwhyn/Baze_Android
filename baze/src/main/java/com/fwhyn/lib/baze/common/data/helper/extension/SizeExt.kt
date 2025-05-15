@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.data.helper.extension
+package com.fwhyn.lib.baze.common.data.helper.extension
 
 import android.util.Size
 import android.util.SizeF

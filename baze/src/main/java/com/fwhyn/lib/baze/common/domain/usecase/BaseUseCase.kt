@@ -1,17 +1,14 @@
-package com.fwhyn.lib.baze.domain.usecase
+package com.fwhyn.lib.baze.common.domain.usecase
 
 import android.util.Log
-import com.fwhyn.lib.baze.data.helper.Util
-import com.fwhyn.lib.baze.data.helper.extension.continueIfActive
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.data.helper.Util
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
@@ -38,7 +35,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private val debugTag = BaseUseCase::class.java.getDebugTag()
     protected open var jobId = Util.getUniqueId()
 
-    private var withResult: Boolean = true
+    private var isWithResult: Boolean = true
 
     private var timeOutMillis: Long = 0
 
@@ -58,11 +55,11 @@ abstract class BaseUseCase<PARAM, RESULT> {
     /**
      * Sets whether the use case should return a result.
      *
-     * @param withResult A boolean indicating if the result should be returned.
+     * @param isWithResult A boolean indicating if the result should be returned.
      * @return The current instance of the use case.
      */
-    fun setWithResult(withResult: Boolean): BaseUseCase<PARAM, RESULT> {
-        this.withResult = withResult
+    fun setWithResult(isWithResult: Boolean): BaseUseCase<PARAM, RESULT> {
+        this.isWithResult = isWithResult
 
         return this
     }
@@ -117,7 +114,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
      * @return The current instance of the use case.
      */
     fun setResultNotifier(
-        resultNotifier: (Rezult<RESULT, Throwable>) -> Unit,
+        resultNotifier: ((Rezult<RESULT, Throwable>) -> Unit)?,
     ): BaseUseCase<PARAM, RESULT> {
         this.resultNotifier = resultNotifier
 
@@ -165,7 +162,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
      * @param scope The coroutine scope for execution.
      */
     fun execute(param: PARAM, scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) {
-        runInternally(scope, { onRunning(param) }, withResult)
+        runInternally(scope, { onRunning(param) }, isWithResult)
     }
 
     /**
@@ -178,7 +175,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
     private fun <T> runInternally(
         scope: CoroutineScope,
         runAPi: suspend () -> T,
-        withResult: Boolean = true,
+        isWithResult: Boolean = true,
     ) {
         notifyOnStart()
 
@@ -196,7 +193,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
                     runAPi()
                 }
 
-                if (withResult) {
+                if (isWithResult) {
                     provideResult(result as RESULT)
                 }
             } catch (e: Throwable) {
@@ -215,7 +212,7 @@ abstract class BaseUseCase<PARAM, RESULT> {
         }
     }
 
-    private suspend fun notifyResult(result: Rezult<RESULT, Throwable>) {
+    suspend fun notifyResult(result: Rezult<RESULT, Throwable>) {
         withContext(uiContext) {
             resultNotifier?.let { it(result) }
             notifyOnFinish()
@@ -240,27 +237,4 @@ abstract class BaseUseCase<PARAM, RESULT> {
          */
         OnFinish,
     }
-}
-
-// ----------------------------------------------------------------
-/**
- * Extension function to get the result of the use case in a coroutine.
- *
- * @param param The input parameter for the use case.
- * @param scope The coroutine scope for execution.
- * @return The result of the use case.
- * @throws Throwable if the execution fails.
- */
-@OptIn(ExperimentalCoroutinesApi::class)
-suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
-    param: PARAM,
-    scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-): RESULT = suspendCancellableCoroutine { continuation ->
-    setResultNotifier {
-        when (it) {
-            is Rezult.Failure -> throw it.err
-            is Rezult.Success -> continuation.continueIfActive(it.dat)
-        }
-    }
-    execute(param, scope)
 }

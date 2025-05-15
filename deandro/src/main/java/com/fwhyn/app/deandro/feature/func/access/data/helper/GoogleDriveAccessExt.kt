@@ -3,7 +3,7 @@ package com.fwhyn.app.deandro.feature.func.access.data.helper
 import com.fwhyn.app.deandro.feature.func.access.data.model.AccessResultRaw
 import com.fwhyn.app.deandro.feature.func.access.data.model.GetAccessRepoParam
 import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
-import com.fwhyn.lib.baze.data.helper.extension.continueIfActive
+import com.fwhyn.lib.baze.common.data.helper.extension.continueIfActive
 import com.google.android.gms.auth.api.identity.AuthorizationResult
 import kotlinx.coroutines.suspendCancellableCoroutine
 

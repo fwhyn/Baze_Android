@@ -1,10 +1,10 @@
-package com.fwhyn.lib.baze.data.helper.extension
+package com.fwhyn.lib.baze.common.data.helper.extension
 
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.net.Uri
 import androidx.navigation.NavOptionsBuilder
-import com.fwhyn.lib.baze.data.helper.Constant.TAG_BAZE_DEBUG
+import com.fwhyn.lib.baze.common.data.helper.Constant.TAG_BAZE_DEBUG
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File

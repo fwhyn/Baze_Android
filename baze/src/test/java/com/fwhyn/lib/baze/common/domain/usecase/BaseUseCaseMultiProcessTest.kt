@@ -1,8 +1,8 @@
-package com.fwhyn.lib.baze.domain.usecase
+package com.fwhyn.lib.baze.common.domain.usecase
 
 import MainDispatcherRule
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.After

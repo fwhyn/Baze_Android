@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.domain.helper
+package com.fwhyn.lib.baze.common.domain.helper
 
 sealed class Rezult<out DATA, out ERROR> {
     data class Success<D>(val dat: D) : Rezult<D, Nothing>()

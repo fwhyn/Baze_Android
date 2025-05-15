@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.data.repository
+package com.fwhyn.lib.baze.common.data.repository
 
 interface SetRepositoryCoroutine<PARAM, DATA> {
 

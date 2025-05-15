@@ -4,7 +4,7 @@ import com.fwhyn.app.deandro.common.network.response.StatusInterface
 import com.fwhyn.app.deandro.common.network.response.TimeInterface
 import com.fwhyn.app.deandro.feature.func.auth.data.model.AuthTokenRaw
 import com.fwhyn.app.deandro.feature.func.auth.data.model.GetAuthTokenRepoParam
-import com.fwhyn.lib.baze.data.model.Status
+import com.fwhyn.lib.baze.common.data.model.Status
 import com.google.gson.annotations.SerializedName
 import retrofit2.http.Body
 import retrofit2.http.POST

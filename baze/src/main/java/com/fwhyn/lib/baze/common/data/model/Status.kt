@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.data.model
+package com.fwhyn.lib.baze.common.data.model
 
 sealed class Status(val code: Int, val msg: String) {
     data object Success : Status(200, "Success")

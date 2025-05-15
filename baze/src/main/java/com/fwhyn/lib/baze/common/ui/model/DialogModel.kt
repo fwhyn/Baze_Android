@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.ui.model
+package com.fwhyn.lib.baze.common.ui.model
 
 data class DialogModel(
     val message: String,

@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.ui.dialog
+package com.fwhyn.lib.baze.common.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,8 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.fwhyn.lib.baze.ui.model.ButtonModel
-import com.fwhyn.lib.baze.ui.model.DialogModel
+import com.fwhyn.lib.baze.common.ui.model.ButtonModel
+import com.fwhyn.lib.baze.common.ui.model.DialogModel
 
 @Composable
 fun BazeDialog(

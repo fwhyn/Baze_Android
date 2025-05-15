@@ -1,9 +1,9 @@
 package com.fwhyn.app.deandro.common.di
 
 import com.fwhyn.app.deandro.common.ui.handler.GeneralMessageHandler
-import com.fwhyn.lib.baze.data.model.Status
-import com.fwhyn.lib.baze.ui.helper.MessageHandler
-import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.data.model.Status
+import com.fwhyn.lib.baze.common.ui.helper.MessageHandler
+import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

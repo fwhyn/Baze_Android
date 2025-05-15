@@ -1,7 +1,7 @@
-package com.fwhyn.lib.baze.data.model
+package com.fwhyn.lib.baze.common.data.model
 
 import android.util.Log
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
 import java.io.Serializable
 
 open class PairData<A, B>(

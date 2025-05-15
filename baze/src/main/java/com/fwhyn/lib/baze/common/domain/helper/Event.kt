@@ -1,7 +1,7 @@
-package com.fwhyn.lib.baze.domain.helper
+package com.fwhyn.lib.baze.common.domain.helper
 
 import android.util.Log
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
 
 open class Event<T>(data: T) {
 

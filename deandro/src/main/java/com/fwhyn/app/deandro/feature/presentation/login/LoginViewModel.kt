@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
-import com.fwhyn.lib.baze.data.model.Exzeption
-import com.fwhyn.lib.baze.data.model.Status
-import com.fwhyn.lib.baze.domain.helper.Rezult
-import com.fwhyn.lib.baze.domain.usecase.BaseUseCase
-import com.fwhyn.lib.baze.ui.helper.MessageHandler
-import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.data.model.Exzeption
+import com.fwhyn.lib.baze.common.data.model.Status
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
+import com.fwhyn.lib.baze.common.ui.helper.MessageHandler
+import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -1,8 +1,8 @@
 package com.fwhyn.app.deandro.feature.presentation.main
 
 import androidx.lifecycle.ViewModel
-import com.fwhyn.lib.baze.data.helper.network.NetworkMonitor
-import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.data.helper.network.NetworkMonitor
+import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

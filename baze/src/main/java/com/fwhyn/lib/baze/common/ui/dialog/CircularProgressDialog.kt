@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.ui.dialog
+package com.fwhyn.lib.baze.common.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

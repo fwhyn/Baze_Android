@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.ui.main
+package com.fwhyn.lib.baze.common.ui.main
 
 import android.app.Activity
 import android.content.Intent

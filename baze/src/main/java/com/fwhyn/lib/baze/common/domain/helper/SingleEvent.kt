@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.domain.helper
+package com.fwhyn.lib.baze.common.domain.helper
 
 open class SingleEvent<T>(data: T) : Event<T>(data) {
 

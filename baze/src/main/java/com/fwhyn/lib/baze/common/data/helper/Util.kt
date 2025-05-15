@@ -1,7 +1,7 @@
-package com.fwhyn.lib.baze.data.helper
+package com.fwhyn.lib.baze.common.data.helper
 
-import com.fwhyn.lib.baze.data.model.Exzeption
-import com.fwhyn.lib.baze.data.model.Status
+import com.fwhyn.lib.baze.common.data.model.Exzeption
+import com.fwhyn.lib.baze.common.data.model.Status
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

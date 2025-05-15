@@ -3,7 +3,7 @@ package com.fwhyn.app.deandro.feature.func.auth.data.helper
 import com.fwhyn.app.deandro.feature.func.auth.data.model.AuthTokenRaw
 import com.fwhyn.app.deandro.feature.func.auth.data.model.GetAuthTokenRepoParam
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByGoogleDataSource
-import com.fwhyn.lib.baze.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 suspend fun AuthTokenByGoogleDataSource.get(param: GetAuthTokenRepoParam.Google): AuthTokenRaw {

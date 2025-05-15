@@ -1,6 +1,6 @@
 package others
 
-import com.fwhyn.lib.baze.data.model.Exzeption
+import com.fwhyn.lib.baze.common.data.model.Exzeption
 import org.junit.Test
 
 class OtherTest {

@@ -1,11 +1,12 @@
-package com.fwhyn.lib.baze.domain.usecase
+package com.fwhyn.lib.baze.common.domain.usecase
 
 import MainDispatcherRule
 import android.util.Log
-import com.fwhyn.lib.baze.data.helper.Util
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.data.model.Exzeption
-import com.fwhyn.lib.baze.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.data.helper.Util
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.data.helper.extension.getResult
+import com.fwhyn.lib.baze.common.data.model.Exzeption
+import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -351,6 +352,18 @@ class BaseUseCaseSingleProcessTest {
 
     @Test
     fun getResultInBackgroundTest() = runTest {
+        val scope = this
+        val testInputEqualsOutput = TestInputEqualsOutput()
+
+        val output = testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .getResult(input, scope)
+
+        Assert.assertEquals(outputSuccess, output)
+    }
+
+    @Test
+    fun getStateFlowResultTest() = runTest {
         val scope = this
         val testInputEqualsOutput = TestInputEqualsOutput()
 

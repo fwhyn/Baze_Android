@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.ui.helper
+package com.fwhyn.lib.baze.common.ui.helper
 
 import androidx.annotation.StringRes
 

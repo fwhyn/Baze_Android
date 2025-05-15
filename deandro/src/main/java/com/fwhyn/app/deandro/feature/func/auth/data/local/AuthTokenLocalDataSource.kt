@@ -3,8 +3,8 @@ package com.fwhyn.app.deandro.feature.func.auth.data.local
 import android.content.SharedPreferences
 import com.fwhyn.app.deandro.common.di.PreferenceDi
 import com.fwhyn.app.deandro.feature.func.auth.data.model.AuthTokenRaw
-import com.fwhyn.lib.baze.data.helper.extension.get
-import com.fwhyn.lib.baze.data.helper.extension.put
+import com.fwhyn.lib.baze.common.data.helper.extension.get
+import com.fwhyn.lib.baze.common.data.helper.extension.put
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -26,8 +26,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.common.ui.base.BaseActivity
 import com.fwhyn.app.deandro.common.ui.config.MyTheme
-import com.fwhyn.lib.baze.ui.main.ActivityRetainedState
-import com.fwhyn.lib.baze.ui.main.rememberActivityState
+import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.ui.main.rememberActivityState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

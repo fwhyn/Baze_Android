@@ -2,8 +2,8 @@ package com.fwhyn.app.deandro.common.ui.handler
 
 import androidx.annotation.StringRes
 import com.fwhyn.app.deandro.R
-import com.fwhyn.lib.baze.data.model.Status
-import com.fwhyn.lib.baze.ui.helper.MessageHandler
+import com.fwhyn.lib.baze.common.data.model.Status
+import com.fwhyn.lib.baze.common.ui.helper.MessageHandler
 
 class GeneralMessageHandler : MessageHandler<Status> {
 

@@ -1,19 +1,19 @@
-package com.fwhyn.lib.baze.ui.main
+package com.fwhyn.lib.baze.common.ui.main
 
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.fwhyn.lib.baze.data.helper.Util
-import com.fwhyn.lib.baze.data.helper.extension.clear
-import com.fwhyn.lib.baze.data.helper.extension.copy
-import com.fwhyn.lib.baze.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.data.model.PairData
-import com.fwhyn.lib.baze.data.model.remove
-import com.fwhyn.lib.baze.data.model.set
-import com.fwhyn.lib.baze.domain.helper.SingleEvent
-import com.fwhyn.lib.baze.ui.model.DialogModel
+import com.fwhyn.lib.baze.common.data.helper.Util
+import com.fwhyn.lib.baze.common.data.helper.extension.clear
+import com.fwhyn.lib.baze.common.data.helper.extension.copy
+import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.data.model.PairData
+import com.fwhyn.lib.baze.common.data.model.remove
+import com.fwhyn.lib.baze.common.data.model.set
+import com.fwhyn.lib.baze.common.domain.helper.SingleEvent
+import com.fwhyn.lib.baze.common.ui.model.DialogModel
 
 class ActivityRetainedState {
 
