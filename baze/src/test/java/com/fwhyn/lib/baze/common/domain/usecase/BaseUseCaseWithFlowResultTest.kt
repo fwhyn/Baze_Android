@@ -1,14 +1,11 @@
 package com.fwhyn.lib.baze.common.domain.usecase
 
 import MainDispatcherRule
-import android.util.Log
-import com.fwhyn.lib.baze.common.data.helper.Util
 import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
 import com.fwhyn.lib.baze.common.data.helper.extension.getFlowResult
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
@@ -43,20 +40,16 @@ class BaseUseCaseWithFlowResultTest {
         val flowData = useCase.getFlowResult()
         useCase.execute(param = input, scope = this)
 
-        val firstData = flowData.first() as? Rezult.Success
-        val output = flowData.toList().map {
-            (it as Rezult.Success).dat
+        for (i in input.indices) {
+            val data = flowData.first() as? Rezult.Success
+            Assert.assertEquals(input[i], data?.dat)
         }
 
-        flowData.collect {
-            when (it) {
-                is Rezult.Failure<Throwable> -> Util.throwMustNotFailed()
-                is Rezult.Success<String> -> Log.d(testTag, it.dat)
-            }
-        }
-
-        Assert.assertEquals(input, output)
-        Assert.assertEquals(input[0], firstData?.dat)
+//        val data1 = flowData.first() as? Rezult.Success
+//        Assert.assertEquals(input[0], data1?.dat)
+//
+//        val data2 = flowData.first() as? Rezult.Success
+//        Assert.assertEquals(input[2], data2?.dat)
     }
 
     class FlowTest() : BaseUseCase<List<String>, String>() {
