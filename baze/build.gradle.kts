@@ -66,6 +66,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.bundles.org.mockito.test)
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
+    testImplementation(libs.app.cash.turbine)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
