@@ -1,6 +1,7 @@
-package com.fwhyn.lib.baze.common.data.helper.extension
+package com.fwhyn.lib.baze.common.domain.helper.extension
 
 import com.fwhyn.lib.baze.common.data.helper.Util.throwExceptionIfBelowZero
+import com.fwhyn.lib.baze.common.data.helper.extension.continueIfActive
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import kotlinx.coroutines.CoroutineScope

@@ -4,9 +4,9 @@ import MainDispatcherRule
 import android.util.Log
 import com.fwhyn.lib.baze.common.data.helper.Util
 import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.common.data.helper.extension.getResult
 import com.fwhyn.lib.baze.common.data.model.Exzeption
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.domain.helper.extension.getResult
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
