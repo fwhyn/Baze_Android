@@ -1,7 +1,6 @@
 package com.fwhyn.app.deandro.feature.func.auth
 
 import com.fwhyn.app.deandro.BuildConfig
-import com.fwhyn.app.deandro.common.network.api.RetrofitApiClient
 import com.fwhyn.app.deandro.common.network.api.RetrofitProvider
 import com.fwhyn.app.deandro.feature.func.auth.data.local.AuthTokenLocalDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByGoogleDataSource
@@ -14,6 +13,7 @@ import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCas
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCaseImpl
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCase
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCaseImpl
+import com.fwhyn.lib.baze.retrofit.api.RetrofitApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

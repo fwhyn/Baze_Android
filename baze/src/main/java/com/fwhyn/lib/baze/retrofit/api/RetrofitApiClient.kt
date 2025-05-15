@@ -1,4 +1,4 @@
-package com.fwhyn.app.deandro.common.network.api
+package com.fwhyn.lib.baze.retrofit.api
 
 import retrofit2.Retrofit
 
