@@ -1,21 +1,19 @@
-package com.fwhyn.lib.baze.common.domain.usecase
+package com.fwhyn.lib.baze.common.data.helper.extension
 
 import MainDispatcherRule
-import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
-import com.fwhyn.lib.baze.common.data.helper.extension.getFlowResult
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
+import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class BaseUseCaseWithFlowResultTest {
+class BaseUseCaseExtTest {
 
-    val testTag = BaseUseCaseWithFlowResultTest::class.java.getDebugTag()
+    val testTag = BaseUseCaseExtTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -34,7 +32,7 @@ class BaseUseCaseWithFlowResultTest {
     val input = listOf("data 1", "data 2", "data 3", "data 4")
 
     @Test
-    fun getFlowTest() = runTest {
+    fun getFlowTest() = kotlinx.coroutines.test.runTest {
         val useCase = FlowTest().setWorkerContext(coroutineContext)
 
         val flowData = useCase.getFlowResult()

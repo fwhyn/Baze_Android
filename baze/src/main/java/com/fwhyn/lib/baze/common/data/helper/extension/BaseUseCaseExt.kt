@@ -36,7 +36,14 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
     execute(param, scope)
 }
 
-// TODO add java doc
+/**
+ * Extension function to get the result of the use case as a StateFlow.
+ *
+ * @param scope The coroutine scope for execution.
+ * @param started The sharing strategy for the StateFlow.
+ * @param initialValue The initial value of the StateFlow.
+ * @return A StateFlow containing the result of the use case.
+ */
 fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getStateFlowResult(
     scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     started: SharingStarted = WhileSubscribed(5_000),
@@ -49,7 +56,11 @@ fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getStateFlowResult(
     )
 }
 
-// TODO add java doc
+/**
+ * Extension function to get the result of the use case as a Flow.
+ *
+ * @return A Flow containing the result of the use case.
+ */
 fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getFlowResult(): Flow<Rezult<RESULT, Throwable>> = callbackFlow {
     setResultNotifier {
         trySend(it)
