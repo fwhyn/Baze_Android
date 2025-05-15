@@ -8,13 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
@@ -42,43 +40,33 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
 /**
  * Extension function to get the result of the use case as a SharedFlow.
  *
- * @param scope The coroutine scope for execution.
- * @param started The sharing strategy for the SharedFlow.
  * @param replay The number of values to replay to new subscribers.
  * @return A SharedFlow containing the result of the use case.
  */
 fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getSharedFlowResult(
-    scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    started: SharingStarted = WhileSubscribed(5_000),
     replay: Int = 1
 ): SharedFlow<Rezult<RESULT, Throwable>> {
     throwExceptionIfBelowZero(replay)
 
-    return getFlowResult().shareIn(
-        scope = scope,
-        started = started,
-        replay = replay,
-    )
+    val mutableSharedFlow = MutableSharedFlow<Rezult<RESULT, Throwable>>(replay)
+    setResultNotifier { mutableSharedFlow.tryEmit(it) }
+
+    return mutableSharedFlow
 }
 
 /**
  * Extension function to get the result of the use case as a StateFlow.
  *
- * @param scope The coroutine scope for execution.
- * @param started The sharing strategy for the StateFlow.
  * @param initialValue The initial value of the StateFlow.
  * @return A StateFlow containing the result of the use case.
  */
 fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getStateFlowResult(
-    scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    started: SharingStarted = WhileSubscribed(5_000),
     initialValue: Rezult<RESULT, Throwable>
 ): StateFlow<Rezult<RESULT, Throwable>> {
-    return getFlowResult().stateIn(
-        scope = scope,
-        started = started,
-        initialValue = initialValue,
-    )
+    val mutableStateFlow = MutableStateFlow(initialValue)
+    setResultNotifier { mutableStateFlow.tryEmit(it) }
+
+    return mutableStateFlow
 }
 
 /**

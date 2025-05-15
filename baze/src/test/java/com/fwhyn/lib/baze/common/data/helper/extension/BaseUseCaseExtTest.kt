@@ -1,15 +1,13 @@
 package com.fwhyn.lib.baze.common.data.helper.extension
 
 import MainDispatcherRule
+import app.cash.turbine.test
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
@@ -44,8 +42,12 @@ class BaseUseCaseExtTest {
         val flowData = useCase.getFlowResult()
         useCase.execute(param = input, scope = this)
 
+        // Get all emitted values
+        val emittedValues = flowData.take(input.size).toList()
+
+        // Check the stream values
         for (i in input.indices) {
-            val data = flowData.first() as? Rezult.Success
+            val data = emittedValues[i] as? Rezult.Success
             Assert.assertEquals(input[i], data?.dat)
         }
     }
@@ -57,11 +59,7 @@ class BaseUseCaseExtTest {
         val delayMillis = 100L
         val useCase = FlowTest(delayMillis).setWorkerContext(coroutineContext)
 
-        val flowData = useCase.getStateFlowResult(
-            scope = backgroundScope,
-            started = WhileSubscribed(),
-            initialValue = Rezult.Success(initData),
-        )
+        val flowData = useCase.getStateFlowResult(initialValue = Rezult.Success(initData))
         useCase.execute(param = input, scope = this)
 
         // Get all emitted values including + the initial value
@@ -71,7 +69,7 @@ class BaseUseCaseExtTest {
         val initDataResult = emittedValues[0] as? Rezult.Success
         Assert.assertEquals(initData, initDataResult?.dat)
 
-        // Check the steam values
+        // Check the stream values
         for (i in input.indices) {
             val data = emittedValues[i + 1] as? Rezult.Success
             Assert.assertEquals(input[i], data?.dat)
@@ -95,55 +93,38 @@ class BaseUseCaseExtTest {
 
     @Test
     fun getSharedFlowTest() = runTest {
+        val scope = this
         val delayMillis = 10L
         val useCase = SharedFlowTest(delayMillis).setWorkerContext(coroutineContext)
+        val replay = 2
 
-        val flowData2 = useCase.getSharedFlowResult(
-            scope = backgroundScope,
-            started = WhileSubscribed(),
-            replay = 2,
-        )
-
-        val scope = this
+        val flowData2 = useCase.getSharedFlowResult(replay = replay)
 
         // Collect the flow using collect
-        for (i in 0..2) {
+        val size = 3
+        for (i in 0..size - 1) {
             useCase.execute(param = input[i], scope = scope)
             delay(100)
         }
 
-        val dataResults2 = mutableListOf<Rezult<String, Throwable>>()
-        val job2 = launch {
-            flowData2.collect { dataResult -> dataResults2.add(dataResult) }
-        }
-        delay(100)
-
-        Assert.assertEquals(2, dataResults2.size)
+        val dataResults2 = flowData2.replayCache
+        Assert.assertEquals(replay, dataResults2.size)
 
         // Wait for the flow to emit values
         for (i in dataResults2.indices) {
+            val index = i + size - replay
             val dataResult = dataResults2[i] as? Rezult.Success
-            Assert.assertEquals(input[i], dataResult?.dat)
+            Assert.assertEquals(input[index], dataResult?.dat)
         }
 
         // Collect the flow using turbine
-//        flowData.test {
-//            useCase.execute(param = inputForSharedFlow, scope = scope)
-//            var dataResult = awaitItem() as? Rezult.Success
-//            Assert.assertEquals(inputForSharedFlow, dataResult?.dat)
-//
-//            useCase.execute(param = "Data 2", scope = scope)
-//            dataResult = awaitItem() as? Rezult.Success
-//            Assert.assertEquals("Data 2", dataResult?.dat)
-//        }
-//
-//        flowData2.test {
-//            useCase.execute(param = inputForSharedFlow, scope = scope)
-//            val dataResult = awaitItem() as? Rezult.Success
-//            Assert.assertEquals(inputForSharedFlow, dataResult?.dat)
-//        }
-
-        job2.cancel()
+        flowData2.test {
+            for (i in 0..replay - 1) {
+                val index = i + size - replay
+                val dataResult = awaitItem() as? Rezult.Success
+                Assert.assertEquals(input[index], dataResult?.dat)
+            }
+        }
     }
 
     class SharedFlowTest(val delayMillis: Long = 100) : BaseUseCase<String, String>() {
@@ -164,18 +145,9 @@ class BaseUseCaseExtTest {
         sharedFlow.emit(3)
 
         // Collect values and assert
-        val collectedValues = mutableListOf<Int>()
-        val collectJob = launch {
-            sharedFlow.collect {
-                collectedValues.add(it)
-            }
-        }
-
-        delay(1000)
+        val collectedValues = sharedFlow.replayCache
 
         // Ensure that the last 'replayCount' values are received
-        Assert.assertEquals(listOf(1, 2, 3), collectedValues)
-
-        collectJob.cancel()
+        Assert.assertEquals(listOf(2, 3), collectedValues)
     }
 }
