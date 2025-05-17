@@ -38,8 +38,8 @@ object Util {
     @JvmStatic
     fun throwExceptionIfBelowZero(value: Int) {
         require(
-            value > 0,
-            Exzeption(Status.SettingError, Throwable("Value must be greater than 0"))
+            value >= 0,
+            Exzeption(Status.SettingError, Throwable("Value must not be below zero"))
         )
     }
 
