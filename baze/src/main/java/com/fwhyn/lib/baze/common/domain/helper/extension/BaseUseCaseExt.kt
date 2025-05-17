@@ -45,11 +45,15 @@ suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
  * @return A SharedFlow containing the result of the use case.
  */
 fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getSharedFlowResult(
-    replay: Int = 1
+    replay: Int = 0,
+    extraBufferCapacity: Int = 0,
 ): SharedFlow<Rezult<RESULT, Throwable>> {
     throwExceptionIfBelowZero(replay)
 
-    val mutableSharedFlow = MutableSharedFlow<Rezult<RESULT, Throwable>>(replay)
+    val mutableSharedFlow = MutableSharedFlow<Rezult<RESULT, Throwable>>(
+        replay = replay,
+        extraBufferCapacity = extraBufferCapacity,
+    )
     setResultNotifier { mutableSharedFlow.tryEmit(it) }
 
     return mutableSharedFlow
