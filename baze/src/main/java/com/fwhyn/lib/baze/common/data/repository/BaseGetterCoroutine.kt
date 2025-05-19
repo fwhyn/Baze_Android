@@ -1,6 +1,6 @@
 package com.fwhyn.lib.baze.common.data.repository
 
-interface GetRepositoryCoroutine<PARAM, DATA> {
+interface BaseGetterCoroutine<PARAM, DATA> {
 
     /**
      * Retrieves data for the given parameter.

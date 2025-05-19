@@ -1,6 +1,6 @@
 package com.fwhyn.lib.baze.common.data.repository
 
-interface SetRepositoryCoroutine<PARAM, DATA> {
+interface BaseSetter<PARAM, DATA> {
 
     /**
      * Sets the data for the given parameter.
@@ -8,5 +8,5 @@ interface SetRepositoryCoroutine<PARAM, DATA> {
      * @param param The parameter for which to set the data.
      * @param data The data to set.
      */
-    suspend fun set(param: PARAM, data: DATA)
+    fun set(param: PARAM, data: DATA)
 }
