@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.common.data.repository
+package com.fwhyn.lib.baze.common.data
 
 interface BaseSetter<PARAM, DATA> {
 
