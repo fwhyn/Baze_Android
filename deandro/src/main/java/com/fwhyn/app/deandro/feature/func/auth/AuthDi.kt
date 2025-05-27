@@ -13,7 +13,7 @@ import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCas
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCaseImpl
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCase
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCaseImpl
-import com.fwhyn.lib.baze.retrofit.api.RetrofitApiClient
+import com.fwhyn.lib.baze.retrofit.api.RetrofitApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,6 +59,6 @@ class AuthDi {
     @Provides
     @Singleton
     fun provideLoginInterface(retrofitProvider: RetrofitProvider): LoginApi {
-        return RetrofitApiClient(retrofitProvider.get(null), LoginApi::class.java).client
+        return RetrofitApiService(retrofitProvider.get(null), LoginApi::class.java).create()
     }
 }
