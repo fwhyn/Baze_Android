@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitBuilder(val baseUrl: String) {
     val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
 
-    fun addBearerAuth(ongGetToken: (() -> String)): RetrofitBuilder {
-        val apiRequestInterceptor = ApiRequestInterceptor(ongGetToken)
+    fun addBearerAuth(ongGetKey: (() -> String)): RetrofitBuilder {
+        val apiRequestInterceptor = ApiRequestInterceptor(ongGetKey)
         okHttpClientBuilder.addNetworkInterceptor(apiRequestInterceptor)
 
         return this

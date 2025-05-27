@@ -7,14 +7,14 @@ import okhttp3.Request
 import okhttp3.Response
 
 class ApiRequestInterceptor(
-    private val ongGetToken: () -> String,
+    private val ongGetKey: () -> String,
 ) : Interceptor {
 
     private val debugTag = ApiRequestInterceptor::class.java.getDebugTag()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest: Request = chain.request()
-        val token = ongGetToken()
+        val token = ongGetKey()
         val bearer = "Bearer $token"
 
         Log.d(debugTag, bearer)
