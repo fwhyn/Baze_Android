@@ -56,7 +56,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.com.google.android.material)
     implementation(libs.com.google.code.gson)
+
     implementation(libs.bundles.retrofit2)
+    implementation(libs.bundles.okhttp)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.androidx.compose)
