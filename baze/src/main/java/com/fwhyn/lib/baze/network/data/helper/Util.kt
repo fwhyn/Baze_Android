@@ -1,8 +1,10 @@
 package com.fwhyn.lib.baze.network.data.helper
 
 import android.Manifest
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import androidx.annotation.RequiresPermission
 
 object Util {
@@ -16,4 +18,17 @@ object Util {
                 ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         } == true
     }
+
+    @JvmStatic
+    fun getConnectivityManager(
+        context: Context
+    ): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @JvmStatic
+    fun getNetworkRequestInternet(): NetworkRequest = NetworkRequest
+        .Builder()
+        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        .build()
 }
