@@ -36,7 +36,7 @@ class BaseUseCaseExtTest {
 
     // ----------------------------------------------------------------
 
-    val input = listOf("data 1", "data 2", "data 3", "data 4")
+    private val input = listOf("data 1", "data 2", "data 3", "data 4")
 
     @Test
     fun getFlowTest() = runTest {
@@ -55,7 +55,7 @@ class BaseUseCaseExtTest {
         }
     }
 
-    val initData = "initial data"
+    private val initData = "initial data"
 
     @Test
     fun getStateFlowTest() = runTest {
@@ -79,12 +79,12 @@ class BaseUseCaseExtTest {
         }
     }
 
-    class FlowTest(val delayMillis: Long = 100) : BaseUseCase<List<String>, String>() {
+    class FlowTest(private val delayMillis: Long = 100) : BaseUseCase<List<String>, String>() {
         override suspend fun onRunning(param: List<String>): String {
             val size = param.size - 1
 
             // loop until second last item
-            for (i in 0..size - 1) {
+            for (i in 0..<size) {
                 delay(delayMillis)
                 notifyResult(Rezult.Success(param[i]))
             }
@@ -105,7 +105,7 @@ class BaseUseCaseExtTest {
 
         // Collect the flow using collect
         val size = 3
-        for (i in 0..size - 1) {
+        for (i in 0..<size) {
             useCase.execute(param = input[i], scope = scope)
             delay(100)
         }
@@ -122,7 +122,7 @@ class BaseUseCaseExtTest {
 
         // Collect the flow using turbine
         flowData2.test {
-            for (i in 0..replay - 1) {
+            for (i in 0..<replay) {
                 val index = i + size - replay
                 val dataResult = awaitItem() as? Rezult.Success
                 Assert.assertEquals(input[index], dataResult?.dat)
@@ -130,7 +130,7 @@ class BaseUseCaseExtTest {
         }
     }
 
-    class SharedFlowTest(val delayMillis: Long = 100) : BaseUseCase<String, String>() {
+    class SharedFlowTest(private val delayMillis: Long = 100) : BaseUseCase<String, String>() {
         override suspend fun onRunning(param: String): String {
             delay(delayMillis)
             return param

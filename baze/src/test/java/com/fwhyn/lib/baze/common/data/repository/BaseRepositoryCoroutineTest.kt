@@ -67,7 +67,8 @@ class BaseRepositoryCoroutineTest {
     }
 
     // ----------------------------------------------------------------
-    class GetDataUseCase(val dataSource: BaseRepositoryCoroutine<Unit, WeightData>) : BaseUseCase<Unit, WeightData>() {
+    class GetDataUseCase(private val dataSource: BaseRepositoryCoroutine<Unit, WeightData>) :
+        BaseUseCase<Unit, WeightData>() {
 
         override suspend fun onRunning(param: Unit): WeightData {
             return dataSource.get(param)

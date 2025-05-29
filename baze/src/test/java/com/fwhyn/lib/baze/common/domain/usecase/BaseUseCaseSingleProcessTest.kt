@@ -23,7 +23,7 @@ import org.mockito.kotlin.verify
 
 class BaseUseCaseSingleProcessTest {
 
-    val testTag = BaseUseCaseSingleProcessTest::class.java.getDebugTag()
+    private val testTag = BaseUseCaseSingleProcessTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -47,7 +47,7 @@ class BaseUseCaseSingleProcessTest {
         Assert.assertEquals("Hello world", data)
     }
 
-    suspend fun fetchData(): String {
+    private suspend fun fetchData(): String {
         delay(1000)
         return "Hello world"
     }
@@ -515,7 +515,7 @@ class BaseUseCaseSingleProcessTest {
             loading()
         }
 
-        suspend fun loading() {
+        private suspend fun loading() {
             while (true) {
                 delay(1)
             }

@@ -6,7 +6,6 @@ import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +23,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  * @return The result of the use case.
  * @throws Throwable if the execution fails.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun <PARAM, RESULT> BaseUseCase<PARAM, RESULT>.getResult(
     param: PARAM,
     scope: CoroutineScope = CoroutineScope(Dispatchers.IO),

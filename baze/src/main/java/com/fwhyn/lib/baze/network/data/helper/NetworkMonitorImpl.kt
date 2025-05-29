@@ -47,11 +47,11 @@ class NetworkMonitorImpl(
 
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-    fun register(callback: ConnectivityManager.NetworkCallback) {
+    private fun register(callback: ConnectivityManager.NetworkCallback) {
         connectivityManager.registerNetworkCallback(networkRequest, callback)
     }
 
-    fun unregister(callback: ConnectivityManager.NetworkCallback) {
+    private fun unregister(callback: ConnectivityManager.NetworkCallback) {
         connectivityManager.unregisterNetworkCallback(callback)
     }
 }

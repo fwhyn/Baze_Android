@@ -1,6 +1,7 @@
 package com.fwhyn.lib.baze.common.data.helper.extension
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.google.gson.Gson
 
 inline fun <reified T> SharedPreferences.get(key: String): T? {
@@ -12,9 +13,9 @@ inline fun <reified T> SharedPreferences.get(key: String): T? {
 fun <T> SharedPreferences.put(key: String, data: T) {
     val jsonString = if (data != null) Gson().toJson(data) else null
 
-    this.edit().putString(key, jsonString).apply()
+    this.edit { putString(key, jsonString) }
 }
 
 fun SharedPreferences.delete(key: String) {
-    this.edit().remove(key).apply()
+    this.edit { remove(key) }
 }

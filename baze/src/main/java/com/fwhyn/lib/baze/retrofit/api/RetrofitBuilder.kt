@@ -5,8 +5,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitBuilder(val baseUrl: String) {
-    val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
+class RetrofitBuilder(private val baseUrl: String) {
+    private val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
 
     fun addBearerAuth(ongGetKey: (() -> String)): RetrofitBuilder {
         val apiRequestInterceptor = ApiRequestInterceptor(ongGetKey)
