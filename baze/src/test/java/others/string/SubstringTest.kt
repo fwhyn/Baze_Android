@@ -1,46 +1,9 @@
-package others
+package others.string
 
 import org.junit.Assert
 import org.junit.Test
 
-//Given a string s, find the length of the longest substring without repeating characters.
-//
-//Length of the longest substring
-//e.g.
-//
-//1)
-//Input: s = “aaabccbbb”
-//Output: 3
-//
-//Explanation: The answer is “abc”, with the length of 3.
-//
-//2)
-//Input: s = “pay2paypay”
-//Output: 4
-//
-//Explanation: The answer is “pay2” or “ay2p” or “y2pa” or  “2pay” with the length of 4.
-//
-//3)
-//Input: s = “ccccc”
-//Output: 1
-//
-//Explanation: The answer is “c”, with the length of 1.
-//
-//4)
-//Input: s = "pwwkew"
-//Output: 3
-//
-//Explanation: The answer is "wke", with the length of 3.
-//
-//Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
-//
-//
-//Constraints:
-//
-//* 0 <= s.length <= 5 * 104
-//* s consists of English letters, digits, symbols and spaces.
-
-class AnyTest {
+class SubstringTest {
 
 
     @Test
