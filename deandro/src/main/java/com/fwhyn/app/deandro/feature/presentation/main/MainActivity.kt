@@ -34,8 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val vm: MainViewModel by viewModels()
-    private var onActivityResult: ((activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? =
-        null
+    private var activityResult: ((activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? = null
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +57,7 @@ class MainActivity : BaseActivity() {
                     MainScreen(
                         activityState = rememberActivityState(
                             window = calculateWindowSizeClass(this),
-                            onActivityResult = onActivityResult
+                            onActivityResult = activityResult
                         ),
                         activityRetainedState = activityRetainedState,
                     )
@@ -69,7 +68,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, caller: ComponentCaller) {
-        onActivityResult?.invoke(this, requestCode, resultCode, data)
+        activityResult?.invoke(this, requestCode, resultCode, data)
     }
 
     private fun animateSplashScreen(
