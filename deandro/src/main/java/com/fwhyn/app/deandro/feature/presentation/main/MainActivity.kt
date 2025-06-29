@@ -2,7 +2,6 @@ package com.fwhyn.app.deandro.feature.presentation.main
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.app.ComponentCaller
 import android.content.Intent
 import android.os.Bundle
@@ -23,18 +22,22 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.common.ui.base.BaseActivity
 import com.fwhyn.app.deandro.common.ui.config.MyTheme
 import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
 import com.fwhyn.lib.baze.common.ui.main.rememberActivityState
+import com.fwhyn.lib.baze.common.ui.model.ActivityResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val vm: MainViewModel by viewModels()
-    private var activityResult: ((activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) -> Unit)? = null
+    private var activityResult: MutableSharedFlow<ActivityResult> = MutableSharedFlow()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +60,7 @@ class MainActivity : BaseActivity() {
                     MainScreen(
                         activityState = rememberActivityState(
                             window = calculateWindowSizeClass(this),
-                            onActivityResult = activityResult
+                            activityResult = activityResult
                         ),
                         activityRetainedState = activityRetainedState,
                     )
@@ -68,7 +71,15 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, caller: ComponentCaller) {
-        activityResult?.invoke(this, requestCode, resultCode, data)
+        lifecycleScope.launch {
+            activityResult.emit(
+                ActivityResult(
+                    requestCode = requestCode,
+                    resultCode = resultCode,
+                    data = data
+                )
+            )
+        }
     }
 
     private fun animateSplashScreen(

@@ -90,7 +90,7 @@ private fun HomeScreenRoute(
         HomeScreen(
             modifier = modifier,
             activityState = activityState,
-            vmInterface = vm,
+            vm = vm,
             uiData = uiData,
             uiState = uiState,
         )
@@ -101,7 +101,7 @@ private fun HomeScreenRoute(
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     activityState: ActivityState,
-    vmInterface: HomeVmInterface,
+    vm: HomeVmInterface,
     uiData: HomeUiData,
     uiState: HomeUiState,
 ) {
@@ -110,7 +110,7 @@ private fun HomeScreen(
 //        vmInterface::onPhotoSelected
 //    )
 
-    vmInterface.onActivityResult = activityState.onActivityResult
+    vm.activityResult = activityState.activityResult
 
     when (val state = uiState.state) {
         is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
@@ -130,8 +130,8 @@ private fun HomeScreen(
 
     MainHomeView(
         modifier = modifier,
-        onLogout = vmInterface::onLogout,
-        onAddPhoto = vmInterface::onAddPhoto,
+        onLogout = vm::onLogout,
+        onAddPhoto = vm::onAddPhoto,
     )
 }
 
@@ -356,7 +356,7 @@ fun HomeScreenPreview() {
     MyTheme {
         HomeScreen(
             activityState = rememberActivityState(),
-            vmInterface = object : HomeVmInterface() {},
+            vm = object : HomeVmInterface() {},
             uiData = HomeUiData(),
             uiState = HomeUiState()
         )
