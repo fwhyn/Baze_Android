@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
@@ -118,12 +119,12 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      *
      * @param param The input parameter for the use case.
      */
-    protected abstract suspend fun onRunning(param: PARAM): RESULT
+    protected abstract suspend fun onRunning(param: PARAM): Flow<RESULT>
 
     private fun runUseCase(
         scope: CoroutineScope,
-        onRunning: suspend () -> RESULT,
-    ): Result<RESULT> {
+        onRunning: suspend () -> Flow<RESULT>,
+    ): Flow<RESULT> {
 
         val result: Result<RESULT> = Result.failure(Throwable())
         job = scope.launch(workerContext + SupervisorJob()) {
