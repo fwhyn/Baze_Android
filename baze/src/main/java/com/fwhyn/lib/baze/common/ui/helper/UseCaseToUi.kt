@@ -5,6 +5,7 @@ import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCaseV2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -13,11 +14,7 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
     private val useCase: BaseUseCaseV2<PARAM, RESULT_DOMAIN>,
     private val onCovertData: (RESULT_DOMAIN) -> RESULT_UI
 ) {
-
-    var uiState: UiState<RESULT_UI> = UiState.Success(initialValue)
-        private set
-    var data: RESULT_UI = initialValue
-        private set
+    val data: MutableStateFlow<RESULT_UI> = MutableStateFlow(initialValue)
 
     private var jobId = Util.getUniqueId()
     private var mainContext: CoroutineContext = Dispatchers.Main
@@ -42,13 +39,9 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
     ) {
         job = scope.launch(workerContext) {
             runCatching {
-                uiState = UiState.Loading
                 useCase(param)
             }.onSuccess {
-                data = onCovertData(it)
-                uiState = UiState.Success(onCovertData(it))
-            }.onFailure { exception ->
-                uiState = UiState.Error(exception)
+                data.value = onCovertData(it)
             }
         }
     }

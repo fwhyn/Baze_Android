@@ -110,8 +110,6 @@ private fun HomeScreen(
 //        vmInterface::onPhotoSelected
 //    )
 
-    vm.activityResult = activityState.activityResult
-
     when (val state = uiState.state) {
         is HomeUiState.State.CallPhotoEdit -> state.invokeOnce {
 //                activityState.navController.navigateToPhotoEditScreen(key = state.key)

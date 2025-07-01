@@ -33,7 +33,6 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      * Executes the use case with the given parameter and coroutine scope.
      *
      * @param param The input parameter for the use case.
-     * @param scope The coroutine scope for execution.
      */
     suspend operator fun invoke(param: PARAM): RESULT {
         return return if (timeOutMillis > 0) {

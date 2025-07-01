@@ -1,11 +1,9 @@
 package com.fwhyn.app.deandro.feature.presentation.home
 
 import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.R
-import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
 import com.fwhyn.app.deandro.feature.func.access.domain.model.AccessResult
 import com.fwhyn.app.deandro.feature.func.access.domain.model.GetAccessParam
 import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCase
@@ -28,27 +26,23 @@ class HomeViewModel @Inject constructor(
     private val getAccessUseCase: GetAccessUseCase,
 ) : HomeVmInterface() {
 
-    companion object {
-        const val MAX_PHOTOS_LIMIT = 1
-    }
-
     val uiData = HomeUiData()
     val uiState = HomeUiState()
 
     var getGoogleDriveAccessParam: GetAccessParam.GoogleDrive? = null
 
-    override var onActivityResult: ((Activity, Int, Int, Intent?) -> Unit)? =
-        { activity, requestCode, resultCode, data ->
-            when (requestCode) {
-                GoogleDriveAccess.REQUEST_AUTHORIZE -> {
-                    data?.let { getGoogleDriveAccessParam?.onRetrieveResult?.invoke(it) }
-                }
-
-                else -> {
-                    // do nothing
-                }
-            }
-        }
+//    override var activityResult: ((Activity, Int, Int, Intent?) -> Unit)? =
+//        { activity, requestCode, resultCode, data ->
+//            when (requestCode) {
+//                GoogleDriveAccess.REQUEST_AUTHORIZE -> {
+//                    data?.let { getGoogleDriveAccessParam?.onRetrieveResult?.invoke(it) }
+//                }
+//
+//                else -> {
+//                    // do nothing
+//                }
+//            }
+//        }
 
     override fun onLogout() {
         setTokenUseCase
