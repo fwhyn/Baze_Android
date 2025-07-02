@@ -13,7 +13,7 @@ import kotlinx.coroutines.withTimeout
  */
 abstract class BaseUseCaseV2<PARAM, RESULT> {
 
-    private var timeOutMillis: Long = 0
+    protected var timeOutMillis: Long = 0
 
     // ----------------------------------------------------------------
     /**

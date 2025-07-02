@@ -9,17 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
-    initialValue: RESULT_UI,
-    private val useCase: BaseUseCaseV2<PARAM, RESULT_DOMAIN>,
-    private val onCovertData: (RESULT_DOMAIN) -> RESULT_UI
+abstract class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
+    protected open val initialValue: RESULT_UI,
+    protected open val useCase: BaseUseCaseV2<PARAM, RESULT_DOMAIN>,
 ) {
     val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
 
     private var jobId = Util.getUniqueId()
-    private var mainContext: CoroutineContext = Dispatchers.Main
-    private var workerContext: CoroutineContext = Dispatchers.Default
-    private var job: Job? = null
+    protected var workerContext: CoroutineContext = Dispatchers.Default
+    protected var job: Job? = null
         set(value) {
             cancelPreviousActiveJob()
             jobId = Util.getUniqueId()
@@ -33,7 +31,7 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
      */
-    operator fun invoke(
+    open operator fun invoke(
         scope: CoroutineScope,
         param: PARAM,
     ) {
@@ -50,24 +48,14 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
         }
     }
 
+    abstract suspend fun onCovertData(domain: RESULT_DOMAIN): RESULT_UI
+
     /**
      * Retrieves the unique identifier of the current job.
      *
      * @return The unique job identifier.
      */
     fun getId(): String = jobId
-
-    /**
-     * Sets the coroutine context for UI-related operations.
-     *
-     * @param context The coroutine context for UI operations.
-     * @return The current instance of the use case.
-     */
-    fun setUiContext(context: CoroutineContext): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
-        mainContext = context
-
-        return this
-    }
 
     /**
      * Sets the coroutine context for worker-related operations.
