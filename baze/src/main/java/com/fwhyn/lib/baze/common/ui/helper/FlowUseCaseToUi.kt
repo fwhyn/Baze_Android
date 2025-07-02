@@ -1,20 +1,21 @@
 package com.fwhyn.lib.baze.common.ui.helper
 
 import com.fwhyn.lib.baze.common.data.helper.Util
-import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCaseV2
+import com.fwhyn.lib.baze.common.domain.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
+class FlowUseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
     initialValue: RESULT_UI,
-    private val useCase: BaseUseCaseV2<PARAM, RESULT_DOMAIN>,
+    private val useCase: FlowUseCase<PARAM, RESULT_DOMAIN>,
     private val onCovertData: (RESULT_DOMAIN) -> RESULT_UI
 ) {
-    val data: MutableStateFlow<RESULT_UI> = MutableStateFlow(initialValue)
+    val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
 
     private var jobId = Util.getUniqueId()
     private var mainContext: CoroutineContext = Dispatchers.Main
@@ -39,9 +40,17 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
     ) {
         job = scope.launch(workerContext) {
             runCatching {
+                data.value = UiState.Loading
                 useCase(param)
-            }.onSuccess {
-                data.value = onCovertData(it)
+            }.onSuccess { result ->
+                result.map { domain ->
+                    onCovertData(domain)
+                }.collect { ui ->
+                    data.value = UiState.Success(ui)
+                }
+
+            }.onFailure { error ->
+                data.value = UiState.Error(error)
             }
         }
     }
@@ -59,7 +68,7 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param context The coroutine context for UI operations.
      * @return The current instance of the use case.
      */
-    fun setUiContext(context: CoroutineContext): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
+    fun setUiContext(context: CoroutineContext): FlowUseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
         mainContext = context
 
         return this
@@ -71,7 +80,7 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param context The coroutine context for worker operations.
      * @return The current instance of the use case.
      */
-    fun setWorkerContext(context: CoroutineContext): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
+    fun setWorkerContext(context: CoroutineContext): FlowUseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
         workerContext = context
 
         return this
@@ -82,7 +91,7 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      *
      * @return The current instance of the use case.
      */
-    fun cancelPreviousActiveJob(): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
+    fun cancelPreviousActiveJob(): FlowUseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
         if (job?.isActive == true) {
             job?.cancel()
         }
