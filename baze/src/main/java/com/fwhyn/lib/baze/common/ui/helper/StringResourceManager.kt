@@ -2,7 +2,7 @@ package com.fwhyn.lib.baze.common.ui.helper
 
 import androidx.annotation.StringRes
 
-interface MessageHandler<T> {
+interface StringResourceManager<T> {
     @StringRes
-    fun getMessage(input: T): Int
+    fun getId(input: T): Int
 }

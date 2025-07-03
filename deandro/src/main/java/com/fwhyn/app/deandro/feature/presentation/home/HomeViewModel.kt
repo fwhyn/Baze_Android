@@ -13,7 +13,7 @@ import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCas
 import com.fwhyn.lib.baze.common.data.model.Status
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
-import com.fwhyn.lib.baze.common.ui.helper.MessageHandler
+import com.fwhyn.lib.baze.common.ui.helper.StringResourceManager
 import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val activityRetainedState: ActivityRetainedState,
-    private val messageHandler: MessageHandler<Status>,
+    private val stringResourceManager: StringResourceManager<Status>,
     private val setTokenUseCase: SetAuthTokenUseCase,
     private val getAccessUseCase: GetAccessUseCase,
 ) : HomeVmInterface() {
@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
                 when (it) {
                     is Rezult.Failure -> {
                         activityRetainedState.showNotification(
-                            messageHandler.getMessage(Status.Instance(-1, it.err.message ?: ""))
+                            stringResourceManager.getId(Status.Instance(-1, it.err.message ?: ""))
                         )
                     }
 
