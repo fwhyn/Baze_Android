@@ -3,15 +3,17 @@ package com.fwhyn.lib.baze.common.ui.helper
 import com.fwhyn.lib.baze.common.domain.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
+class UseCaseToUi<RESULT_UI>(
+    private val scope: CoroutineScope,
     initialValue: RESULT_UI,
-    private val useCase: UseCase<PARAM, RESULT_DOMAIN>,
-    private val onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
 ) : JobManager() {
 
-    val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
+    private val _data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
+    val data: StateFlow<UiState<RESULT_UI>>
+        get() = _data
 
     // ----------------------------------------------------------------
     /**
@@ -20,19 +22,20 @@ class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
      */
-    operator fun invoke(
-        scope: CoroutineScope,
+    operator fun <PARAM, RESULT_DOMAIN> invoke(
+        useCase: UseCase<PARAM, RESULT_DOMAIN>,
         param: PARAM,
+        onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
     ) {
         job = scope.launch(workerContext) {
             runCatching {
-                data.value = UiState.Loading
+                _data.value = UiState.Loading
                 useCase(param)
             }.onSuccess { domain ->
                 val ui = onCovertData(domain)
-                data.value = UiState.Success(ui)
+                _data.value = UiState.Success(ui)
             }.onFailure { error ->
-                data.value = UiState.Error(error)
+                _data.value = UiState.Error(error)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.fwhyn.lib.baze.common.ui.helper
 import com.fwhyn.lib.baze.common.domain.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -11,7 +12,9 @@ class UseCaseToUiFlow<RESULT_UI>(
     initialValue: RESULT_UI,
 ) : JobManager() {
 
-    val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
+    private val _data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
+    val data: StateFlow<UiState<RESULT_UI>>
+        get() = _data
 
     // ----------------------------------------------------------------
     /**
@@ -27,17 +30,17 @@ class UseCaseToUiFlow<RESULT_UI>(
     ) {
         job = scope.launch(workerContext) {
             runCatching {
-                data.value = UiState.Loading
+                _data.value = UiState.Loading
                 useCase(param)
             }.onSuccess { result ->
                 result.map { domain ->
                     onCovertData(domain)
                 }.collect { ui ->
-                    data.value = UiState.Success(ui)
+                    _data.value = UiState.Success(ui)
                 }
 
             }.onFailure { error ->
-                data.value = UiState.Error(error)
+                _data.value = UiState.Error(error)
             }
         }
     }
