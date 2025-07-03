@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-abstract class UseCaseToUiFlow<PARAM, RESULT_DOMAIN, RESULT_UI>(
+class UseCaseToUiFlow<PARAM, RESULT_DOMAIN, RESULT_UI>(
     initialValue: RESULT_UI,
     private val useCase: FlowUseCase<PARAM, RESULT_DOMAIN>,
     private val onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
