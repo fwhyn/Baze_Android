@@ -136,14 +136,14 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      *
      * @param error The error that occurred during execution.
      */
-    fun notifyOnError(error: Throwable) = resultNotifier?.invoke(Result.failure(error))
+    protected fun notifyOnError(error: Throwable) = resultNotifier?.invoke(Result.failure(error))
 
     /**
      * Notifies the result notifier of a successful result.
      *
      * @param result The successful result of the use case execution.
      */
-    fun notifyOnSuccess(result: RESULT) = resultNotifier?.invoke(Result.success(result))
+    protected fun notifyOnSuccess(result: RESULT) = resultNotifier?.invoke(Result.success(result))
 
     /**
      * Executes the use case with the given parameter and coroutine scope.
