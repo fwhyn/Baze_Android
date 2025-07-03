@@ -11,7 +11,7 @@ import kotlinx.coroutines.withTimeout
  * @param <PARAM> The type of the input parameter required to execute the use case.
  * @param <RESULT> The type of the result produced by the use case.
  */
-abstract class BaseUseCaseV2<PARAM, RESULT> {
+abstract class UseCase<PARAM, RESULT> {
 
     protected var timeOutMillis: Long = 0
 
@@ -22,7 +22,7 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      * @param time Timeout duration in milliseconds.
      * @return The current instance of the use case.
      */
-    fun setTimeOutMillis(time: Long): BaseUseCaseV2<PARAM, RESULT> {
+    fun setTimeOutMillis(time: Long): UseCase<PARAM, RESULT> {
         timeOutMillis = time
 
         return this

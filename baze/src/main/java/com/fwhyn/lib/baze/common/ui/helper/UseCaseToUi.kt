@@ -1,28 +1,17 @@
 package com.fwhyn.lib.baze.common.ui.helper
 
-import com.fwhyn.lib.baze.common.data.helper.Util
-import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCaseV2
+import com.fwhyn.lib.baze.common.domain.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-abstract class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
-    protected open val initialValue: RESULT_UI,
-    protected open val useCase: BaseUseCaseV2<PARAM, RESULT_DOMAIN>,
-) {
+class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
+    initialValue: RESULT_UI,
+    private val useCase: UseCase<PARAM, RESULT_DOMAIN>,
+    private val onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
+) : JobManager() {
+
     val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
-
-    private var jobId = Util.getUniqueId()
-    protected var workerContext: CoroutineContext = Dispatchers.Default
-    protected var job: Job? = null
-        set(value) {
-            cancelPreviousActiveJob()
-            jobId = Util.getUniqueId()
-            field = value
-        }
 
     // ----------------------------------------------------------------
     /**
@@ -31,7 +20,7 @@ abstract class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
      */
-    open operator fun invoke(
+    operator fun invoke(
         scope: CoroutineScope,
         param: PARAM,
     ) {
@@ -47,43 +36,4 @@ abstract class UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI>(
             }
         }
     }
-
-    abstract suspend fun onCovertData(domain: RESULT_DOMAIN): RESULT_UI
-
-    /**
-     * Retrieves the unique identifier of the current job.
-     *
-     * @return The unique job identifier.
-     */
-    fun getId(): String = jobId
-
-    /**
-     * Sets the coroutine context for worker-related operations.
-     *
-     * @param context The coroutine context for worker operations.
-     * @return The current instance of the use case.
-     */
-    fun setWorkerContext(context: CoroutineContext): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
-        workerContext = context
-
-        return this
-    }
-
-    /**
-     * Cancels the currently active job, if any.
-     *
-     * @return The current instance of the use case.
-     */
-    fun cancelPreviousActiveJob(): UseCaseToUi<PARAM, RESULT_DOMAIN, RESULT_UI> {
-        if (job?.isActive == true) {
-            job?.cancel()
-        }
-
-        return this
-    }
-
-    /**
-     * Waits for the current job to complete.
-     */
-    suspend fun join() = job?.join()
 }

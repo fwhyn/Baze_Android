@@ -1,15 +1,18 @@
 package com.fwhyn.lib.baze.common.ui.helper
 
-import com.fwhyn.lib.baze.common.domain.usecase.FlowUseCaseV2
+import com.fwhyn.lib.baze.common.domain.usecase.FlowUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-abstract class FlowUseCaseToUiV2<PARAM, RESULT_DOMAIN, RESULT_UI>(
-    override val initialValue: RESULT_UI,
-    override val useCase: FlowUseCaseV2<PARAM, RESULT_DOMAIN>,
-) : UseCaseToUi<PARAM, Flow<RESULT_DOMAIN>, RESULT_UI>(initialValue, useCase) {
+abstract class UseCaseToUiFlow<PARAM, RESULT_DOMAIN, RESULT_UI>(
+    initialValue: RESULT_UI,
+    private val useCase: FlowUseCase<PARAM, RESULT_DOMAIN>,
+    private val onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
+) : JobManager() {
+
+    val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
 
     // ----------------------------------------------------------------
     /**
@@ -18,7 +21,7 @@ abstract class FlowUseCaseToUiV2<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
      */
-    override operator fun invoke(
+    operator fun invoke(
         scope: CoroutineScope,
         param: PARAM,
     ) {
@@ -37,11 +40,5 @@ abstract class FlowUseCaseToUiV2<PARAM, RESULT_DOMAIN, RESULT_UI>(
                 data.value = UiState.Error(error)
             }
         }
-    }
-
-    abstract suspend fun onCovertData(domain: RESULT_DOMAIN): RESULT_UI
-
-    override suspend fun onCovertData(domain: Flow<RESULT_DOMAIN>): RESULT_UI {
-        throw UnsupportedOperationException("This method should not be called directly.")
     }
 }
