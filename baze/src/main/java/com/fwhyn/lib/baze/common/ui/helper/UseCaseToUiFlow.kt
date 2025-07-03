@@ -6,10 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class UseCaseToUiFlow<PARAM, RESULT_DOMAIN, RESULT_UI>(
+class UseCaseToUiFlow<RESULT_UI>(
+    private val scope: CoroutineScope,
     initialValue: RESULT_UI,
-    private val useCase: FlowUseCase<PARAM, RESULT_DOMAIN>,
-    private val onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
 ) : JobManager() {
 
     val data: MutableStateFlow<UiState<RESULT_UI>> = MutableStateFlow(UiState.Success(initialValue))
@@ -21,9 +20,10 @@ class UseCaseToUiFlow<PARAM, RESULT_DOMAIN, RESULT_UI>(
      * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
      */
-    operator fun invoke(
-        scope: CoroutineScope,
+    operator fun <PARAM, RESULT_DOMAIN> invoke(
+        useCase: FlowUseCase<PARAM, RESULT_DOMAIN>,
         param: PARAM,
+        onCovertData: (domain: RESULT_DOMAIN) -> RESULT_UI
     ) {
         job = scope.launch(workerContext) {
             runCatching {
