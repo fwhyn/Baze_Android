@@ -100,18 +100,16 @@ abstract class BaseRunner<PARAM, RESULT> {
     suspend fun join() = job?.join()
 
     /**
-     * Executes the use case with the given parameter and coroutine scope.
+     * Executes the use case with the provided parameter and coroutine scope.
      *
-     * @param scope The coroutine scope in which to execute the use case.
-     * @param param The input parameter for the use case.
-     * @param result A lambda function to handle the result of the use case. Needs return value to convert the result.
-     * @param convertedResult A lambda function to handle the converted result.
+     * @param scope The coroutine scope in which to run the use case.
+     * @param onGetParam A suspend function that provides the input parameter for the use case.
+     * @param result A suspend function to handle the result of the use case execution.
      */
     operator fun <CONVERTED_RESULT> invoke(
         scope: CoroutineScope = CoroutineScope(workerContext),
-        param: PARAM,
-        result: suspend (Result<RESULT>) -> CONVERTED_RESULT? = { null },
-        convertedResult: (CONVERTED_RESULT) -> Unit = {},
+        onGetParam: suspend () -> PARAM,
+        result: suspend (Result<RESULT>) -> Unit = {},
     ) {
         job = scope.launch(workerContext + SupervisorJob()) {
             Log.d(debugTag, "Job is launched")
@@ -119,15 +117,13 @@ abstract class BaseRunner<PARAM, RESULT> {
             runCatching {
                 if (timeOutMillis > 0) {
                     withTimeout(timeOutMillis) {
-                        onRunning(param) {
-                            val _convertedResult = result(Result.success(it))
-                            _convertedResult?.let { convertedResult(it) }
+                        onRunning(onGetParam()) {
+                            result(Result.success(it))
                         }
                     }
                 } else {
-                    onRunning(param) {
-                        val _convertedResult = result(Result.success(it))
-                        _convertedResult?.let { convertedResult(it) }
+                    onRunning(onGetParam()) {
+                        result(Result.success(it))
                     }
                 }
             }.onFailure { error ->
