@@ -37,9 +37,6 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
             field = value
         }
 
-    private var resultNotifier: ((Result<RESULT>) -> Unit)? = null
-    private var lifeCycleNotifier: ((LifeCycle) -> Unit)? = null
-
     // ----------------------------------------------------------------
     /**
      * Sets a timeout for the use case execution.
@@ -85,34 +82,6 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
     }
 
     /**
-     * Sets the result notifier for the use case.
-     *
-     * @param result A lambda function to handle the result of the use case.
-     * @return The current instance of the use case.
-     */
-    fun setResultNotifier(
-        result: ((Result<RESULT>) -> Unit)?,
-    ): BaseUseCaseV2<PARAM, RESULT> {
-        this.resultNotifier = result
-
-        return this
-    }
-
-    /**
-     * Sets the lifecycle notifier for the use case.
-     *
-     * @param lifeCycleNotifier A lambda function to handle lifecycle events.
-     * @return The current instance of the use case.
-     */
-    fun setLifeCycleNotifier(
-        lifeCycleNotifier: (LifeCycle) -> Unit,
-    ): BaseUseCaseV2<PARAM, RESULT> {
-        this.lifeCycleNotifier = lifeCycleNotifier
-
-        return this
-    }
-
-    /**
      * Cancels the currently active job, if any.
      *
      * @return The current instance of the use case.
@@ -132,44 +101,39 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
     suspend fun join() = job?.join()
 
     /**
-     * Notifies the result notifier of an error.
-     *
-     * @param error The error that occurred during execution.
-     */
-    protected fun notifyOnError(error: Throwable) = resultNotifier?.invoke(Result.failure(error))
-
-    /**
-     * Notifies the result notifier of a successful result.
-     *
-     * @param result The successful result of the use case execution.
-     */
-    protected fun notifyOnSuccess(result: RESULT) = resultNotifier?.invoke(Result.success(result))
-
-    /**
      * Executes the use case with the given parameter and coroutine scope.
      *
+     * @param scope The coroutine scope in which to execute the use case.
      * @param param The input parameter for the use case.
-     * @param scope The coroutine scope for execution.
+     * @param result A lambda function to handle the result of the use case. Needs return value to convert the result.
+     * @param convertedResult A lambda function to handle the converted result.
      */
-    operator fun invoke(
+    operator fun <CONVERTED_RESULT> invoke(
         scope: CoroutineScope = CoroutineScope(workerContext),
-        param: PARAM
+        param: PARAM,
+        result: suspend (Result<RESULT>) -> CONVERTED_RESULT? = { null },
+        convertedResult: (CONVERTED_RESULT) -> Unit = {},
     ) {
         job = scope.launch(workerContext + SupervisorJob()) {
             Log.d(debugTag, "Job is launched")
 
-            notifyOnStart()
-            val result = runCatching {
+            runCatching {
                 if (timeOutMillis > 0) {
                     withTimeout(timeOutMillis) {
-                        onRunning(param)
+                        onRunning(param) {
+                            val _convertedResult = result(Result.success(it))
+                            _convertedResult?.let { convertedResult(it) }
+                        }
                     }
                 } else {
-                    onRunning(param)
+                    onRunning(param) {
+                        val _convertedResult = result(Result.success(it))
+                        _convertedResult?.let { convertedResult(it) }
+                    }
                 }
+            }.onFailure { error ->
+                Result.failure<Unit>(error)
             }
-            resultNotifier?.invoke(result)
-            notifyOnFinish()
         }
     }
 
@@ -178,24 +142,8 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      *
      * @param param The input parameter for the use case.
      */
-    protected abstract suspend fun onRunning(param: PARAM): RESULT
-
-    private fun notifyOnStart() = lifeCycleNotifier?.invoke(LifeCycle.OnStart)
-    private fun notifyOnFinish() = lifeCycleNotifier?.invoke(LifeCycle.OnFinish)
-
-    // ----------------------------------------------------------------
-    /**
-     * Enum representing the lifecycle states of the use case execution.
-     */
-    enum class LifeCycle {
-        /**
-         * Indicates that the use case execution has started.
-         */
-        OnStart,
-
-        /**
-         * Indicates that the use case execution has finished.
-         */
-        OnFinish,
-    }
+    protected abstract suspend fun onRunning(
+        param: PARAM,
+        result: suspend (RESULT) -> Unit,
+    )
 }
