@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.common.domain.usecase
+package com.fwhyn.lib.baze.common.data
 
 import android.util.Log
 import com.fwhyn.lib.baze.common.data.helper.Util
@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 
-// ----------------------------------------------------------------
 /**
  * Abstract class representing a base use case for executing business logic.
  * This class provides a structure for handling asynchronous operations with
@@ -20,9 +19,9 @@ import kotlin.coroutines.CoroutineContext
  * @param <PARAM> The type of the input parameter required to execute the use case.
  * @param <RESULT> The type of the result produced by the use case.
  */
-abstract class BaseUseCaseV2<PARAM, RESULT> {
+abstract class BaseRunner<PARAM, RESULT> {
 
-    private val debugTag = BaseUseCaseV2::class.java.getDebugTag()
+    private val debugTag = BaseRunner::class.java.getDebugTag()
 
     protected open var jobId = Util.getUniqueId()
     private var timeOutMillis: Long = 0
@@ -44,7 +43,7 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      * @param time Timeout duration in milliseconds.
      * @return The current instance of the use case.
      */
-    fun setTimeOutMillis(time: Long): BaseUseCaseV2<PARAM, RESULT> {
+    fun setTimeOutMillis(time: Long): BaseRunner<PARAM, RESULT> {
         timeOutMillis = time
 
         return this
@@ -63,7 +62,7 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      * @param context The coroutine context for UI operations.
      * @return The current instance of the use case.
      */
-    fun setUiContext(context: CoroutineContext): BaseUseCaseV2<PARAM, RESULT> {
+    fun setUiContext(context: CoroutineContext): BaseRunner<PARAM, RESULT> {
         uiContext = context
 
         return this
@@ -75,7 +74,7 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      * @param context The coroutine context for worker operations.
      * @return The current instance of the use case.
      */
-    fun setWorkerContext(context: CoroutineContext): BaseUseCaseV2<PARAM, RESULT> {
+    fun setWorkerContext(context: CoroutineContext): BaseRunner<PARAM, RESULT> {
         workerContext = context
 
         return this
@@ -86,7 +85,7 @@ abstract class BaseUseCaseV2<PARAM, RESULT> {
      *
      * @return The current instance of the use case.
      */
-    fun cancelPreviousActiveJob(): BaseUseCaseV2<PARAM, RESULT> {
+    fun cancelPreviousActiveJob(): BaseRunner<PARAM, RESULT> {
         if (job?.isActive == true) {
             Log.d(debugTag, "Cancelling job: $job")
             job?.cancel()
