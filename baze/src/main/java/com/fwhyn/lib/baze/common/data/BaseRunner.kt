@@ -106,7 +106,7 @@ abstract class BaseRunner<PARAM, RESULT> {
      * @param onGetParam A suspend function that provides the input parameter for the use case.
      * @param result A suspend function to handle the result of the use case execution.
      */
-    operator fun <CONVERTED_RESULT> invoke(
+    operator fun invoke(
         scope: CoroutineScope = CoroutineScope(workerContext),
         onGetParam: suspend () -> PARAM,
         result: suspend (Result<RESULT>) -> Unit = {},
