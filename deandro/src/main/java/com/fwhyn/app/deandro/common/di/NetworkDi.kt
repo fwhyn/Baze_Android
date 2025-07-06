@@ -1,7 +1,7 @@
 package com.fwhyn.app.deandro.common.di
 
-import com.fwhyn.lib.baze.network.data.helper.AlwaysOnlineNetworkMonitor
-import com.fwhyn.lib.baze.network.data.helper.NetworkMonitor
+import com.fwhyn.lib.baze.network.helper.AlwaysOnlineNetworkMonitor
+import com.fwhyn.lib.baze.network.helper.NetworkMonitor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

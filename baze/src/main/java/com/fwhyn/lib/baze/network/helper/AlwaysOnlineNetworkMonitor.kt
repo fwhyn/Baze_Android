@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.network.data.helper
+package com.fwhyn.lib.baze.network.helper
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

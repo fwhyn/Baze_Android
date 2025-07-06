@@ -1,4 +1,4 @@
-package com.fwhyn.lib.baze.network.data.helper
+package com.fwhyn.lib.baze.network.helper
 
 import android.Manifest
 import android.content.Context
