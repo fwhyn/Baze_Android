@@ -60,10 +60,10 @@ import com.fwhyn.app.deandro.common.ui.config.MyTheme
 import com.fwhyn.app.deandro.common.ui.config.defaultPadding
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.presentation.home.navigateToHomeScreen
-import com.fwhyn.lib.baze.common.data.helper.extension.removeFromBackStack
-import com.fwhyn.lib.baze.common.ui.helper.DevicePreviews
-import com.fwhyn.lib.baze.common.ui.main.ActivityState
-import com.fwhyn.lib.baze.common.ui.main.rememberActivityState
+import com.fwhyn.lib.baze.common.helper.extension.removeFromBackStack
+import com.fwhyn.lib.baze.compose.helper.ActivityState
+import com.fwhyn.lib.baze.compose.helper.DevicePreviews
+import com.fwhyn.lib.baze.compose.helper.rememberActivityState
 
 const val LOGIN_ROUTE = "LOGIN_ROUTE"
 

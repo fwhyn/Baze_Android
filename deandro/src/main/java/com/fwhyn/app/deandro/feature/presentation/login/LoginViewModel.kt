@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
-import com.fwhyn.lib.baze.common.data.model.Exzeption
-import com.fwhyn.lib.baze.common.data.model.Status
 import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
-import com.fwhyn.lib.baze.common.ui.helper.StringResourceManager
-import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.model.Exzeption
+import com.fwhyn.lib.baze.common.model.Status
+import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
+import com.fwhyn.lib.baze.string.helper.StringIdManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class LoginViewModel @Inject constructor(
     val loginUiData: LoginUiData,
     val loginUiState: LoginUiState,
     private val activityRetainedState: ActivityRetainedState,
-    private val stringResourceManager: StringResourceManager<Status>,
+    private val stringIdManager: StringIdManager<Status>,
     private val getTokenUseCase: GetAuthTokenUseCase,
 ) : LoginVmInterface() {
 
@@ -68,7 +68,7 @@ class LoginViewModel @Inject constructor(
                         if (loginUiState.tryCount > 0) {
                             val exception = it.err as? Exzeption
                             val status = exception?.status ?: Status.UnknownError
-                            activityRetainedState.showNotification(stringResourceManager.getId(status))
+                            activityRetainedState.showNotification(stringIdManager.getId(status))
                         }
                     }
 

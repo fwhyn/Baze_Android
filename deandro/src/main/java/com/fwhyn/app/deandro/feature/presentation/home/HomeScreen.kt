@@ -58,10 +58,10 @@ import com.fwhyn.app.deandro.common.ui.config.defaultPadding
 import com.fwhyn.app.deandro.common.ui.dialog.BazeAlertDialog
 import com.fwhyn.app.deandro.common.ui.dialog.TryBottomDialog
 import com.fwhyn.app.deandro.feature.presentation.login.navigateToLoginScreen
-import com.fwhyn.lib.baze.common.data.helper.extension.removeFromBackStack
-import com.fwhyn.lib.baze.common.ui.helper.DevicePreviews
-import com.fwhyn.lib.baze.common.ui.main.ActivityState
-import com.fwhyn.lib.baze.common.ui.main.rememberActivityState
+import com.fwhyn.lib.baze.common.helper.extension.removeFromBackStack
+import com.fwhyn.lib.baze.compose.helper.ActivityState
+import com.fwhyn.lib.baze.compose.helper.DevicePreviews
+import com.fwhyn.lib.baze.compose.helper.rememberActivityState
 import java.io.File
 
 const val HOME_ROUTE = "homeRoute"

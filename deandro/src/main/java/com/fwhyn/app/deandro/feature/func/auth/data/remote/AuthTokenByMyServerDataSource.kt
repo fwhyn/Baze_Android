@@ -1,8 +1,8 @@
 package com.fwhyn.app.deandro.feature.func.auth.data.remote
 
 import com.fwhyn.app.deandro.feature.func.auth.data.model.GetAuthTokenRepoParam
-import com.fwhyn.lib.baze.common.data.model.Exzeption
-import com.fwhyn.lib.baze.common.data.model.Status
+import com.fwhyn.lib.baze.common.model.Exzeption
+import com.fwhyn.lib.baze.common.model.Status
 import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton

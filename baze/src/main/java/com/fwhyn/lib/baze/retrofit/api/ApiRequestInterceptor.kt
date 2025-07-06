@@ -1,7 +1,7 @@
 package com.fwhyn.lib.baze.retrofit.api
 
 import android.util.Log
-import com.fwhyn.lib.baze.common.data.helper.extension.getDebugTag
+import com.fwhyn.lib.baze.common.helper.extension.getDebugTag
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import com.fwhyn.app.deandro.feature.presentation.home.addHomeScreen
 import com.fwhyn.app.deandro.feature.presentation.login.LOGIN_ROUTE
 import com.fwhyn.app.deandro.feature.presentation.login.addLoginScreen
-import com.fwhyn.lib.baze.common.ui.main.ActivityState
+import com.fwhyn.lib.baze.compose.helper.ActivityState
 
 @Composable
 fun NavigationHost(

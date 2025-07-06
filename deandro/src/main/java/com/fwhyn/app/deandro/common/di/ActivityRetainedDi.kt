@@ -1,9 +1,9 @@
 package com.fwhyn.app.deandro.common.di
 
 import com.fwhyn.app.deandro.common.ui.handler.GeneralStringResourceManager
-import com.fwhyn.lib.baze.common.data.model.Status
-import com.fwhyn.lib.baze.common.ui.helper.StringResourceManager
-import com.fwhyn.lib.baze.common.ui.main.ActivityRetainedState
+import com.fwhyn.lib.baze.common.model.Status
+import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
+import com.fwhyn.lib.baze.string.helper.StringIdManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +19,5 @@ class ActivityRetainedDi {
     fun provideActivityRetainedState(): ActivityRetainedState = ActivityRetainedState()
 
     @Provides
-    fun provideGeneralMessageHandler(): StringResourceManager<Status> = GeneralStringResourceManager()
+    fun provideGeneralMessageHandler(): StringIdManager<Status> = GeneralStringResourceManager()
 }

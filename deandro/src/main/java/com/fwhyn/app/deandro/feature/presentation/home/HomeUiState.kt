@@ -3,7 +3,7 @@ package com.fwhyn.app.deandro.feature.presentation.home
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.fwhyn.lib.baze.common.domain.helper.SingleEvent
+import com.fwhyn.lib.baze.common.helper.SingleEvent
 
 class HomeUiState {
 

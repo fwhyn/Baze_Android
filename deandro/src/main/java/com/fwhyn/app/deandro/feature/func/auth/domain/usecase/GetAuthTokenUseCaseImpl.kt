@@ -6,8 +6,8 @@ import com.fwhyn.app.deandro.feature.func.auth.domain.helper.toAuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.helper.toGetAuthTokenRepoParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
-import com.fwhyn.lib.baze.common.data.model.Exzeption
-import com.fwhyn.lib.baze.common.data.model.Status
+import com.fwhyn.lib.baze.common.model.Exzeption
+import com.fwhyn.lib.baze.common.model.Status
 import javax.inject.Inject
 
 class GetAuthTokenUseCaseImpl @Inject constructor(
