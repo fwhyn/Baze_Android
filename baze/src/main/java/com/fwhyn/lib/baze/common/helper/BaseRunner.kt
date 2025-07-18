@@ -114,27 +114,28 @@ abstract class BaseRunner<PARAM, RESULT> {
             Log.d(debugTag, "Job is launched")
 
             runCatching {
+                val param: PARAM = onGetParam()
+                val block: suspend () -> Unit = {
+                    onRunning(param) { result(Result.success(it)) }
+                }
+
                 if (timeOutMillis > 0) {
-                    withTimeout(timeOutMillis) {
-                        onRunning(onGetParam()) {
-                            result(Result.success(it))
-                        }
-                    }
+                    withTimeout(timeOutMillis) { block() }
                 } else {
-                    onRunning(onGetParam()) {
-                        result(Result.success(it))
-                    }
+                    block()
                 }
             }.onFailure { error ->
-                Result.failure<Unit>(error)
+                result(Result.failure(error))
             }
         }
     }
 
     /**
-     * Executes the use case with the given parameter and coroutine scope.
+     * Abstract method to be implemented by subclasses to define the business logic
+     * that will be executed when the use case is invoked.
      *
-     * @param param The input parameter for the use case.
+     * @param param The input parameter required for the use case execution.
+     * @param result A suspend function to handle the result of the use case execution.
      */
     protected abstract suspend fun onRunning(
         param: PARAM,
