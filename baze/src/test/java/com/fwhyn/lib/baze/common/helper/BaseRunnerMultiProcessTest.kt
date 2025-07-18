@@ -30,25 +30,38 @@ class BaseRunnerMultiProcessTest {
     @Test
     fun multipleJobsExecutionTest() = runTest {
         val scope = this
-        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+        val results: ArrayList<String> = arrayListOf()
 
         val job1 = TestInputEqualsOutput()
         val job2 = TestInputEqualsOutput()
 
-        job1.setResultNotifier { result ->
-            if (result is Rezult.Success) results.add(result)
-        }.setWorkerContext(coroutineContext).execute("Job1", scope)
+        job1
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { "Job1" },
+                result = {
+                    it.onSuccess { output -> results.add(output) }
+                }
+            )
 
-        job2.setResultNotifier { result ->
-            if (result is Rezult.Success) results.add(result)
-        }.setWorkerContext(coroutineContext).execute("Job2", scope)
+
+        job2
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { "Job2" },
+                result = {
+                    it.onSuccess { output -> results.add(output) }
+                }
+            )
 
         job1.join()
         job2.join()
 
         Assert.assertEquals(2, results.size)
-        Assert.assertEquals("Output: Job1", (results[0] as Rezult.Success<String>).dat)
-        Assert.assertEquals("Output: Job2", (results[1] as Rezult.Success<String>).dat)
+        Assert.assertEquals("Output: Job1", results[0])
+        Assert.assertEquals("Output: Job2", results[1])
     }
 
     @Test
@@ -57,8 +70,8 @@ class BaseRunnerMultiProcessTest {
         val job1 = TestInputEqualsOutput()
         val job2 = TestInputEqualsOutput()
 
-        job1.setWorkerContext(coroutineContext).execute("Job1", scope)
-        job2.setWorkerContext(coroutineContext).execute("Job2", scope)
+        job1.setWorkerContext(coroutineContext).invoke(scope, { "Job1" })
+        job2.setWorkerContext(coroutineContext).invoke(scope, { "Job2" })
 
         job1.cancelPreviousActiveJob()
 
@@ -71,48 +84,37 @@ class BaseRunnerMultiProcessTest {
     }
 
     @Test
-    fun lifecycleEventsForMultipleJobsTest() = runTest {
-        val scope = this
-        val job1 = TestInputEqualsOutput()
-        val job2 = TestInputEqualsOutput()
-
-        val job1Events: ArrayList<BaseUseCase.LifeCycle> = arrayListOf()
-        val job2Events: ArrayList<BaseUseCase.LifeCycle> = arrayListOf()
-
-        job1.setLifeCycleNotifier { event -> job1Events.add(event) }
-            .setWorkerContext(coroutineContext)
-            .execute("Job1", scope)
-
-        job2.setLifeCycleNotifier { event -> job2Events.add(event) }
-            .setWorkerContext(coroutineContext)
-            .execute("Job2", scope)
-
-        job1.join()
-        job2.join()
-
-        Assert.assertEquals(listOf(BaseUseCase.LifeCycle.OnStart, BaseUseCase.LifeCycle.OnFinish), job1Events)
-        Assert.assertEquals(listOf(BaseUseCase.LifeCycle.OnStart, BaseUseCase.LifeCycle.OnFinish), job2Events)
-    }
-
-    @Test
     fun executeTwoProcessesInSameObjectTest() = runTest {
         val testInputEqualsOutput = TestInputEqualsOutput()
         val scope = this
-        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
+        val results: ArrayList<String> = arrayListOf()
+
+        testInputEqualsOutput.setWorkerContext(coroutineContext)
 
         // Execute the first process
-        testInputEqualsOutput
-            .setResultNotifier { result ->
-                if (result is Rezult.Success) results.add(result)
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onGetParam = { "FirstProcess" },
+            result = {
+                it.onSuccess { output ->
+                    results.add(output)
+                }
             }
-            .setWorkerContext(coroutineContext)
-            .execute("FirstProcess", scope)
+        )
 
         val firstId = testInputEqualsOutput.getId()
         Assert.assertTrue(firstId.isNotEmpty())
 
         // Execute the second process
-        testInputEqualsOutput.execute("SecondProcess", scope)
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onGetParam = { "SecondProcess" },
+            result = {
+                it.onSuccess { output ->
+                    results.add(output)
+                }
+            }
+        )
 
         val secondId = testInputEqualsOutput.getId()
         Assert.assertTrue(secondId.isNotEmpty())
@@ -123,14 +125,15 @@ class BaseRunnerMultiProcessTest {
 
         // Validate the result corresponds to the second process
         Assert.assertEquals(1, results.size)
-        Assert.assertEquals("Output: SecondProcess", (results[0] as Rezult.Success<String>).dat)
+        Assert.assertEquals("Output: SecondProcess", results[0])
     }
 
     // ----------------------------------------------------------------
-    class TestInputEqualsOutput : BaseUseCase<String, String>() {
-        override suspend fun onRunning(param: String): String {
+    class TestInputEqualsOutput : BaseRunner<String, String>() {
+
+        override suspend fun onRunning(param: String, result: suspend (String) -> Unit) {
             delay(1000)
-            return "Output: $param"
+            result("Output: $param")
         }
     }
 }
