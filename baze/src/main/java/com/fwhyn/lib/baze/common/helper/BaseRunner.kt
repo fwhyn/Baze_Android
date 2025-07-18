@@ -25,7 +25,6 @@ abstract class BaseRunner<PARAM, RESULT> {
     protected open var jobId = Util.getUniqueId()
     private var timeOutMillis: Long = 0
 
-    private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.Default
 
     protected open var job: Job? = null
@@ -54,18 +53,6 @@ abstract class BaseRunner<PARAM, RESULT> {
      * @return The unique job identifier.
      */
     fun getId(): String = jobId
-
-    /**
-     * Sets the coroutine context for UI-related operations.
-     *
-     * @param context The coroutine context for UI operations.
-     * @return The current instance of the use case.
-     */
-    fun setUiContext(context: CoroutineContext): BaseRunner<PARAM, RESULT> {
-        uiContext = context
-
-        return this
-    }
 
     /**
      * Sets the coroutine context for worker-related operations.

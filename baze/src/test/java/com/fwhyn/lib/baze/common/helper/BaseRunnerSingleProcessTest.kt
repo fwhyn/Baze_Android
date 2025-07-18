@@ -1,7 +1,8 @@
 package com.fwhyn.lib.baze.common.helper
 
 import MainDispatcherRule
-import com.fwhyn.lib.baze.common.helper.extension.getDebugTag
+import android.util.Log
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -11,8 +12,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class BaseRunnerSingleProcessTest {
-
-    private val testTag = BaseRunnerSingleProcessTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -68,258 +67,191 @@ class BaseRunnerSingleProcessTest {
         Assert.assertEquals(outputSuccess, results[0])
     }
 
-//    @Test
-//    fun setTimeOutMillisTest() = runTest {
-//        val testTimeOut = TestTimeOut()
-//        val scope = this
-//
-//        testTimeOut
-//            .setResultNotifier {
-//                when (it) {
-//                    is Rezult.Failure -> {
-//                        val theError = it.err
-//                        Log.e(testTag, theError.toString())
-//                        Assert.assertEquals(true, theError is TimeoutCancellationException)
-//                    }
-//
-//                    is Rezult.Success -> Util.throwMustNotSuccess()
-//                }
-//            }
-//            .setWorkerContext(coroutineContext)
-//            .execute(Unit, scope)
-//    }
-//
-//    @Test
-//    fun getIdTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//
-//        // Execute the use case
-//        testInputEqualsOutput
-//            .setWorkerContext(coroutineContext)
-//            .execute(input, scope)
-//
-//        val initialId = testInputEqualsOutput.getId()
-//        Assert.assertTrue(initialId.isNotEmpty())
-//
-//        // Cancel the active job and verify the ID remains the same
-//        testInputEqualsOutput.cancelPreviousActiveJob()
-//        val sameId = testInputEqualsOutput.getId()
-//        Assert.assertEquals(initialId, sameId)
-//
-//        // Execute a new job and verify the ID changes
-//        testInputEqualsOutput.execute(input, scope)
-//        val newId = testInputEqualsOutput.getId()
-//        Assert.assertNotEquals(initialId, newId)
-//    }
+    @Test
+    fun setTimeOutMillisTest() = runTest {
+        val testTimeOut = TestTimeOut()
+        val scope = this
 
-//    @Test
-//    fun setUiContextTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
-//
-//        // Set a custom UI context
-//        val customUiContext = coroutineContext
-//        testInputEqualsOutput
-//            .setUiContext(customUiContext)
-//            .setResultNotifier { result ->
-//                when (result) {
-//                    is Rezult.Failure -> Util.throwMustNotFailed()
-//                    is Rezult.Success -> results.add(result)
-//                }
-//            }
-//            .setWorkerContext(coroutineContext)
-//            .execute(input, scope)
-//
-//        testInputEqualsOutput.join()
-//        Assert.assertEquals(1, results.size)
-//        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
-//    }
+        testTimeOut
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { },
+                result = {
+                    it.onSuccess {
+                        Util.throwMustNotSuccess()
+                    }.onFailure { output ->
+                        Assert.assertEquals(true, output is TimeoutCancellationException)
+                    }
 
-//    @Test
-//    fun setWorkerContextTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
-//
-//        // Set a custom worker context
-//        val customWorkerContext = coroutineContext
-//        testInputEqualsOutput
-//            .setWorkerContext(customWorkerContext)
-//            .setResultNotifier { result ->
-//                when (result) {
-//                    is Rezult.Failure -> Util.throwMustNotFailed()
-//                    is Rezult.Success -> results.add(result)
-//                }
-//            }
-//            .execute(input, scope)
-//
-//        testInputEqualsOutput.join()
-//        Assert.assertEquals(1, results.size)
-//        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
-//    }
-//
-//    @Test
-//    fun setResultNotifierTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
-//
-//        testInputEqualsOutput
-//            .setResultNotifier { result ->
-//                when (result) {
-//                    is Rezult.Failure -> Util.throwMustNotFailed()
-//                    is Rezult.Success -> results.add(result)
-//                }
-//            }
-//            .setWorkerContext(coroutineContext)
-//            .execute(input, scope)
-//
-//        testInputEqualsOutput.join()
-//        Assert.assertEquals(1, results.size)
-//        Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
-//    }
-//
-//    @Test
-//    fun setLifeCycleNotifierTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//        val lifeCycleEvents: ArrayList<BaseRunner.LifeCycle> = arrayListOf()
-//
-//        testInputEqualsOutput
-//            .setLifeCycleNotifier { event -> lifeCycleEvents.add(event) }
-//            .setWorkerContext(coroutineContext)
-//            .execute(input, scope)
-//
-//        testInputEqualsOutput.join()
-//        Assert.assertEquals(2, lifeCycleEvents.size)
-//        Assert.assertEquals(BaseRunner.LifeCycle.OnStart, lifeCycleEvents[0])
-//        Assert.assertEquals(BaseRunner.LifeCycle.OnFinish, lifeCycleEvents[1])
-//    }
-//
-//    @Test
-//    fun outputShouldCorrespondTheInput() = runTest {
-//        val scope = this
-//        val results: ArrayList<Rezult<String, Throwable>> = arrayListOf()
-//
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val callback = { result: Rezult<String, Throwable> ->
-//
-//            when (result) {
-//                is Rezult.Failure -> {
-//                    print(result.err.message)
-//                    Util.throwMustNotFailed()
-//                }
-//
-//                is Rezult.Success -> {
-//                    results.add(result)
-//                    Assert.assertEquals(1, results.size)
-//                    Assert.assertEquals(outputSuccess, (results[0] as Rezult.Success<String>).dat)
-//                }
-//            }
-//        }
-//        testInputEqualsOutput
-//            .setResultNotifier(callback)
-//            .setWorkerContext(coroutineContext)
-//            .execute(input, scope)
-//    }
-//
-//    @Test
-//    fun resultAndExecutionInvocation() = runTest {
-//        val testInputEqualsOutput = mock<TestInputEqualsOutput>()
-//        val scope = this
-//        val input = "Yana"
-//
-//        val callback = CallbackInvocation()
-//
-//        testInputEqualsOutput.invoke(scope, { input }, callback)
-//        verify(testInputEqualsOutput, times(1)).invoke(eq(scope), eq({ input }), eq(callback))
-//    }
-//
-//    @Test
-//    fun callbackInvocationTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//        val input = "Yana"
-//
-//        val callback = CallbackInvocation()
-//
-//        testInputEqualsOutput
-//            .setWorkerContext(coroutineContext)
-//            .invoke(
-//                scope = scope,
-//                onGetParam = { input },
-//                result = callback
-//            )
-//    }
-//
-//    @Test
-//    fun callbackOrderTest() = runTest {
-//        val scope = this
-//        val thisResults: ArrayList<String> = arrayListOf()
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val success = "success"
-//
-//        testInputEqualsOutput
-//            .setWorkerContext(coroutineContext)
-//            .invoke(
-//                scope = this,
-//                onGetParam = { input },
-//                result = { result ->
-//                    result.onSuccess {
-//                        thisResults.add(success)
-//                    }.onFailure {
-//                        Util.throwMustNotFailed()
-//                    }
-//                }
-//            )
-//
-//        testInputEqualsOutput.join()
-//
-//        Assert.assertEquals(1, thisResults.size)
-//        Assert.assertEquals(success, thisResults[0])
-//    }
-//
-//    @Test
-//    fun cancelJobIfActiveTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        val scope = this
-//
-//        // Start the first job
-//        testInputEqualsOutput
-//            .setWorkerContext(coroutineContext)
-//            .setTimeOutMillis(10000)
-//            .invoke(scope, { input })
-//
-//        val oldId = testInputEqualsOutput.getId()
-//        Assert.assertTrue(oldId.isNotEmpty())
-//
-//        // Cancel the active job and verify the ID remains the same
-//        testInputEqualsOutput.cancelPreviousActiveJob()
-//        val sameId = testInputEqualsOutput.getId()
-//        Assert.assertEquals(oldId, sameId)
-//
-//        // Start a new job and verify the ID changes
-//        testInputEqualsOutput(scope, { input })
-//        val newId = testInputEqualsOutput.getId()
-//        Assert.assertNotEquals(oldId, newId)
-//    }
-//
-//    @Test
-//    fun joinTest() = runTest {
-//        val testInputEqualsOutput = TestInputEqualsOutput()
-//        var isJobCompleted = false
-//
-//        testInputEqualsOutput.invoke(
-//            scope = this,
-//            onGetParam = { input },
-//            result = { isJobCompleted = true }
-//        )
-//
-//        testInputEqualsOutput.join()
-//        Assert.assertTrue(isJobCompleted)
-//    }
+                }
+            )
+    }
+
+    @Test
+    fun getIdTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+
+        // Execute the use case
+        testInputEqualsOutput.setWorkerContext(coroutineContext)
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onGetParam = { input }
+        )
+
+        val initialId = testInputEqualsOutput.getId()
+        Assert.assertTrue(initialId.isNotEmpty())
+
+        // Cancel the active job and verify the ID remains the same
+        testInputEqualsOutput.cancelPreviousActiveJob()
+        val sameId = testInputEqualsOutput.getId()
+        Assert.assertEquals(initialId, sameId)
+
+        // Execute a new job and verify the ID changes
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onGetParam = { input }
+        )
+        val newId = testInputEqualsOutput.getId()
+        Assert.assertNotEquals(initialId, newId)
+    }
+
+    @Test
+    fun setWorkerContextTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<String> = arrayListOf()
+
+        // Set a custom worker context
+        val customWorkerContext = coroutineContext
+        testInputEqualsOutput
+            .setWorkerContext(customWorkerContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { input },
+                result = { result ->
+                    result.onSuccess {
+                        results.add(it)
+                    }.onFailure {
+                        Util.throwMustNotFailed()
+                    }
+                }
+            )
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals(outputSuccess, results[0])
+    }
+
+    @Test
+    fun outputShouldCorrespondTheInput() = runTest {
+        val scope = this
+        val results: ArrayList<String> = arrayListOf()
+
+        val testInputEqualsOutput = TestInputEqualsOutput()
+
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { input },
+                result = {
+                    it.onSuccess { output ->
+                        results.add(output)
+                        Assert.assertEquals(1, results.size)
+                        Assert.assertEquals(outputSuccess, results[0])
+                    }.onFailure { error ->
+                        Log.d("Error message", error.message)
+                        Util.throwMustNotFailed()
+                    }
+                }
+            )
+    }
+
+    @Test
+    fun callbackInvocationTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val input = "Yana"
+
+        val callback = CallbackInvocation()
+
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = scope,
+                onGetParam = { input },
+                result = callback
+            )
+    }
+
+    @Test
+    fun callbackOrderTest() = runTest {
+        this
+        val thisResults: ArrayList<String> = arrayListOf()
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val success = "success"
+
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .invoke(
+                scope = this,
+                onGetParam = { input },
+                result = { result ->
+                    result.onSuccess {
+                        thisResults.add(success)
+                    }.onFailure {
+                        Util.throwMustNotFailed()
+                    }
+                }
+            )
+
+        testInputEqualsOutput.join()
+
+        Assert.assertEquals(1, thisResults.size)
+        Assert.assertEquals(success, thisResults[0])
+    }
+
+    @Test
+    fun cancelJobIfActiveTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+
+        // Start the first job
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .setTimeOutMillis(10000)
+            .invoke(scope, { input })
+
+        val oldId = testInputEqualsOutput.getId()
+        Assert.assertTrue(oldId.isNotEmpty())
+
+        // Cancel the active job and verify the ID remains the same
+        testInputEqualsOutput.cancelPreviousActiveJob()
+        val sameId = testInputEqualsOutput.getId()
+        Assert.assertEquals(oldId, sameId)
+
+        // Start a new job and verify the ID changes
+        testInputEqualsOutput(scope, { input })
+        val newId = testInputEqualsOutput.getId()
+        Assert.assertNotEquals(oldId, newId)
+    }
+
+    @Test
+    fun joinTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        var isJobCompleted = false
+
+        testInputEqualsOutput.invoke(
+            scope = this,
+            onGetParam = { input },
+            result = { isJobCompleted = true }
+        )
+
+        testInputEqualsOutput.join()
+        Assert.assertTrue(isJobCompleted)
+    }
 
     @Test
     fun exceptionErrorTest() = runTest {
@@ -406,7 +338,8 @@ class BaseRunnerSingleProcessTest {
         var resultFailed = 0
 
         override fun invoke(result: Result<String>) {
-            result.onFailure {
+            result.onFailure { error ->
+                Log.d("Error message", error.message)
                 ++resultFailed
                 Assert.assertEquals(1, resultFailed)
             }.onSuccess {
