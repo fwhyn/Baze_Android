@@ -12,6 +12,8 @@ import com.fwhyn.lib.baze.common.model.Status
 import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
 import com.fwhyn.lib.baze.string.helper.StringIdManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,13 +52,12 @@ class HomeViewModel @Inject constructor(
             it.onSuccess {
                 uiState.state = HomeUiState.State.LoggedOut()
             }.onFailure { error ->
-                activityRetainedState.dismissLoading()
                 activityRetainedState.showNotification(
                     stringIdManager.getId(Status.Instance(-1, error.message ?: ""))
                 )
             }
 
-            activityRetainedState.dismissLoading()
+            withContext(Dispatchers.Main) { activityRetainedState.dismissLoading() }
         }
     }
 
@@ -74,7 +75,7 @@ class HomeViewModel @Inject constructor(
                 activityRetainedState.showNotification(R.string.unauthorized)
             }
 
-            activityRetainedState.dismissLoading()
+            withContext(Dispatchers.Main) { activityRetainedState.dismissLoading() }
         }
     }
 
