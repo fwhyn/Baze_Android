@@ -2,10 +2,10 @@ package com.fwhyn.app.deandro.common.ui.handler
 
 import androidx.annotation.StringRes
 import com.fwhyn.app.deandro.R
-import com.fwhyn.lib.baze.common.data.model.Status
-import com.fwhyn.lib.baze.common.ui.helper.StringResourceManager
+import com.fwhyn.lib.baze.common.model.Status
+import com.fwhyn.lib.baze.string.helper.StringIdManager
 
-class GeneralStringResourceManager : StringResourceManager<Status> {
+class GeneralStringResourceManager : StringIdManager<Status> {
 
     @StringRes
     override fun getId(input: Status): Int {

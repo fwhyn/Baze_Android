@@ -15,7 +15,11 @@ class GetAccessUseCaseImpl(
         setTimeOutMillis(Constant.TIMEOUT_MILLIS)
     }
 
-    override suspend fun onRunning(param: GetAccessParam): AccessResult {
-        return accessRepository.get(param.toAccessParam()).toGetAccessResult()
+    override suspend fun onRunning(
+        param: GetAccessParam,
+        result: suspend (AccessResult) -> Unit
+    ) {
+        val output: AccessResult = accessRepository.get(param.toAccessParam()).toGetAccessResult()
+        result(output)
     }
 }

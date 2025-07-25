@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
-import com.fwhyn.lib.baze.common.domain.helper.Rezult
 import com.fwhyn.lib.baze.common.helper.SingleEvent
 import com.fwhyn.lib.baze.common.helper.extension.getDebugTag
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -15,7 +13,7 @@ import javax.inject.Inject
 class LoginUiState @Inject constructor() {
 
     var tryCount: Int = 0
-    var loginResult: Rezult<AuthTokenModel?, Throwable>? = null
+    var isLoggedIn: Boolean = false
     var state: State by mutableStateOf(State.NotLoggedIn())
 
     sealed class State() : SingleEvent<Boolean>(true) {

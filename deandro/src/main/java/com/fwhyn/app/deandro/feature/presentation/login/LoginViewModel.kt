@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.GetAuthTokenParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
-import com.fwhyn.lib.baze.common.domain.helper.Rezult
-import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import com.fwhyn.lib.baze.common.model.Exzeption
 import com.fwhyn.lib.baze.common.model.Status
 import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
@@ -55,39 +53,34 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onCalledFromBackStack() {
-        if (loginUiState.loginResult is Rezult.Success) {
+        if (loginUiState.isLoggedIn) {
             loginUiState.state = LoginUiState.State.LoggedIn()
         }
     }
 
     private fun getToken(getAuthTokenParam: GetAuthTokenParam) {
-        getTokenUseCase
-            .setResultNotifier {
-                when (it) {
-                    is Rezult.Failure -> {
-                        if (loginUiState.tryCount > 0) {
-                            val exception = it.err as? Exzeption
-                            val status = exception?.status ?: Status.UnknownError
-                            activityRetainedState.showNotification(stringIdManager.getId(status))
-                        }
-                    }
+        activityRetainedState.showLoading()
 
-                    is Rezult.Success -> {
-                        if (it.dat != AuthTokenModel.None) {
-                            loginUiState.state = LoginUiState.State.LoggedIn()
-                        }
-                    }
+        getTokenUseCase.invoke(
+            scope = viewModelScope,
+            onGetParam = { getAuthTokenParam },
+        ) {
+            it.onSuccess { output ->
+                if (output != AuthTokenModel.None) {
+                    loginUiState.state = LoginUiState.State.LoggedIn()
                 }
-
-                loginUiState.loginResult = it
-            }
-            .setLifeCycleNotifier {
-                when (it) {
-                    BaseUseCase.LifeCycle.OnStart -> activityRetainedState.showLoading()
-                    BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
+            }.onFailure { error ->
+                if (loginUiState.tryCount > 0) {
+                    val exception = error as? Exzeption
+                    val status = exception?.status ?: Status.UnknownError
+                    activityRetainedState.showNotification(stringIdManager.getId(status))
                 }
             }
-            .execute(getAuthTokenParam, viewModelScope)
+
+            loginUiState.isLoggedIn = it.isSuccess
+
+            activityRetainedState.dismissLoading()
+        }
     }
 
     private fun getTryCount(prevValue: Int): Int {

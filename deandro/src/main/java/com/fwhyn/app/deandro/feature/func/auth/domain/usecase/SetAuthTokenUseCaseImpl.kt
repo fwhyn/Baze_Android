@@ -10,7 +10,10 @@ class SetAuthTokenUseCaseImpl @Inject constructor(
     private val authTokenRepository: AuthTokenRepository,
 ) : SetAuthTokenUseCase() {
 
-    override suspend fun onRunning(param: SetAuthTokenParam) {
+    override suspend fun onRunning(
+        param: SetAuthTokenParam,
+        result: suspend (Unit) -> Unit
+    ) {
         when (param) {
             is SetAuthTokenParam.Local -> authTokenRepository.set(
                 param.toSetAuthTokenRepoParam(),

@@ -18,11 +18,14 @@ class GetAuthTokenUseCaseImpl @Inject constructor(
         setTimeOutMillis(TIMEOUT_MILLIS)
     }
 
-    override suspend fun onRunning(param: GetAuthTokenParam): AuthTokenModel {
-        val result = authTokenRepository.get(param.toGetAuthTokenRepoParam()).toAuthTokenModel()
+    override suspend fun onRunning(
+        param: GetAuthTokenParam,
+        result: suspend (AuthTokenModel) -> Unit
+    ) {
+        val output = authTokenRepository.get(param.toGetAuthTokenRepoParam()).toAuthTokenModel()
 
-        return when (result) {
-            is AuthTokenModel.Data -> result
+        when (output) {
+            is AuthTokenModel.Data -> result(output)
             AuthTokenModel.None -> throw Exzeption(status = Status.Unauthorized)
         }
     }

@@ -1,17 +1,13 @@
 package com.fwhyn.app.deandro.feature.presentation.home
 
 import android.app.Activity
-import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.fwhyn.app.deandro.R
-import com.fwhyn.app.deandro.feature.func.access.domain.model.AccessResult
 import com.fwhyn.app.deandro.feature.func.access.domain.model.GetAccessParam
 import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCase
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.AuthTokenModel
 import com.fwhyn.app.deandro.feature.func.auth.domain.model.SetAuthTokenParam
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.SetAuthTokenUseCase
-import com.fwhyn.lib.baze.common.domain.helper.Rezult
-import com.fwhyn.lib.baze.common.domain.usecase.BaseUseCase
 import com.fwhyn.lib.baze.common.model.Status
 import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
 import com.fwhyn.lib.baze.string.helper.StringIdManager
@@ -45,65 +41,41 @@ class HomeViewModel @Inject constructor(
 //        }
 
     override fun onLogout() {
-        setTokenUseCase
-            .setResultNotifier {
-                when (it) {
-                    is Rezult.Failure -> {
-                        activityRetainedState.showNotification(
-                            stringIdManager.getId(Status.Instance(-1, it.err.message ?: ""))
-                        )
-                    }
+        activityRetainedState.showLoading()
 
-                    is Rezult.Success -> uiState.state = HomeUiState.State.LoggedOut()
-                }
+        setTokenUseCase.invoke(
+            scope = viewModelScope,
+            onGetParam = { SetAuthTokenParam.Local(AuthTokenModel.None) }
+        ) {
+            it.onSuccess {
+                uiState.state = HomeUiState.State.LoggedOut()
+            }.onFailure { error ->
+                activityRetainedState.dismissLoading()
+                activityRetainedState.showNotification(
+                    stringIdManager.getId(Status.Instance(-1, error.message ?: ""))
+                )
             }
-            .setLifeCycleNotifier {
-                when (it) {
-                    BaseUseCase.LifeCycle.OnStart -> activityRetainedState.showLoading()
-                    BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
-                }
-            }
-            .execute(SetAuthTokenParam.Local(AuthTokenModel.None), viewModelScope)
+
+            activityRetainedState.dismissLoading()
+        }
     }
 
     override fun onAddPhoto(activity: Activity) {
-//        uiData.imagePicker?.let {
-//            ImageStorageUtil.launchMediaPicker(it)
-//        }
         val param = GetAccessParam.GoogleDrive(activity).also { getGoogleDriveAccessParam = it }
 
-        getAccessUseCase
-            .setResultNotifier {
-                when (it) {
-                    is Rezult.Failure<Throwable> -> activityRetainedState.showNotification(R.string.unauthorized)
-                    is Rezult.Success<AccessResult> -> activityRetainedState.showNotification(R.string.success)
-                }
+        activityRetainedState.showLoading()
+        getAccessUseCase.invoke(
+            scope = viewModelScope,
+            onGetParam = { param },
+        ) {
+            it.onSuccess {
+                activityRetainedState.showNotification(R.string.success)
+            }.onFailure {
+                activityRetainedState.showNotification(R.string.unauthorized)
             }
-            .setLifeCycleNotifier {
-                when (it) {
-                    BaseUseCase.LifeCycle.OnStart -> activityRetainedState.showLoading()
-                    BaseUseCase.LifeCycle.OnFinish -> activityRetainedState.dismissLoading()
-                }
-            }
-            .execute(param, viewModelScope)
-    }
 
-    override fun onPhotoSelected(photos: List<Uri>) {
-//        if (photos.isNotEmpty()) {
-//            uiData.run {
-//                imageLinks = photos.size.createList { index -> Link(photos[index]) }
-//                imageLinksKey = DataUtil.getUniqueId()
-//
-//                setLinkUseCase.setResultNotifier {
-//                    when (it) {
-//                        is Results.Failure -> HomeUiState.State.OnNotification(it.err.status.code.toString())
-//                        is Results.Loading -> HomeUiState.State.Loading
-//                        is Results.Success -> uiState.state =
-//                            HomeUiState.State.CallPhotoEdit(imageLinksKey!!)
-//                    }
-//                }.execute(LinkSetParam(imageLinksKey!!, imageLinks), viewModelScope)
-//            }
-//        }
+            activityRetainedState.dismissLoading()
+        }
     }
 
     override fun onCleared() {
