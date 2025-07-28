@@ -76,8 +76,8 @@ class BaseRunnerSingleProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = scope,
-                onGetParam = { },
-                result = {
+                onFetchParam = { },
+                onOmitResult = {
                     it.onSuccess {
                         Util.throwMustNotSuccess()
                     }.onFailure { output ->
@@ -129,8 +129,8 @@ class BaseRunnerSingleProcessTest {
             .setWorkerContext(customWorkerContext)
             .invoke(
                 scope = scope,
-                onGetParam = { input },
-                result = { result ->
+                onFetchParam = { input },
+                onOmitResult = { result ->
                     result.onSuccess {
                         results.add(it)
                     }.onFailure {
@@ -155,8 +155,8 @@ class BaseRunnerSingleProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = scope,
-                onGetParam = { input },
-                result = {
+                onFetchParam = { input },
+                onOmitResult = {
                     it.onSuccess { output ->
                         results.add(output)
                         Assert.assertEquals(1, results.size)
@@ -181,8 +181,8 @@ class BaseRunnerSingleProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = scope,
-                onGetParam = { input },
-                result = callback
+                onFetchParam = { input },
+                onOmitResult = callback
             )
     }
 
@@ -197,8 +197,8 @@ class BaseRunnerSingleProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = this,
-                onGetParam = { input },
-                result = { result ->
+                onFetchParam = { input },
+                onOmitResult = { result ->
                     result.onSuccess {
                         thisResults.add(success)
                     }.onFailure {

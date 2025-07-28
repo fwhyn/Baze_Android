@@ -39,8 +39,8 @@ class BaseRunnerMultiProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = scope,
-                onGetParam = { "Job1" },
-                result = {
+                onFetchParam = { "Job1" },
+                onOmitResult = {
                     it.onSuccess { output -> results.add(output) }
                 }
             )
@@ -50,8 +50,8 @@ class BaseRunnerMultiProcessTest {
             .setWorkerContext(coroutineContext)
             .invoke(
                 scope = scope,
-                onGetParam = { "Job2" },
-                result = {
+                onFetchParam = { "Job2" },
+                onOmitResult = {
                     it.onSuccess { output -> results.add(output) }
                 }
             )

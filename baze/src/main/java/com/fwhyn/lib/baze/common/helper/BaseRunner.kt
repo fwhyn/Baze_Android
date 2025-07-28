@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 
@@ -25,6 +26,7 @@ abstract class BaseRunner<PARAM, RESULT> {
     protected open var jobId = Util.getUniqueId()
     private var timeOutMillis: Long = 0
 
+    private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.Default
 
     protected open var job: Job? = null
@@ -89,21 +91,27 @@ abstract class BaseRunner<PARAM, RESULT> {
      * Executes the use case with the provided parameter and coroutine scope.
      *
      * @param scope The coroutine scope in which to run the use case.
-     * @param onGetParam A suspend function that provides the input parameter for the use case.
-     * @param result A suspend function to handle the result of the use case execution.
+     * @param onFetchParam A suspend function that provides the input parameter for the use case.
+     * @param onOmitResult A suspend function to handle the result of the use case execution.
      */
     operator fun invoke(
         scope: CoroutineScope = CoroutineScope(workerContext),
-        onGetParam: suspend () -> PARAM,
-        result: suspend (Result<RESULT>) -> Unit = {},
+        onStart: () -> Unit = {},
+        onFetchParam: suspend () -> PARAM,
+        onOmitResult: suspend (Result<RESULT>) -> Unit = {},
+        onFinish: () -> Unit = {},
     ) {
+        onStart()
         job = scope.launch(workerContext + SupervisorJob()) {
             Log.d(debugTag, "Job is launched")
 
             runCatching {
-                val param: PARAM = onGetParam()
+                val param: PARAM = onFetchParam()
                 val block: suspend () -> Unit = {
-                    onRunning(param) { result(Result.success(it)) }
+                    onRunning(param) {
+                        onOmitResult(Result.success(it))
+                        withContext(uiContext) { onFinish() }
+                    }
                 }
 
                 if (timeOutMillis > 0) {
@@ -112,7 +120,8 @@ abstract class BaseRunner<PARAM, RESULT> {
                     block()
                 }
             }.onFailure { error ->
-                result(Result.failure(error))
+                onOmitResult(Result.failure(error))
+                withContext(uiContext) { onFinish() }
             }
         }
     }

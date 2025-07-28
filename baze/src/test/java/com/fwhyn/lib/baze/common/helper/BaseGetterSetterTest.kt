@@ -47,8 +47,8 @@ class BaseGetterSetterTest {
                 .setWorkerContext(coroutineContext)
                 .invoke(
                     scope = this,
-                    onGetParam = { },
-                    result = {
+                    onFetchParam = { },
+                    onOmitResult = {
                         it.onSuccess { data ->
                             Assert.assertEquals(1, data.value)
                         }.onFailure {
