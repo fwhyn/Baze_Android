@@ -1,5 +1,6 @@
 package com.fwhyn.lib.baze.compose.helper
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -15,23 +16,26 @@ import kotlinx.coroutines.flow.SharedFlow
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun rememberActivityState(
-    navigation: NavHostController = rememberNavController(),
     window: WindowSizeClass = WindowSizeClass.calculateFromSize(
         DpSize(
             width = 324.dp,
             height = 720.dp
         )
     ),
+    navigation: NavHostController = rememberNavController(),
+    notification: SnackbarHostState = remember { SnackbarHostState() },
     activityResult: SharedFlow<ActivityResult>? = null,
 ): ActivityState {
     return remember(
-        navigation,
         window,
+        navigation,
+        notification,
         activityResult
     ) {
         ActivityState(
-            navigation,
             window,
+            navigation,
+            notification,
             activityResult,
         )
     }
@@ -39,7 +43,8 @@ fun rememberActivityState(
 
 @Stable
 class ActivityState(
-    val navigation: NavHostController,
     val window: WindowSizeClass,
+    val navigation: NavHostController,
+    val notification: SnackbarHostState,
     var activityResult: SharedFlow<ActivityResult>?
 )
