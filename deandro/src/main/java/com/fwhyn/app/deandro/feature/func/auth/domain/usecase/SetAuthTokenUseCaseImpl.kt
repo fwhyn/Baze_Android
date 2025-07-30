@@ -22,5 +22,8 @@ class SetAuthTokenUseCaseImpl @Inject constructor(
 
             is SetAuthTokenParam.Unknown -> TODO()
         }
+
+        // Notify the result finished
+        result(Unit)
     }
 }
