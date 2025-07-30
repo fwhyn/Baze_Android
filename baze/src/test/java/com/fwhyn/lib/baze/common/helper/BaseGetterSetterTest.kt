@@ -78,7 +78,7 @@ class BaseGetterSetterTest {
                     isParsingData = true
 
                     if (continuation.isActive) {
-                        continuation.resume(getWeightData(it)) { cause, _, _ ->
+                        continuation.resume(getWeightData()) { cause, _, _ ->
                             throw Exception(cause)
                         }
                     }
@@ -97,13 +97,13 @@ class BaseGetterSetterTest {
             TODO("Not yet implemented")
         }
 
-        private fun getWeightData(it: Int): WeightData {
+        private fun getWeightData(): WeightData {
             var result = 0
 
             Thread {
                 for (i in 0..1000) {
-                    for (i in 0..1000) {
-                        for (i in 0..1000) {
+                    for (j in 0..1000) {
+                        for (k in 0..1000) {
                             // do nothing
                         }
                     }
@@ -122,8 +122,8 @@ class BaseGetterSetterTest {
 
             Thread {
                 for (i in 0..1000) {
-                    for (i in 0..1000) {
-                        for (i in 0..1000) {
+                    for (j in 0..1000) {
+                        for (k in 0..1000) {
                             // do nothing
                         }
                     }

@@ -187,7 +187,7 @@ class BaseRunnerSingleProcessTest {
                         Assert.assertEquals(1, results.size)
                         Assert.assertEquals(outputSuccess, results[0])
                     }.onFailure { error ->
-                        Log.d("Error message", error.message)
+                        Log.d("Error message", error.message ?: "No message")
                         Util.throwMustNotFailed()
                     }
                 }
@@ -213,7 +213,6 @@ class BaseRunnerSingleProcessTest {
 
     @Test
     fun callbackOrderTest() = runTest {
-        this
         val thisResults: ArrayList<String> = arrayListOf()
         val testInputEqualsOutput = TestInputEqualsOutput()
         val success = "success"
@@ -359,12 +358,12 @@ class BaseRunnerSingleProcessTest {
     }
 
     class CallbackInvocation : (Result<String>) -> Unit {
-        var resultSuccess = 0
-        var resultFailed = 0
+        private var resultSuccess = 0
+        private var resultFailed = 0
 
         override fun invoke(result: Result<String>) {
             result.onFailure { error ->
-                Log.d("Error message", error.message)
+                Log.d("Error message", error.message ?: "No message")
                 ++resultFailed
                 Assert.assertEquals(1, resultFailed)
             }.onSuccess {

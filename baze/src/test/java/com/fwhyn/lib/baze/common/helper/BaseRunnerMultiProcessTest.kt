@@ -1,7 +1,6 @@
 package com.fwhyn.lib.baze.common.helper
 
 import MainDispatcherRule
-import com.fwhyn.lib.baze.common.helper.extension.getDebugTag
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -11,8 +10,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class BaseRunnerMultiProcessTest {
-
-    val testTag = BaseRunnerMultiProcessTest::class.java.getDebugTag()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
