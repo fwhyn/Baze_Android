@@ -52,8 +52,8 @@ class BaseRunnerSingleProcessTest {
 
         testInputEqualsOutput.invoke(
             scope = scope,
-            onGetParam = { input },
-            result = {
+            onFetchParam = { input },
+            onOmitResult = {
                 it.onSuccess { output ->
                     results.add(output)
                 }.onFailure {
@@ -97,7 +97,7 @@ class BaseRunnerSingleProcessTest {
         testInputEqualsOutput.setWorkerContext(coroutineContext)
         testInputEqualsOutput.invoke(
             scope = scope,
-            onGetParam = { input }
+            onFetchParam = { input }
         )
 
         val initialId = testInputEqualsOutput.getId()
@@ -111,7 +111,7 @@ class BaseRunnerSingleProcessTest {
         // Execute a new job and verify the ID changes
         testInputEqualsOutput.invoke(
             scope = scope,
-            onGetParam = { input }
+            onFetchParam = { input }
         )
         val newId = testInputEqualsOutput.getId()
         Assert.assertNotEquals(initialId, newId)
@@ -142,6 +142,31 @@ class BaseRunnerSingleProcessTest {
         testInputEqualsOutput.join()
         Assert.assertEquals(1, results.size)
         Assert.assertEquals(outputSuccess, results[0])
+    }
+
+    @Test
+    fun setUiContextTest() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val lifeCycle: ArrayList<String> = arrayListOf()
+        val start = "start"
+        val finish = "finish"
+
+        // Set a custom UI context
+        val customUiContext = coroutineContext
+        testInputEqualsOutput
+            .setUiContext(customUiContext)
+            .invoke(
+                scope = scope,
+                onStart = { lifeCycle.add(start) },
+                onFetchParam = { input },
+                onFinish = { lifeCycle.add(finish) },
+            )
+
+        testInputEqualsOutput.join()
+        Assert.assertEquals(2, lifeCycle.size)
+        Assert.assertEquals(start, lifeCycle[0])
+        Assert.assertEquals(finish, lifeCycle[1])
     }
 
     @Test
@@ -222,7 +247,7 @@ class BaseRunnerSingleProcessTest {
         testInputEqualsOutput
             .setWorkerContext(coroutineContext)
             .setTimeOutMillis(10000)
-            .invoke(scope, { input })
+            .invoke(scope = scope, onFetchParam = { input })
 
         val oldId = testInputEqualsOutput.getId()
         Assert.assertTrue(oldId.isNotEmpty())
@@ -233,7 +258,7 @@ class BaseRunnerSingleProcessTest {
         Assert.assertEquals(oldId, sameId)
 
         // Start a new job and verify the ID changes
-        testInputEqualsOutput(scope, { input })
+        testInputEqualsOutput(scope = scope, onFetchParam = { input })
         val newId = testInputEqualsOutput.getId()
         Assert.assertNotEquals(oldId, newId)
     }
@@ -245,8 +270,8 @@ class BaseRunnerSingleProcessTest {
 
         testInputEqualsOutput.invoke(
             scope = this,
-            onGetParam = { input },
-            result = { isJobCompleted = true }
+            onFetchParam = { input },
+            onOmitResult = { isJobCompleted = true }
         )
 
         testInputEqualsOutput.join()
@@ -260,8 +285,8 @@ class BaseRunnerSingleProcessTest {
         repeat(2) {
             exceptionError.invoke(
                 scope = this,
-                onGetParam = { },
-                result = {
+                onFetchParam = { },
+                onOmitResult = {
                     it.onSuccess {
                         Util.throwMustNotSuccess()
                     }.onFailure { error ->
@@ -280,8 +305,8 @@ class BaseRunnerSingleProcessTest {
         repeat(2) {
             securityExceptionError.invoke(
                 scope = this,
-                onGetParam = { },
-                result = {
+                onFetchParam = { },
+                onOmitResult = {
                     it.onSuccess {
                         Util.throwMustNotSuccess()
                     }.onFailure { error ->

@@ -70,8 +70,8 @@ class BaseRunnerMultiProcessTest {
         val job1 = TestInputEqualsOutput()
         val job2 = TestInputEqualsOutput()
 
-        job1.setWorkerContext(coroutineContext).invoke(scope, { "Job1" })
-        job2.setWorkerContext(coroutineContext).invoke(scope, { "Job2" })
+        job1.setWorkerContext(coroutineContext).invoke(scope = scope, onFetchParam = { "Job1" })
+        job2.setWorkerContext(coroutineContext).invoke(scope = scope, onFetchParam = { "Job2" })
 
         job1.cancelPreviousActiveJob()
 
@@ -94,8 +94,8 @@ class BaseRunnerMultiProcessTest {
         // Execute the first process
         testInputEqualsOutput.invoke(
             scope = scope,
-            onGetParam = { "FirstProcess" },
-            result = {
+            onFetchParam = { "FirstProcess" },
+            onOmitResult = {
                 it.onSuccess { output ->
                     results.add(output)
                 }
@@ -108,8 +108,8 @@ class BaseRunnerMultiProcessTest {
         // Execute the second process
         testInputEqualsOutput.invoke(
             scope = scope,
-            onGetParam = { "SecondProcess" },
-            result = {
+            onFetchParam = { "SecondProcess" },
+            onOmitResult = {
                 it.onSuccess { output ->
                     results.add(output)
                 }

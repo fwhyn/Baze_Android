@@ -1,7 +1,5 @@
 package com.fwhyn.lib.baze.common.helper
 
-import android.util.Log
-import com.fwhyn.lib.baze.common.helper.extension.getDebugTag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,8 +18,6 @@ import kotlin.coroutines.CoroutineContext
  * @param <RESULT> The type of the result produced by the use case.
  */
 abstract class BaseRunner<PARAM, RESULT> {
-
-    private val debugTag = BaseRunner::class.java.getDebugTag()
 
     protected open var jobId = Util.getUniqueId()
     private var timeOutMillis: Long = 0
@@ -69,13 +65,24 @@ abstract class BaseRunner<PARAM, RESULT> {
     }
 
     /**
+     * Sets the coroutine context for UI-related operations.
+     *
+     * @param context The coroutine context for UI operations.
+     * @return The current instance of the use case.
+     */
+    fun setUiContext(context: CoroutineContext): BaseRunner<PARAM, RESULT> {
+        uiContext = context
+
+        return this
+    }
+
+    /**
      * Cancels the currently active job, if any.
      *
      * @return The current instance of the use case.
      */
     fun cancelPreviousActiveJob(): BaseRunner<PARAM, RESULT> {
         if (job?.isActive == true) {
-            Log.d(debugTag, "Cancelling job: $job")
             job?.cancel()
         }
 
@@ -91,8 +98,10 @@ abstract class BaseRunner<PARAM, RESULT> {
      * Executes the use case with the provided parameter and coroutine scope.
      *
      * @param scope The coroutine scope in which to run the use case.
+     * @param onStart A function to be called when the use case starts.
      * @param onFetchParam A suspend function that provides the input parameter for the use case.
      * @param onOmitResult A suspend function to handle the result of the use case execution.
+     * @param onFinish A function to be called when the use case finishes execution.
      */
     operator fun invoke(
         scope: CoroutineScope = CoroutineScope(workerContext),
@@ -101,9 +110,9 @@ abstract class BaseRunner<PARAM, RESULT> {
         onOmitResult: suspend (Result<RESULT>) -> Unit = {},
         onFinish: () -> Unit = {},
     ) {
-        onStart()
+
         job = scope.launch(workerContext + SupervisorJob()) {
-            Log.d(debugTag, "Job is launched")
+            withContext(uiContext) { onStart() }
 
             runCatching {
                 val param: PARAM = onFetchParam()
