@@ -12,8 +12,6 @@ import com.fwhyn.lib.baze.common.model.Status
 import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
 import com.fwhyn.lib.baze.string.helper.StringIdManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,40 +41,39 @@ class HomeViewModel @Inject constructor(
 //        }
 
     override fun onLogout() {
-        activityRetainedState.showLoading()
-
         setTokenUseCase.invoke(
             scope = viewModelScope,
-            onGetParam = { SetAuthTokenParam.Local(AuthTokenModel.None) }
-        ) {
-            it.onSuccess {
-                uiState.state = HomeUiState.State.LoggedOut()
-            }.onFailure { error ->
-                activityRetainedState.showNotification(
-                    stringIdManager.getId(Status.Instance(-1, error.message ?: ""))
-                )
-            }
-
-            withContext(Dispatchers.Main) { activityRetainedState.dismissLoading() }
-        }
+            onStart = { activityRetainedState.showLoading() },
+            onFetchParam = { SetAuthTokenParam.Local(AuthTokenModel.None) },
+            onOmitResult = {
+                it.onSuccess {
+                    uiState.state = HomeUiState.State.LoggedOut()
+                }.onFailure { error ->
+                    activityRetainedState.showNotification(
+                        stringIdManager.getId(Status.Instance(-1, error.message ?: ""))
+                    )
+                }
+            },
+            onFinish = { activityRetainedState.dismissLoading() }
+        )
     }
 
     override fun onAddPhoto(activity: Activity) {
         val param = GetAccessParam.GoogleDrive(activity).also { getGoogleDriveAccessParam = it }
 
-        activityRetainedState.showLoading()
         getAccessUseCase.invoke(
             scope = viewModelScope,
-            onGetParam = { param },
-        ) {
-            it.onSuccess {
-                activityRetainedState.showNotification(R.string.success)
-            }.onFailure {
-                activityRetainedState.showNotification(R.string.unauthorized)
-            }
-
-            withContext(Dispatchers.Main) { activityRetainedState.dismissLoading() }
-        }
+            onStart = { activityRetainedState.showLoading() },
+            onFetchParam = { param },
+            onOmitResult = {
+                it.onSuccess {
+                    activityRetainedState.showNotification(R.string.success)
+                }.onFailure {
+                    activityRetainedState.showNotification(R.string.unauthorized)
+                }
+            },
+            onFinish = { activityRetainedState.dismissLoading() }
+        )
     }
 
     override fun onCleared() {

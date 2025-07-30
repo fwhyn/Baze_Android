@@ -10,8 +10,6 @@ import com.fwhyn.lib.baze.common.model.Status
 import com.fwhyn.lib.baze.compose.helper.ActivityRetainedState
 import com.fwhyn.lib.baze.string.helper.StringIdManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,28 +59,28 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun getToken(getAuthTokenParam: GetAuthTokenParam) {
-        activityRetainedState.showLoading()
 
         getTokenUseCase.invoke(
             scope = viewModelScope,
-            onGetParam = { getAuthTokenParam },
-        ) {
-            it.onSuccess { output ->
-                if (output != AuthTokenModel.None) {
-                    loginUiState.state = LoginUiState.State.LoggedIn()
+            onStart = { activityRetainedState.showLoading() },
+            onFetchParam = { getAuthTokenParam },
+            onOmitResult = {
+                it.onSuccess { output ->
+                    if (output != AuthTokenModel.None) {
+                        loginUiState.state = LoginUiState.State.LoggedIn()
+                    }
+                }.onFailure { error ->
+                    if (loginUiState.tryCount > 0) {
+                        val exception = error as? Exzeption
+                        val status = exception?.status ?: Status.UnknownError
+                        activityRetainedState.showNotification(stringIdManager.getId(status))
+                    }
                 }
-            }.onFailure { error ->
-                if (loginUiState.tryCount > 0) {
-                    val exception = error as? Exzeption
-                    val status = exception?.status ?: Status.UnknownError
-                    activityRetainedState.showNotification(stringIdManager.getId(status))
-                }
-            }
 
-            loginUiState.isLoggedIn = it.isSuccess
-
-            withContext(Dispatchers.Main) { activityRetainedState.dismissLoading() }
-        }
+                loginUiState.isLoggedIn = it.isSuccess
+            },
+            onFinish = { activityRetainedState.dismissLoading() }
+        )
     }
 
     private fun getTryCount(prevValue: Int): Int {
