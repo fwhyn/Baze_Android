@@ -5,6 +5,7 @@ sealed class Status(val code: Int, val msg: String) {
     data object Unauthorized : Status(401, "Unauthorized")
     data object NotFound : Status(404, "Not Found")
     data object BadRequest : Status(400, "Bad Request")
+    data object ReadError : Status(416, "Read Error")
     data object WriteError : Status(417, "Write Error")
     data object SettingError : Status(418, "Setting Error")
     data object OutOfMemoryError : Status(419, "Out Of Memory Error")
