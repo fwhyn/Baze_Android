@@ -86,7 +86,9 @@ class BaseRunnerMultiProcessTest {
         val scope = this
         val results: ArrayList<String> = arrayListOf()
 
-        testInputEqualsOutput.setWorkerContext(coroutineContext)
+        testInputEqualsOutput
+            .setWorkerContext(coroutineContext)
+            .setForcedCancelPreviousActiveJob(true)
 
         // Execute the first process
         testInputEqualsOutput.invoke(
@@ -123,6 +125,51 @@ class BaseRunnerMultiProcessTest {
         // Validate the result corresponds to the second process
         Assert.assertEquals(1, results.size)
         Assert.assertEquals("Output: SecondProcess", results[0])
+    }
+
+    @Test
+    fun executeTwoProcessesInSameObjectTest1() = runTest {
+        val testInputEqualsOutput = TestInputEqualsOutput()
+        val scope = this
+        val results: ArrayList<String> = arrayListOf()
+
+        testInputEqualsOutput.setWorkerContext(coroutineContext)
+
+        // Execute the first process
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onFetchParam = { "FirstProcess" },
+            onOmitResult = {
+                it.onSuccess { output ->
+                    results.add(output)
+                }
+            }
+        )
+
+        val firstId = testInputEqualsOutput.getId()
+        Assert.assertTrue(firstId.isNotEmpty())
+
+        // Execute the second process
+        testInputEqualsOutput.invoke(
+            scope = scope,
+            onFetchParam = { "SecondProcess" },
+            onOmitResult = {
+                it.onSuccess { output ->
+                    results.add(output)
+                }
+            }
+        )
+
+        val secondId = testInputEqualsOutput.getId()
+        Assert.assertTrue(secondId.isNotEmpty())
+        Assert.assertEquals(firstId, secondId)
+
+        // Wait for the second process to complete
+        testInputEqualsOutput.join()
+
+        // Validate the result corresponds to the second process
+        Assert.assertEquals(1, results.size)
+        Assert.assertEquals("Output: FirstProcess", results[0])
     }
 
     // ----------------------------------------------------------------

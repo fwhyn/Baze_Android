@@ -7,6 +7,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -20,16 +21,22 @@ import kotlin.coroutines.CoroutineContext
 abstract class BaseRunner<PARAM, RESULT> {
 
     protected open var jobId = Util.getUniqueId()
+
+    @Volatile
     private var timeOutMillis: Long = 0
+
+    private var isForcedCancelPreviousActiveJob = false
 
     private var uiContext: CoroutineContext = Dispatchers.Main
     private var workerContext: CoroutineContext = Dispatchers.Default
 
-    protected open var job: Job? = null
+    private val jobRef = AtomicReference<Job?>()
+    protected open var job: Job?
+        get() = jobRef.get()
         set(value) {
             cancelPreviousActiveJob()
             jobId = Util.getUniqueId()
-            field = value
+            jobRef.set(value)
         }
 
     // ----------------------------------------------------------------
@@ -90,6 +97,18 @@ abstract class BaseRunner<PARAM, RESULT> {
     }
 
     /**
+     * Sets whether to forcibly cancel the previous active job when a new job is started.
+     *
+     * @param value If true, the previous active job will be canceled when a new job is invoked.
+     * @return The current instance of the use case.
+     */
+    fun setForcedCancelPreviousActiveJob(value: Boolean): BaseRunner<PARAM, RESULT> {
+        isForcedCancelPreviousActiveJob = value
+
+        return this
+    }
+
+    /**
      * Waits for the current job to complete.
      */
     suspend fun join() = job?.join()
@@ -104,12 +123,13 @@ abstract class BaseRunner<PARAM, RESULT> {
      * @param onFinish A function to be called when the use case finishes execution.
      */
     operator fun invoke(
-        scope: CoroutineScope = CoroutineScope(workerContext),
+        scope: CoroutineScope,
         onStart: () -> Unit = {},
         onFetchParam: suspend () -> PARAM,
         onOmitResult: suspend (Result<RESULT>) -> Unit = {},
         onFinish: () -> Unit = {},
     ) {
+        if (!isForcedCancelPreviousActiveJob && job?.isActive == true) return
 
         job = scope.launch(workerContext + SupervisorJob()) {
             withContext(uiContext) { onStart() }
