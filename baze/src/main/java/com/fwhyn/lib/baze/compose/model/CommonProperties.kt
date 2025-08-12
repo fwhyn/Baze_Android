@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 data class CommonProperties(
-    val event: SharedFlow<CommonEvent>,
+    val event: SharedFlow<CommonEvent>? = null,
 ) {
 
     companion object {
