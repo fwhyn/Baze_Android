@@ -53,8 +53,6 @@ android {
 dependencies {
     // ----------------------------------------------------------------
     // Main Dependency
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.com.google.android.material)
     implementation(libs.com.google.code.gson)
 
     implementation(libs.bundles.retrofit2)
@@ -66,10 +64,5 @@ dependencies {
     // ----------------------------------------------------------------
     // Test Dependency
     testImplementation(libs.junit)
-    testImplementation(libs.bundles.org.mockito.test)
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
-    testImplementation(libs.app.cash.turbine)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

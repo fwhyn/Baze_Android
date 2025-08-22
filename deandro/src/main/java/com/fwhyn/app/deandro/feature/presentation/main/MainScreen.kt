@@ -20,7 +20,7 @@ fun MainScreen(
 
     when (val state = activityRetainedState.state) {
         ActivityRetainedState.State.Idle -> {} // Do nothing
-        is ActivityRetainedState.State.Loading -> CircularProgressDialog(state.progress)
+        is ActivityRetainedState.State.Loading -> CircularProgressDialog()
         is ActivityRetainedState.State.OnNotification -> LocalContext.current.showToast(state.getMessageAndFinish(true))
         is ActivityRetainedState.State.OnShowDialog<*> -> BazeDialog(state.model)
         ActivityRetainedState.State.OnFinish -> {} // Do nothing
