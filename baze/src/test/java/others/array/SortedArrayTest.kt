@@ -68,4 +68,63 @@ class SortedArrayTest {
             if (!swapped) break
         }
     }
+
+    @Test
+    fun quickSorted_Happy_Test() {
+        val input = intArrayOf(6, 1, 3, 2, 5)
+        quickSorted(input)
+        assertEquals(1, input[0])
+        assertEquals(2, input[1])
+        assertEquals(3, input[2])
+        assertEquals(5, input[3])
+        assertEquals(6, input[4])
+    }
+
+    @Test
+    fun quickSorted_SameValueDoesNotMatter_Test() {
+        val input = intArrayOf(6, 1, 3, 2, 5, 4, 4)
+        quickSorted(input)
+        assertEquals(1, input[0])
+        assertEquals(2, input[1])
+        assertEquals(3, input[2])
+        assertEquals(4, input[3])
+        assertEquals(4, input[4])
+        assertEquals(5, input[5])
+        assertEquals(6, input[6])
+    }
+
+    @Test
+    fun quickSorted_TheItemIsMinus_Test() {
+        val input = intArrayOf(-6, 1, 3, 2, 5, 4, 4, 10)
+        quickSorted(input)
+        assertEquals(-6, input[0])
+        assertEquals(1, input[1])
+        assertEquals(2, input[2])
+        assertEquals(3, input[3])
+        assertEquals(4, input[4])
+        assertEquals(4, input[5])
+        assertEquals(5, input[6])
+        assertEquals(10, input[7])
+    }
+
+    fun quickSorted(arr: IntArray, low: Int = 0, high: Int = arr.size - 1) {
+        if (low < high) {
+            val pi = partition(arr, low, high)
+            quickSorted(arr, low, pi - 1)   // sort left side
+            quickSorted(arr, pi + 1, high) // sort right side
+        }
+    }
+
+    fun partition(arr: IntArray, low: Int, high: Int): Int {
+        val pivot = arr[high]
+        var i = low - 1
+        for (j in low until high) {
+            if (arr[j] <= pivot) {
+                i++
+                arr[i] = arr[j].also { arr[j] = arr[i] } // swap
+            }
+        }
+        arr[i + 1] = arr[high].also { arr[high] = arr[i + 1] } // swap pivot
+        return i + 1
+    }
 }
