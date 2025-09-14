@@ -15,10 +15,7 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 
 # Test Dependency --------------------------------
-junit = "4.13.2"
-androidxJunit = "1.2.1"
 androidxEspressoCore = "3.6.1"
-turbine = "1.2.0"
 
 # ----------------------------------------------------------------------------------------------------------------------
 [libraries]
@@ -54,11 +51,12 @@ com-squareup-okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp",
 com-squareup-okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 # Test Dependency --------------------------------
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+junit = { group = "junit", name = "junit", version = "4.13.2" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspressoCore" }
 org-jetbrains-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.9.0" }
-app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+app-cash-turbine = { module = "app.cash.turbine:turbine", version = "1.2.0" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.7.0" }
 
 # ----------------------------------------------------------------------------------------------------------------------
 [plugins]

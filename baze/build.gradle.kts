@@ -65,4 +65,6 @@ dependencies {
     // Test Dependency
     testImplementation(libs.junit)
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
+
+    androidTestImplementation(libs.androidx.test.runner)
 }
