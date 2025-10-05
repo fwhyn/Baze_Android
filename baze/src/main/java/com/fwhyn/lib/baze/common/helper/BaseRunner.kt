@@ -122,7 +122,7 @@ abstract class BaseRunner<PARAM, RESULT> {
      * @param onOmitResult A suspend function to handle the result of the use case execution.
      * @param onFinish A function to be called when the use case finishes execution.
      */
-    protected operator fun invoke(
+    protected open operator fun invoke(
         scope: CoroutineScope,
         onStart: () -> Unit = {},
         onFetchParam: suspend () -> PARAM,
