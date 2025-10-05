@@ -89,7 +89,7 @@ abstract class BaseRunner<PARAM, RESULT> {
      * @return The current instance of the use case.
      */
     fun cancelPreviousActiveJob(): BaseRunner<PARAM, RESULT> {
-        if (job?.isActive == true) {
+        if (isActive()) {
             job?.cancel()
         }
 
@@ -129,7 +129,7 @@ abstract class BaseRunner<PARAM, RESULT> {
         onOmitResult: suspend (Result<RESULT>) -> Unit = {},
         onFinish: () -> Unit = {},
     ) {
-        if (!isForcedCancelPreviousActiveJob && job?.isActive == true) return
+        if (!isForcedCancelPreviousActiveJob && isActive()) return
 
         job = scope.launch(workerContext + SupervisorJob()) {
             withContext(uiContext) { onStart() }
@@ -166,4 +166,11 @@ abstract class BaseRunner<PARAM, RESULT> {
         param: PARAM,
         result: suspend (RESULT) -> Unit,
     )
+
+    /**
+     * Checks if the current job is active.
+     *
+     * @return True if the job is active, false otherwise.
+     */
+    fun isActive() = job?.isActive == true
 }
