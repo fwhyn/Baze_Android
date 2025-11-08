@@ -12,6 +12,10 @@ fun Context.showToast(@StringRes stringId: Int, length: Int = Toast.LENGTH_SHORT
     Toast.makeText(this, getString(stringId), length).show()
 }
 
+fun Context.showToast(string: String, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, string, length).show()
+}
+
 fun Context.getBitmap(@DrawableRes id: Int): Bitmap? {
     return try {
         val option = BitmapFactory.Options()
