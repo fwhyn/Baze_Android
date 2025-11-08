@@ -26,7 +26,7 @@ fun Context.getBitmap(@DrawableRes id: Int): Bitmap? {
             id,
             option
         )
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 }
