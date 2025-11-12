@@ -8,11 +8,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 data class CommonProperties(
-    val event: SharedFlow<CommonEvent>? = null,
+    val event: SharedFlow<CommonEvent>?
 ) {
 
     companion object {
         private const val TAG_IDLE = "TAG_IDLE"
+
+        fun default(
+            event: SharedFlow<CommonEvent>? = null,
+        ): CommonProperties {
+            return CommonProperties(event = event)
+        }
     }
 
     private val _state: MutableStateFlow<CommonState> = MutableStateFlow(CommonState.Idle)
