@@ -45,8 +45,8 @@ class AuthDi {
         authTokenByGoogleDataSource: AuthTokenByGoogleDataSource,
     ): AuthTokenRepository {
         return when (BuildConfig.FLAVOR) {
-            "Fake" -> AuthTokenRepositoryFake(authTokenLocalDataSource)
-            "Real" -> AuthTokenRepositoryImpl(
+            "fake" -> AuthTokenRepositoryFake(authTokenLocalDataSource)
+            "real" -> AuthTokenRepositoryImpl(
                 authTokenLocalDataSource,
                 authTokenByMyServerDataSource,
                 authTokenByGoogleDataSource

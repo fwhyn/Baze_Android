@@ -28,8 +28,8 @@ class AccessDi {
         googleDriveAccess: GoogleDriveAccess
     ): AccessRepository {
         return when (BuildConfig.FLAVOR) {
-            "Fake" -> AccessRepositoryFake()
-            "Real" -> AccessRepositoryImpl(googleDriveAccess)
+            "fake" -> AccessRepositoryFake()
+            "real" -> AccessRepositoryImpl(googleDriveAccess)
             else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
         }
     }
