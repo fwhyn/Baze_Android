@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -12,14 +13,9 @@ pluginManagement {
     }
 }
 
-//dependencyResolutionManagement {
-//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-//    repositories {
-//        google()
-//        mavenCentral()
-//    }
-//}
+rootProject.name = "BazeApp"
 
-rootProject.name = "Baze"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 include(":deandro")
 include(":baze")

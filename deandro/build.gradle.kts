@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.myapp.application)
     alias(libs.plugins.jetbrains.kotlin.compose)
     alias(libs.plugins.google.dagger.hilt)
     kotlin("kapt")
@@ -9,44 +8,17 @@ plugins {
 //apply(from = "../properties.gradle")
 
 android {
-    val moduleName = "com.fwhyn.app.deandro"
-
-    val lSdk: Int = (project.property("LSDK") as String).toInt()
-    val mSdk: Int = (project.property("MSDK") as String).toInt()
-    val verCode: Int = (project.property("VERSION_CODE") as String).toInt()
-    val verName: String = project.property("VERSION_NAME") as String
-    val javaVersion: JavaVersion = JavaVersion.valueOf(project.property("JAVA_VERSION") as String)
-
-    namespace = moduleName
-    compileSdk = mSdk
 
     val serverUrl = "SERVER_URL"
     val string = "String"
 
     defaultConfig {
-        applicationId = moduleName
-        minSdk = lSdk
-        targetSdk = mSdk
-        versionCode = verCode
-        versionName = verName
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
 
         buildConfigField("String", "WEB_CLIENT_ID", "\"${project.properties["WEB_CLIENT_ID"]}\"")
-    }
-
-    flavorDimensions += "default"
-    productFlavors {
-        create("Fake") {
-            dimension = "default"
-        }
-
-        create("Real") {
-            dimension = "default"
-        }
     }
 
     buildTypes {
@@ -59,15 +31,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField(string, serverUrl, "\"https://prod.atm-sehat.com/\"")
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-    }
-
-    kotlinOptions {
-        jvmTarget = javaVersion.toString()
     }
 
     buildFeatures {

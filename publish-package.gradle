@@ -1,6 +1,5 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-//apply from: "../properties.gradle"
 
 tasks.register('androidJavadoc', Javadoc) {
     source = android.sourceSets.main.java.srcDirs
@@ -44,7 +43,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
 
-                from components.release
+                from components.default
 
                 // artifact androidJavadocJar
                 // artifact javaSourcesJar
