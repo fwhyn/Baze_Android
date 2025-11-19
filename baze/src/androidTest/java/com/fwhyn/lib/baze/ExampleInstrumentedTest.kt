@@ -10,6 +10,12 @@ import org.junit.Test
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleInstrumentedTest {
+
+    @Test
+    fun test() {
+        assertEquals(4, 2 + 2)
+    }
+
     @Test
     fun useAppContext() {
         // Context of the app under test.
