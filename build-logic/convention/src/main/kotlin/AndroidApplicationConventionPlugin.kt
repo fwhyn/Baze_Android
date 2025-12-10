@@ -9,16 +9,16 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             plugins.apply("org.jetbrains.kotlin.android")
 
             extensions.configure(BaseAppModuleExtension::class.java) {
-                compileSdk = AndroidConfig.COMPILE_SDK
+                compileSdk = AndroidConfig.compileSdk(target)
 
                 defaultConfig {
-                    applicationId = AndroidConfig.App.APP_ID
+                    applicationId = AndroidConfig.App.appId(target)
 
-                    minSdk = AndroidConfig.MIN_SDK
-                    targetSdk = AndroidConfig.TARGET_SDK
+                    minSdk = AndroidConfig.minSdk(target)
+                    targetSdk = AndroidConfig.targetSdk(target)
 
-                    versionCode = AndroidConfig.App.VER_CODE
-                    versionName = AndroidConfig.App.VER_NAME
+                    versionCode = AndroidConfig.App.verCode(target)
+                    versionName = AndroidConfig.App.verName(target)
                 }
 
                 flavorDimensions += "default"
@@ -32,17 +32,17 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
                 }
 
-                namespace = AndroidConfig.App.APP_ID
+                namespace = AndroidConfig.App.appId(target)
 
                 compileOptions {
-                    sourceCompatibility = AndroidConfig.javaVersion
-                    targetCompatibility = AndroidConfig.javaVersion
+                    sourceCompatibility = AndroidConfig.javaVersion(target)
+                    targetCompatibility = AndroidConfig.javaVersion(target)
                 }
             }
 
             extensions.configure(org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension::class.java) {
                 compilerOptions {
-                    jvmTarget.set(AndroidConfig.jvmTarget)
+                    jvmTarget.set(AndroidConfig.jvmTarget(target))
                 }
             }
         }

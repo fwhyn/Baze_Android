@@ -1,26 +1,29 @@
 import org.gradle.api.JavaVersion
+import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 object AndroidConfig {
 
-    const val COMPILE_SDK = 36
-    const val MIN_SDK = 26
-    const val TARGET_SDK = 36
+    fun compileSdk(project: Project): Int = project.findProperty("COMPILE_SDK").toString().toInt()
+    fun minSdk(project: Project): Int = project.findProperty("MIN_SDK").toString().toInt()
+    fun targetSdk(project: Project): Int = project.findProperty("TARGET_SDK").toString().toInt()
 
-    val javaVersion = JavaVersion.VERSION_17
-    val jvmTarget = JvmTarget.JVM_17
+    fun javaVersion(project: Project): JavaVersion =
+        JavaVersion.toVersion(project.findProperty("JAVA_VERSION").toString())
+
+    fun jvmTarget(project: Project): JvmTarget = JvmTarget.fromTarget(project.findProperty("JVM_TARGET").toString())
 
     object App {
 
         // TODO make user package, applicationId, package are the same
-        const val APP_ID = "com.fwhyn.app.deandro"
-        const val VER_CODE = 1090000
-        const val VER_NAME = "1.9.0"
+        fun appId(project: Project): String = project.findProperty("APP_ID").toString()
+        fun verCode(project: Project): Int = project.findProperty("VER_CODE").toString().toInt()
+        fun verName(project: Project): String = project.findProperty("VERSION_NAME").toString()
     }
 
-    fun moduleNamespace(projectPath: String): String {
+    fun moduleNamespace(project: Project): String {
         // remove leading ":" and replace ":" with "."
-        val modulePart = projectPath.removePrefix(":").replace(":", ".")
-        return "${App.APP_ID}.$modulePart"
+        val modulePart = project.path.removePrefix(":").replace(":", ".")
+        return "${App.appId(project)}.$modulePart"
     }
 }
