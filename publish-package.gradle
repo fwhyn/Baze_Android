@@ -48,33 +48,33 @@ afterEvaluate {
                 // artifact androidJavadocJar
                 // artifact javaSourcesJar
 
-                groupId GROUP_ID
-                artifactId ARTIFACT_ID
-                version VERSION_NAME
+                groupId libs.versions.publishingGroupId.get()
+                artifactId libs.versions.publishingArtifactId.get()
+                version libs.versions.androidVersionName.get()
 
                 pom {
-                    name = POM_NAME
-                    description = POM_DESCRIPTION
-                    url = POM_URL
+                    name = libs.versions.pomName.get()
+                    description = libs.versions.pomDescription.get()
+                    url = libs.versions.pomUrl.get()
 
                     licenses {
                         license {
-                            name = POM_LICENCE_NAME
-                            url = POM_LICENCE_URL
+                            name = libs.versions.pomLicenceName.get()
+                            url = libs.versions.pomLicenceUrl.get()
                         }
                     }
 
                     scm {
-                        connection = POM_SCM_CONNECTION
-                        developerConnection = POM_SCM_DEV_CONNECTION
-                        url = POM_SCM_URL
+                        connection = libs.versions.pomScmConnection.get()
+                        developerConnection = libs.versions.pomScmDevConnection.get()
+                        url = libs.versions.pomScmUrl.get()
                     }
 
                     developers {
                         developer {
-                            id = POM_DEVELOPER_ID
-                            name = POM_DEVELOPER_NAME
-                            email = POM_DEVELOPER_EMAIL
+                            id = libs.versions.pomDeveloperId.get()
+                            name = libs.versions.pomDeveloperName.get()
+                            email = libs.versions.pomDeveloperEmail.get()
                         }
                     }
                 }

@@ -8,7 +8,6 @@ androidxHilt = "1.2.0"
 
 # Main Dependency --------------------------------
 androidxActivity = "1.10.1"
-androidxCoreKtx = "1.15.0"
 androidxNavigation = "2.8.8"
 androidxComposeBom = "2025.02.00"
 retrofit = "2.11.0"
@@ -21,15 +20,34 @@ androidxEspressoCore = "3.6.1"
 androidMinSdk = "26"
 androidCompileSdk = "36"
 androidTargetSdk = "36"
+
 androidAppId = "com.fwhyn.app.deandro"
+
 androidVersionCode = "1090000"
 androidVersionName = "1.9.0"
+
 javaVersion = "17"
+
+# Publishing --------------------------------
+publishingGroupId = "io.github.fwhyn.lib"
+publishingArtifactId = "baze"
+
+pomName = "Base Classes Library"
+pomDescription = "This library is intended as a base class to make Android app development easier."
+pomUrl = "https://github.com/fwhyn/Baze_Android"
+pomLicenceName = "The Apache License, Version 2.0"
+pomLicenceUrl = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+pomLicenceDist = "repo"
+pomScmUrl = "https://github.com/fwhyn/Baze_Android"
+pomScmConnection = "scm:git@github.com:fwhyn/Baze_Android.git"
+pomScmDevConnection = "scm:git@github.com:fwhyn/Baze_Android.git"
+pomDeveloperId = "fwhyn"
+pomDeveloperName = "fwhyn"
+pomDeveloperEmail = "fwhynseventh@gmail.com"
 
 # ----------------------------------------------------------------------------------------------------------------------
 [libraries]
 # Main Dependency --------------------------------
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
 com-google-code-gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
 com-google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "googleDaggerHilt" }
