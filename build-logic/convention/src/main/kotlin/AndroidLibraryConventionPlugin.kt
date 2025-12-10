@@ -8,12 +8,14 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             plugins.apply("com.android.library")
             plugins.apply("org.jetbrains.kotlin.android")
 
+            val libs = getVersionCatalog()
+
             extensions.configure(LibraryExtension::class.java) {
-                compileSdk = AndroidConfig.compileSdk(target)
+                compileSdk = AndroidConfig.compileSdk(libs)
 
                 defaultConfig {
-                    minSdk = AndroidConfig.minSdk(target)
-                    testOptions.targetSdk = AndroidConfig.targetSdk(target)
+                    minSdk = AndroidConfig.minSdk(libs)
+                    testOptions.targetSdk = AndroidConfig.targetSdk(libs)
                 }
 
                 flavorDimensions += "default"
@@ -27,17 +29,17 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     }
                 }
 
-                namespace = AndroidConfig.moduleNamespace(target)
+                namespace = AndroidConfig.moduleNamespace(target, libs)
 
                 compileOptions {
-                    sourceCompatibility = AndroidConfig.javaVersion(target)
-                    targetCompatibility = AndroidConfig.javaVersion(target)
+                    sourceCompatibility = AndroidConfig.javaVersion(libs)
+                    targetCompatibility = AndroidConfig.javaVersion(libs)
                 }
             }
 
             extensions.configure(org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension::class.java) {
                 compilerOptions {
-                    jvmTarget.set(AndroidConfig.jvmTarget(target))
+                    jvmTarget.set(AndroidConfig.jvmTarget(libs))
                 }
             }
         }

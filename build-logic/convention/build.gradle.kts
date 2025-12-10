@@ -19,6 +19,7 @@ plugins {
 }
 
 dependencies {
+    compileOnly(gradleApi())
     compileOnly(libs.android.tools.build.gradle)
     compileOnly(libs.jetbrains.kotlin.gradle.plugin)
 }

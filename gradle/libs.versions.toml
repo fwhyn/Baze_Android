@@ -17,6 +17,15 @@ okhttp = "4.12.0"
 # Test Dependency --------------------------------
 androidxEspressoCore = "3.6.1"
 
+# Android Project --------------------------------
+androidMinSdk = "26"
+androidCompileSdk = "36"
+androidTargetSdk = "36"
+androidAppId = "com.fwhyn.app.deandro"
+androidVersionCode = "1090000"
+androidVersionName = "1.9.0"
+javaVersion = "17"
+
 # ----------------------------------------------------------------------------------------------------------------------
 [libraries]
 # Main Dependency --------------------------------

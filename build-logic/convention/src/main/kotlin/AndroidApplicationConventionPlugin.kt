@@ -8,17 +8,19 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             plugins.apply("com.android.application")
             plugins.apply("org.jetbrains.kotlin.android")
 
+            val libs = getVersionCatalog()
+
             extensions.configure(BaseAppModuleExtension::class.java) {
-                compileSdk = AndroidConfig.compileSdk(target)
+                compileSdk = AndroidConfig.compileSdk(libs)
 
                 defaultConfig {
-                    applicationId = AndroidConfig.App.appId(target)
+                    applicationId = AndroidConfig.App.appId(libs)
 
-                    minSdk = AndroidConfig.minSdk(target)
-                    targetSdk = AndroidConfig.targetSdk(target)
+                    minSdk = AndroidConfig.minSdk(libs)
+                    targetSdk = AndroidConfig.targetSdk(libs)
 
-                    versionCode = AndroidConfig.App.verCode(target)
-                    versionName = AndroidConfig.App.verName(target)
+                    versionCode = AndroidConfig.App.verCode(libs)
+                    versionName = AndroidConfig.App.verName(libs)
                 }
 
                 flavorDimensions += "default"
@@ -32,17 +34,17 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
                 }
 
-                namespace = AndroidConfig.App.appId(target)
+                namespace = AndroidConfig.App.appId(libs)
 
                 compileOptions {
-                    sourceCompatibility = AndroidConfig.javaVersion(target)
-                    targetCompatibility = AndroidConfig.javaVersion(target)
+                    sourceCompatibility = AndroidConfig.javaVersion(libs)
+                    targetCompatibility = AndroidConfig.javaVersion(libs)
                 }
             }
 
             extensions.configure(org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension::class.java) {
                 compilerOptions {
-                    jvmTarget.set(AndroidConfig.jvmTarget(target))
+                    jvmTarget.set(AndroidConfig.jvmTarget(libs))
                 }
             }
         }
