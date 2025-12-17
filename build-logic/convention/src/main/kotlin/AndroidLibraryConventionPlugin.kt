@@ -18,14 +18,14 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     testOptions.targetSdk = AndroidConfig.targetSdk(libs)
                 }
 
-                flavorDimensions += "default"
+                flavorDimensions += "environment"
                 productFlavors {
                     create("real") {
-                        dimension = "default"
+                        dimension = "environment"
                     }
 
                     create("fake") {
-                        dimension = "default"
+                        dimension = "environment"
                     }
                 }
 
@@ -34,6 +34,10 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 compileOptions {
                     sourceCompatibility = AndroidConfig.javaVersion(libs)
                     targetCompatibility = AndroidConfig.javaVersion(libs)
+                }
+
+                buildFeatures {
+                    buildConfig = true
                 }
             }
 

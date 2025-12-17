@@ -23,14 +23,14 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     versionName = AndroidConfig.App.verName(libs)
                 }
 
-                flavorDimensions += "default"
+                flavorDimensions += "environment"
                 productFlavors {
                     create("real") {
-                        dimension = "default"
+                        dimension = "environment"
                     }
 
                     create("fake") {
-                        dimension = "default"
+                        dimension = "environment"
                     }
                 }
 
@@ -39,6 +39,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 compileOptions {
                     sourceCompatibility = AndroidConfig.javaVersion(libs)
                     targetCompatibility = AndroidConfig.javaVersion(libs)
+                }
+
+                buildFeatures {
+                    buildConfig = true
+                    compose = true
                 }
             }
 
