@@ -2,6 +2,8 @@ package com.fwhyn.lib.baze.codec.helper
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.ParameterizedType
 
 object Codec {
 
@@ -58,9 +60,104 @@ object Codec {
 
 inline fun <reified T> String.decodeBase36(): T? {
     val jsonString = Codec.decodeBase36(this)
-    return try {
-        Gson().fromJson(jsonString, T::class.java)
+    val gson = Gson()
+    val targetType = object : TypeToken<T>() {}.type
+
+    // First attempt: normal typed deserialization
+    try {
+        val parsed: T? = gson.fromJson(jsonString, targetType)
+        if (parsed != null) {
+            // If T is a parameterized Collection/Map with Enum value type, ensure elements are Enums
+            when (targetType) {
+                is ParameterizedType -> {
+                    val raw = targetType.rawType
+                    val args = targetType.actualTypeArguments
+
+                    // Collection<E : Enum>
+                    if (raw is Class<*> && java.util.Collection::class.java.isAssignableFrom(raw) && args.size == 1) {
+                        val elem = args[0]
+                        if (elem is Class<*> && elem.isEnum && parsed is Collection<*>) {
+                            val allEnums = parsed.all { it == null || elem.isInstance(it) }
+                            if (!allEnums) {
+                                @Suppress("UNCHECKED_CAST")
+                                val enumClass = elem as Class<out Enum<*>>
+                                val converted = parsed.map { v ->
+                                    v?.toString()?.let { name -> java.lang.Enum.valueOf(enumClass, name) }
+                                }
+                                if (converted.any { it == null }) return null
+                                @Suppress("UNCHECKED_CAST")
+                                return converted as T
+                            }
+                        }
+                    }
+
+                    // Map<K, V : Enum>
+                    if (raw is Class<*> && java.util.Map::class.java.isAssignableFrom(raw) && args.size == 2) {
+                        val valueType = args[1]
+                        if (valueType is Class<*> && valueType.isEnum && parsed is Map<*, *>) {
+                            val allEnums = parsed.values.all { it == null || valueType.isInstance(it) }
+                            if (!allEnums) {
+                                @Suppress("UNCHECKED_CAST")
+                                val enumClass = valueType as Class<out Enum<*>>
+                                val converted = parsed.mapValues { (_, v) ->
+                                    v?.toString()?.let { name -> java.lang.Enum.valueOf(enumClass, name) }
+                                }
+                                if (converted.values.any { it == null }) return null
+                                @Suppress("UNCHECKED_CAST")
+                                return converted as T
+                            }
+                        }
+                    }
+                }
+            }
+            return parsed
+        }
     } catch (_: JsonSyntaxException) {
+        // continue to fallback
+    }
+
+    // Fallbacks for common generic cases (Collections/Maps of Enums) when element type isn't honored
+    return try {
+        val anyParsed: Any = gson.fromJson(jsonString, Any::class.java) ?: return null
+
+        when (targetType) {
+            is ParameterizedType -> {
+                val raw = targetType.rawType
+                val args = targetType.actualTypeArguments
+
+                // Handle Collection<E : Enum>
+                if (raw is Class<*> && java.util.Collection::class.java.isAssignableFrom(raw) && args.size == 1) {
+                    val elem = args[0]
+                    if (elem is Class<*> && elem.isEnum && anyParsed is Collection<*>) {
+                        @Suppress("UNCHECKED_CAST")
+                        val enumClass = elem as Class<out Enum<*>>
+                        val converted = anyParsed.map { v ->
+                            v?.toString()?.let { name -> java.lang.Enum.valueOf(enumClass, name) }
+                        }
+                        if (converted.any { it == null }) return null
+                        @Suppress("UNCHECKED_CAST")
+                        return converted as T
+                    }
+                }
+
+                // Handle Map<K, V : Enum>
+                if (raw is Class<*> && java.util.Map::class.java.isAssignableFrom(raw) && args.size == 2) {
+                    val valueType = args[1]
+                    if (valueType is Class<*> && valueType.isEnum && anyParsed is Map<*, *>) {
+                        @Suppress("UNCHECKED_CAST")
+                        val enumClass = valueType as Class<out Enum<*>>
+                        val converted = anyParsed.mapValues { (_, v) ->
+                            v?.toString()?.let { name -> java.lang.Enum.valueOf(enumClass, name) }
+                        }
+                        if (converted.values.any { it == null }) return null
+                        @Suppress("UNCHECKED_CAST")
+                        return converted as T
+                    }
+                }
+            }
+        }
+        null
+    } catch (_: Exception) {
         null
     }
 }
