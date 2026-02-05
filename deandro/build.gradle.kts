@@ -73,5 +73,5 @@ dependencies {
 
     // ----------------------------------------------------------------
     // Test Dependency
-    // None
+    testImplementation(libs.junit)
 }

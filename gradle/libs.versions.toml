@@ -7,8 +7,8 @@ androidTargetSdk = "36"
 
 androidAppId = "com.fwhyn.app.deandro"
 
-androidVersionCode = "1090000" # AA.BB.CC.DD -> AA: Major, BB: Minor, CC: Bug Fix, DD: Build
-androidVersionName = "1.9.0"
+androidVersionCode = "1100000" # AA.BB.CC.DD -> AA: Major, BB: Minor, CC: Bug Fix, DD: Build
+androidVersionName = "1.10.0"
 
 javaVersion = "17"
 
