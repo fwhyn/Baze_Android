@@ -50,6 +50,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -63,7 +65,6 @@ import com.fwhyn.app.deandro.feature.presentation.home.navigateToHomeScreen
 import com.fwhyn.lib.baze.common.helper.extension.removeFromBackStack
 import com.fwhyn.lib.baze.compose.helper.ActivityState
 import com.fwhyn.lib.baze.compose.helper.DevicePreviews
-import com.fwhyn.lib.baze.compose.helper.rememberActivityState
 
 const val LOGIN_ROUTE = "LOGIN_ROUTE"
 
@@ -89,14 +90,98 @@ fun LoginRoute(
     activityState: ActivityState,
     vm: LoginViewModel = hiltViewModel(),
 ) {
-    vm.run {
-        LoginScreen(
-            modifier = modifier,
-            activityState = activityState,
-            loginVmInterface = vm,
-            loginUiData = loginUiData,
-            loginUiState = loginUiState
-        )
+//    vm.run {
+//        LoginScreen(
+//            modifier = modifier,
+//            activityState = activityState,
+//            loginVmInterface = vm,
+//            loginUiData = loginUiData,
+//            loginUiState = loginUiState
+//        )
+//    }
+    Calculator()
+}
+
+@Composable
+fun Calculator(
+    modifier: Modifier = Modifier,
+    vm: CalculatorViewModel = viewModel()
+) {
+
+    val result by vm.result.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row {
+            Spacer(Modifier.size(8.dp))
+            Text(
+                text = "text 2"
+            )
+
+            Spacer(Modifier.size(8.dp))
+            Text(
+                text = "="
+            )
+
+            Spacer(Modifier.size(8.dp))
+            Text(
+                text = result.toString()
+            )
+        }
+
+        Row {
+            Button(
+                onClick = {
+                    vm.onPlusClicked(2.0, 3.0)
+                },
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("+")
+            }
+
+            Spacer(Modifier.size(2.dp))
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("-")
+            }
+
+            Spacer(Modifier.size(2.dp))
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("*")
+            }
+        }
+
+        Row {
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("1")
+            }
+
+            Spacer(Modifier.size(2.dp))
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("2")
+            }
+
+            Spacer(Modifier.size(2.dp))
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("3")
+            }
+        }
     }
 }
 
@@ -367,11 +452,12 @@ fun PasswordField(
 @Composable
 fun LoginScreenPreview() {
     MyTheme {
-        LoginScreen(
-            activityState = rememberActivityState(),
-            loginVmInterface = object : LoginVmInterface() {},
-            loginUiData = LoginUiData(),
-            loginUiState = LoginUiState(),
-        )
+//        LoginScreen(
+//            activityState = rememberActivityState(),
+//            loginVmInterface = object : LoginVmInterface() {},
+//            loginUiData = LoginUiData(),
+//            loginUiState = LoginUiState(),
+//        )
+        Calculator()
     }
 }
