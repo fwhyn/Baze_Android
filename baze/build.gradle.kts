@@ -27,7 +27,9 @@ android {
     }
 
     publishing {
-        multipleVariants {
+        // Publish only the real flavor so consumers without flavor dimensions resolve unambiguously.
+        multipleVariants("real") {
+            includeFlavorDimensionAndValues("environment", "real")
             allVariants()
             withJavadocJar()
         }
