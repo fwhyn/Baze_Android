@@ -3,6 +3,7 @@ package com.fwhyn.app.deandro.more
 import MainDispatcherRule
 import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
@@ -47,16 +48,8 @@ class CoroutineTest {
 
     @Test
     fun testCoroutine() {
-        // TODO PR supaya log nya muncul di test
         coroutineCheck()
     }
-
-//    @Test
-//    fun testSuspend() = runTest {
-//        // TODO PR: apakah "after suspendCoroutine" akan muncul setelah "suspendCoroutine"?
-//        suspendCoroutine()
-//        Log.d("Test", "after suspendCoroutine")
-//    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -80,5 +73,55 @@ class CoroutineTest {
         assertTrue(resumed)
 
         job.join()
+    }
+
+    @Test
+    fun testAsync() = runTest {
+        val result = async {
+            delay(1000.milliseconds)
+            10 + 20
+        }
+
+        println("Doing other work...")
+
+        println("Result = ${result.await()}")
+    }
+
+    suspend fun getUser(): String {
+        delay(1000.milliseconds)
+        return "User"
+    }
+
+    suspend fun getPosts(): List<String> {
+        delay(1000.milliseconds)
+        return listOf("Post 1", "Post 2")
+    }
+
+    @Test
+    fun testParalelAsync() = runTest {
+        val user = async {
+            getUser()
+        }
+
+        val posts = async {
+            getPosts()
+        }
+
+        println(user.await())
+        println(posts.await())
+    }
+
+    @Test
+    fun testParalelLaunch() = runTest {
+        val user = launch {
+            getUser()
+        }
+
+        val posts = launch {
+            getPosts()
+        }
+
+        println(user)
+        println(posts)
     }
 }
