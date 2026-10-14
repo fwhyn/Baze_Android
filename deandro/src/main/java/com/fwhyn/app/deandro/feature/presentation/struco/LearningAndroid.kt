@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun LearnAndroid(viewModel: CoroutineTest = CoroutineTest()) {
+fun LearnAndroid(viewModel: CoroutineTestViewModel = CoroutineTestViewModel()) {
     val tabelData by viewModel.stateTimAppli.collectAsStateWithLifecycle()
 
     if (tabelData == null) {
