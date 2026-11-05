@@ -20,7 +20,7 @@ class UserActivity : ComponentActivity() {
 
         val vm: UserViewModel by viewModels {
             UserViewModelFactory(
-                UserRepository(UserApi())
+                UserRepository(userApi = UserApi())
             )
         }
 

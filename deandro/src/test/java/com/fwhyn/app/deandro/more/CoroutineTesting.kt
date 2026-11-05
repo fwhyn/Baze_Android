@@ -4,6 +4,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -77,5 +80,68 @@ class CoroutineTesting {
 //        job2.join()
         log("Current virtualTime=${currentTime}ms")
         assertEquals("Updated", result)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun dispatchers_shareOneScheduler() = runTest {
+        val ioDispatcher = StandardTestDispatcher(testScheduler)
+        val defaultDispatcher = StandardTestDispatcher(testScheduler)
+
+        launch(ioDispatcher) {
+            log("IO")
+        }
+
+        launch(defaultDispatcher) {
+            log("Default")
+        }
+
+        advanceUntilIdle()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun standardTestDispatcher_logShowsQueuedExecution() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        var state = "Initial"
+
+        log("1. Before launch: state=$state")
+
+        launch(dispatcher) {
+            log("3. Coroutine body starts")
+            state = "Updated"
+            log("4. Coroutine changes state=$state")
+        }
+
+        log("2. After launch: state=$state")
+        assertEquals("Initial", state)
+
+        runCurrent()
+
+        log("5. After runCurrent: state=$state")
+        assertEquals("Updated", state)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun unconfinedTestDispatcher_startImmediatelyButStillSuspends() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        var state = "Initial"
+
+        launch(dispatcher) {
+            state = "Started"
+            log("Coroutine started: state=$state, time=${currentTime}ms")
+            delay(1000.milliseconds)
+            state = "Finished"
+            log("Coroutine finished: state=$state, time=${currentTime}ms")
+        }
+
+        log("Immediately after launch: state=$state, time=${currentTime}ms")
+        assertEquals("Started", state)
+
+        advanceUntilIdle()
+
+        log("After advanceUntilIdle: state=$state, time=${currentTime}ms")
+        assertEquals("Finished", state)
     }
 }
