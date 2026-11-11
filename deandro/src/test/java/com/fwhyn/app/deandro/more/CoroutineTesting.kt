@@ -62,6 +62,7 @@ class CoroutineTesting {
         assertEquals("Updated", result)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun launchedCoroutine_canBeJoined() = runTest {
         var result = "Initial"
