@@ -32,8 +32,19 @@
         <!--            </intent-filter>-->
         <!--        </activity>-->
 
+        <!--        <activity-->
+        <!--            android:name=".feature.presentation.struco.MainActivityExample"-->
+        <!--            android:exported="true"-->
+        <!--            android:theme="@style/Theme.App.Starting">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.MAIN" />-->
+
+        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
+
         <activity
-            android:name=".feature.presentation.struco.MainActivityExample"
+            android:name=".feature.presentation.learncompose.MainActivityCompose"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
