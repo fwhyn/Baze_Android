@@ -43,7 +43,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
 
-                from components.real
+                from components.release
 
                 // artifact androidJavadocJar
                 // artifact javaSourcesJar

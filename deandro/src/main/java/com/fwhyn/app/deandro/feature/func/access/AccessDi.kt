@@ -1,9 +1,7 @@
 package com.fwhyn.app.deandro.feature.func.access
 
-import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.feature.func.access.data.remote.GoogleDriveAccess
 import com.fwhyn.app.deandro.feature.func.access.data.repository.AccessRepository
-import com.fwhyn.app.deandro.feature.func.access.data.repository.AccessRepositoryFake
 import com.fwhyn.app.deandro.feature.func.access.data.repository.AccessRepositoryImpl
 import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCase
 import com.fwhyn.app.deandro.feature.func.access.domain.usecase.GetAccessUseCaseImpl
@@ -27,10 +25,6 @@ class AccessDi {
     fun provideAccessRepository(
         googleDriveAccess: GoogleDriveAccess
     ): AccessRepository {
-        return when (BuildConfig.FLAVOR) {
-            "fake" -> AccessRepositoryFake()
-            "real" -> AccessRepositoryImpl(googleDriveAccess)
-            else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
-        }
+        return AccessRepositoryImpl(googleDriveAccess)
     }
 }

@@ -23,17 +23,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     versionName = AndroidConfig.App.verName(libs)
                 }
 
-                flavorDimensions += "environment"
-                productFlavors {
-                    create("real") {
-                        dimension = "environment"
-                    }
-
-                    create("fake") {
-                        dimension = "environment"
-                    }
-                }
-
                 namespace = AndroidConfig.App.appId(libs)
 
                 compileOptions {

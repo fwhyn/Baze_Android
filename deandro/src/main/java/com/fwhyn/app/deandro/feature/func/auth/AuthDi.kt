@@ -1,13 +1,11 @@
 package com.fwhyn.app.deandro.feature.func.auth
 
-import com.fwhyn.app.deandro.BuildConfig
 import com.fwhyn.app.deandro.common.network.api.RetrofitProvider
 import com.fwhyn.app.deandro.feature.func.auth.data.local.AuthTokenLocalDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByGoogleDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.AuthTokenByMyServerDataSource
 import com.fwhyn.app.deandro.feature.func.auth.data.remote.LoginApi
 import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepository
-import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepositoryFake
 import com.fwhyn.app.deandro.feature.func.auth.data.repository.AuthTokenRepositoryImpl
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCase
 import com.fwhyn.app.deandro.feature.func.auth.domain.usecase.GetAuthTokenUseCaseImpl
@@ -44,16 +42,11 @@ class AuthDi {
         authTokenByMyServerDataSource: AuthTokenByMyServerDataSource,
         authTokenByGoogleDataSource: AuthTokenByGoogleDataSource,
     ): AuthTokenRepository {
-        return when (BuildConfig.FLAVOR) {
-            "fake" -> AuthTokenRepositoryFake(authTokenLocalDataSource)
-            "real" -> AuthTokenRepositoryImpl(
-                authTokenLocalDataSource,
-                authTokenByMyServerDataSource,
-                authTokenByGoogleDataSource
-            )
-
-            else -> throw IllegalArgumentException("Unknown flavor: ${BuildConfig.FLAVOR}")
-        }
+        return AuthTokenRepositoryImpl(
+            authTokenLocalDataSource,
+            authTokenByMyServerDataSource,
+            authTokenByGoogleDataSource
+        )
     }
 
     @Provides

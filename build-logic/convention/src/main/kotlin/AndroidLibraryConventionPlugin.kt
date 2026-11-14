@@ -18,17 +18,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     testOptions.targetSdk = AndroidConfig.targetSdk(libs)
                 }
 
-                flavorDimensions += "environment"
-                productFlavors {
-                    create("real") {
-                        dimension = "environment"
-                    }
-
-                    create("fake") {
-                        dimension = "environment"
-                    }
-                }
-
                 namespace = AndroidConfig.moduleNamespace(target, libs)
 
                 compileOptions {
